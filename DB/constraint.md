@@ -1,5 +1,9 @@
 # not null
 - 太多会消耗数据库性能
+```sql
+alter table x modify column_name null;
+alter table x modify column_name varchar(25) not null;
+```
 
 # unique
 ## 添加约束
@@ -82,7 +86,19 @@ alter table table_name add [constraint [symbol]]
 foreign key [index_name] (column_name, ...)
 references table_name (column_name, ...)
 -- index represents a foreign key ID.
+
+-- delete foreign key constraint
+alter table table_name drop foreign key foreignKeyName;
+-- foreignKeyName is the constraint name
 ```
+
+## possible reasons for errors when adding a FK
+- 两个字段的类型必须严格一致
+- 两个字段都必须已经建立了索引
+- 检查表的引擎类型
+- 外键名字不能重复，必须是唯一的
+- 可能给外键设置了默认值
+- ……
 
 # DEFAULT约束
 
@@ -92,3 +108,4 @@ references table_name (column_name, ...)
 <br>
 references:
 - [MySQL——约束](https://segmentfault.com/a/1190000006671061)
+- [Mysql无法创建外键的原因](https://blog.csdn.net/wangpeng047/article/details/19624351)
