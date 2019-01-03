@@ -5,3 +5,4 @@ kill -9 pid
 # or do via script
 ps -A -o stat,ppid,pid,cmd | grep -e '^[Zz]' | awk '{print $2}' | xargs kill -9
 ```
+- [more kill skills](https://www.jianshu.com/p/5ab557f8a6bf)
