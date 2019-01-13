@@ -1,4 +1,10 @@
 # keys & attributes
+## primary key:
+- unique identifier in a table
+
+## secondary key:
+- secondary keys are attributes or a combination of attributes that are used to provide an alternative access to the database
+
 ## superkey:
 - a set of attributes within a talbe whose values can be used to uniquely identify a tuple.
 
