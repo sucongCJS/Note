@@ -19,8 +19,8 @@
     + make the files in your working tree the same as the version committed in <SOME-COMMIT>
     + make the files in the index the same as the version committed in <SOME-COMMIT>
     + all uncommitted changes will be throwed away
-- this is a potentially dangerous command, since all the uncommitted changes will be discarded. 
-- you should always check that the ouput of `git status` is clean before using it. 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  - this is a potentially dangerous command, since all the uncommitted changes will be discarded.
+- you should always check that the ouput of `git status` is clean before using it.
 
 ## reset the `git init`
 - find . -name ".git" | xargs rm -rf
@@ -30,3 +30,6 @@
 ## change the commit message
 - `git commit --amend`
 - `git commit --amend -m "some message"`
+
+## 取消git初始化
+`rm -rf .git`

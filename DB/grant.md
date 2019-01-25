@@ -6,7 +6,7 @@
   ```sql
   grant select, insert, update, delete on testdb.* to common_user@'%';
   -- %表示任何主机（但不包括’localhost’和’127.0.0.1’）
-  ```   
+  ```
 2. grant 数据库开发人员 创建表、索引、视图、存储过程、函数等权限
   ```sql
   -- 创建、修改、删除数据表结构
@@ -37,7 +37,7 @@
 
 3. grant 普通DBA管理某个数据库的权限
   ```sql
-  grant all on testdb to dba@'192.168.0.%';
+  grant all on testdb.* to dba@'192.168.0.%';
   ```
 
 4. grant 高级DBA管理所有数据库的权限
