@@ -1,0 +1,3 @@
+- post a form and hit the back button
+- HttpResponseRedirect 传参
+- 
