@@ -2,3 +2,4 @@
 - HttpResponseRedirect 传参
 - [竞争条件](https://docs.djangoproject.com/zh-hans/2.1/ref/models/expressions/#avoiding-race-conditions-using-f)
 - 通用视图 order_by
+- 存储时间用timestamp?
