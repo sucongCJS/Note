@@ -3,7 +3,18 @@
 ```sql
 alter table x modify column_name null;
 alter table x modify column_name varchar(25) not null;
+-- 去除not null约束
+ALTER TABLE table_name ALTER COLUMN column_name DROP NOT NULL;
 ```
+
+## BTW:空值(Null)的陷阱
+- 空值不一定为空!
+&emsp;&emsp;空值是一个比较特殊的字段。在MySQL数据库中，在不同的情形下，空值往往代表不同的含义。这是MySQL数据库的一种特性. 如在普通的字段中(字符型的数据)，空值就是表示空值, 但有特殊情况:
+1. 如果将`null`插入到**TimesTamp**类型的字段中，该字段就不为空, 而是插入了插入时的当前时间.
+2. 如果向有`auto_increment`属性的列插入`null`值的话, 系统会插入一个正整数序列
+- 空值不一定等于空字符
+
+
 
 # unique
 ## 添加约束
@@ -107,5 +118,6 @@ alter table table_name drop foreign key foreignKeyName;
 
 <br>
 references:
+- [Mysql的空值与NULL的陷阱](https://www.cnblogs.com/apache-x/p/5386287.html)
 - [MySQL——约束](https://segmentfault.com/a/1190000006671061)
 - [Mysql无法创建外键的原因](https://blog.csdn.net/wangpeng047/article/details/19624351)
