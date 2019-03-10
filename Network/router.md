@@ -11,6 +11,7 @@
 # 一些口
 ## WAN(Wide Area Network)口
 > WAN口就是路由器的外网接口, 相当于外面的进线接口, 它有自己的IP, MAC地址, 和获取IP的多种方式
+> a WAN consists of multiple LANs that have been connected together over long distances using routers.
 
 ### WAN口接口类型
 - PPPOE拨号
@@ -21,8 +22,10 @@ IP地址是随机分配的, 没有固定的IP地址(当这台电脑需要被外�
 - ...
 
 ## LAN(Local Area Network)口
+> LAN is a small network, this type of network is often called an *intranet*
 > LAN口就是路由器的内网接口, 它的LAN口就是它在内网之间的PC访问时的一个身份. 因此, 我们在登录路由器的时候都是通过输入路由器的LAN口, 如果路由器的LAN修改了, 那么我们输入路由器的IP也要改成修改后的IP. 修改LAN的IP一般在**多个路由器串联**时使用, 此时的路由器WAN口接口类型为自动获取
 > 不过一般为了安全考虑，很多都是修改了LAN口IP的，比如政府机构，他们的内网IP你们一般不会知道
+> see more in *network.md*
 
 ## 路由器的_MAC地址_(Media Access Control Address)
 > 如果说路由器的WAN口和LAN口IP地址为艺名的话，那么WAN口和LAN口的MAC地址为它的真实姓名. IP地址都是虚拟出来的地址, 好使用和识别些. MAC地址就是**物理地址**的意思.
@@ -34,6 +37,12 @@ IP地址是随机分配的, 没有固定的IP地址(当这台电脑需要被外�
 > LAN的MAC就是路由器上连接电脑的一端的端口物理地址
 > WAN的MAC就是路由器上连接猫或外网网线的端口物理地址
 > 在自己电脑上查到的MAC地址是自己电脑网卡的MAC地址，也就是自己电脑上网口的MAC地址
+
+## ISP(Internet Service Provider)
+> an ISP is a company that owns a WAN
+
+## IXP(Internet Exchange Points)
+>
 
 # 拨号上网
 ## 模拟线电话拨号

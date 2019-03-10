@@ -19,3 +19,11 @@ ways to access a global variable
 
 # PHP Date Type
 var_dump()
+gettype()
+settype()
+
+# Class
+## PDO
+[PDO manual](http://php.net/manual/en/class.pdo.php)
+
+### different between `query` and `execute`

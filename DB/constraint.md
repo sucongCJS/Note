@@ -1,8 +1,8 @@
 # not null
 - 太多会消耗数据库性能
 ```sql
-alter table x modify column_name null;
-alter table x modify column_name varchar(25) not null;
+ALTER TABLE x modify column_name null;
+ALTER TABLE x modify column_name varchar(25) not null;
 -- 去除not null约束
 ALTER TABLE table_name ALTER COLUMN column_name DROP NOT NULL;
 ```

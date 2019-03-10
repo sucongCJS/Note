@@ -1,15 +1,18 @@
 # 数据库
 ## makemigrations
-`python manage.py makemigrations app_name`
+`python manage.py makemigrations app_name --name The_Name_of_The_Migration`
 > every you make some changes to your models, you can stored the changes as a migration by do so.
 
 ## sqlmigrate
 `python manage.py sqlmigrate app_name migrate_file_name(eg.0001)`
-> generate the sql command without making migrations
+> generate the sql command without making migrations. (you do not have to do this when migrating)
 
 ## migrate
 `python manage.py migrate`
 > apply changes to the database
+
+## undo migrate
+`pythin manage.py migrate app_name 0001_initial`
 
 ## 注意事项
 - 插入一个留空的字符型字段, 它会插入一个空字符串(而不是`NULL`). 但日期型, 时间型和数字型字段不接受空字符串(得视具体版本而定)
@@ -25,3 +28,7 @@
 
 # admin
 [有用的设置](https://www.cnblogs.com/wumingxiaoyao/p/6928297.html)
+
+
+<br/><br/>reference list:
+- (Django Migration)[https://realpython.com/django-migrations-a-primer/]
