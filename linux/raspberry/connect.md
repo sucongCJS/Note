@@ -10,4 +10,10 @@
 4. `sudo nmap -sN 10.42.0.0.24`来获得树莓派的ip
 5. `ssh 树莓派ip`
 
-ssh
+# 换源
+[换源](https://blog.csdn.net/hu5566798/article/details/81055002)
+
+# [联网](https://www.embbnux.com/2016/04/10/raspberry_pi_3_wifi_and_bluetooth_setting_on_console/)
+
+<br/><br/>reference list:
+- [Ubuntu16.04 通过网线直接连接树莓派](https://blog.csdn.net/a610786189/article/details/78701860)

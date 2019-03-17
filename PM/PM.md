@@ -1,9 +1,9 @@
 # *INTRODUCTION TO PROJECT MANGEMENTCHAPTER
 ## "Why IT projects fail"
-- ­**changing objective during project**, because many project managers had the feeling that their IT project would never stop growing. First they change Scope creep, is refers to uncontrolled and unexpected changes in user expectations and requirements as a project progress, and feature creep is refers to uncontrolled addition of features to a system with a wrong assumption that one small feature will add nothing to cost or schedule.
--­ **Unrealistic time or resource estimate**’. Because estimation mistakes of time or resource cause project related problems, and one common problem during the creation of the work breakdown structure is assuming that the time on task equals duration. And another common problem is using linear approximation when estimating schedule.
-­‐ **Lack executive support and user involvement**. Because some companies and academic institution has focused on the lack of executive support and user involvement as two main difficulties in managing IT projects.
-­‐ **Inappropriate skills**. Most IT projects require a diverse range of skills. Many teams lack the breadth, and depth they require. It is also not easy for technology based organization to find the experienced people they need because sometimes few people in the labor market have the necessary skills.
+- ­changing objective during project
+-­ Unrealistic time or resource estimate
+­‐ Lack executive support and user involvement
+­‐ Inappropriate skills
 
 ## what makes project work different from normal day to day work of business? (project attributes)
 - has a **unique** purpose
@@ -12,7 +12,7 @@
 - is developed using progressive elaboration
 - requires resources, often from various areas
 
-## Briefly explain how the triple constraint of Scope, Time and Cost can effect project completion.
+## how the triple constraint of Scope, Time and Cost can effect project completion.
 ­‐ Project scope management involves defining and managing all work required to complete project.
 -­ Project time management includes estimating project duration developing schedules and ensuring timely completion of project,
 - ­And project cost management of preparing and managing the project budget; includes resource planning, cost estimating, and cost budgeting
@@ -40,9 +40,7 @@
 -­ Verbal communication
 -­ Conflict resolution, conflict management
 -­ Critical thinking, problem solving
-## what is the job role for each job
--­ IT Project manager for a broad range of product including but not limited to Data centre implementation/Active directory implementation/SharePoint improvement/online development.
-b) what are responsibilities for each position-­‐Demonstrable track record of successful project delivery for large scale projectsc) what experience do you need for thejob?-­‐IT infrastructure and software related project management.-­‐Network or data centre implementation experience an advantaged) Any certification required eg PRINCE2 -­‐Formal project management qualifications e.g. PMBOK, Prince2 would be well regardede) is any salary mentioned?-­‐Yes ($120K -­‐$140K)(The power to make your city shines)a) what is the job role for each job-­‐Manage the delivery of IT and hardware projects from concept to implementationb) what are responsibilities for each position-­‐Document functional and technical requirements, project plans, timelines, reports and business proposals-­‐Manage performance and delivery of external suppliers / developersc) what experience do you need for the job?-­‐Experience in Project Management with working knowledge of knowledge of PMBOK, PRINCE2 or equivalent principlesd) Any certification required eg PRINCE2 -­‐Project Management -­‐certified practitionere) is any salary mentioned?-­‐Yes (Salary starting at 96K + super (10 days F/N)##Project management certification programs; -­‐PRINCE2 provides a common language for all participants in the project. The various management roles and responsibilities involved in a project are fully described and are adaptable to suit the complexity of the project and skills of the organization. PRINCE2 provides a method for managing projects within a clearly defined framework.-­‐The (PMBOK) ‘Project Management Body of Knowledge’ describes the PMI’s view of the relevant topics and knowledge within the Project Managem
+
 
 # *Organizational Structures
 ## functional organizational structure
@@ -131,7 +129,7 @@ a **deliverable** is a product or service produced or provided as part of a proj
 
 # fragement: kill point=phase exit
 
-# * business case
+# *business case
 - Introduction
 - preliminary project requirements
   - analysis of current system
@@ -155,3 +153,80 @@ a **deliverable** is a product or service produced or provided as part of a proj
   - scope
   - time
   - cost
+
+# Case Study:
+1. Business Case
+2. HR Stakeholder Plan
+    - Planning HR management
+    - Acquiring
+    - Developingaffiliative
+    - Manageing
+3. RAM -> Responsibilities Action Matrix
+   Who does that?
+   RACI - chart
+4. WBS
+    ![WBS](../resource/WBS.png)
+5. Gantt Chart
+6. Project Control Chart
+
+# Maslow hierachy needs
+1. Physiological
+
+# McClelland's Acquired Needs Theory
+- Achievement
+- Affiliation
+- Power
+
+# Leadership
+- visionary: see through the furture, bold
+- coaching:
+- affiliative
+- democratic
+
+# RAM
+> Responsibility Assignment Matrix
+![]()
+department
+a ~ maps the work of a project as descirbed in the WBS to the people responsible for performing the work
+
+# RACI
+> Responsibility, Accountability, Consultation, Informed
+![](resource/)
+responsibility: the people who do the jobs
+accountability: the person check the work, the person that take blames. only one person that is accountable per task
+a kid broke the neighboor's windows, the kid's father is accoutable, the kid is responsible
+nooed
+Consultation: consult before a decision
+Informed: need to be Informed
+
+
+no blank cell?
+
+# Resource Histogram
+![]()
+tell how many people are needed
+people like: managers, business analysts, programmers, technical writers
+
+
+overallocated
+
+
+# team
+- forming
+  - define goals
+  - define Responsibilities
+  -
+- storming
+  - maintain focus
+  - guide decision
+  -
+- norming
+  -
+- performing
+  - one goal
+  - work together
+- adjouring
+
+- traning
+  - physical execise (a little unsafe? activity can help bind them together)
+-

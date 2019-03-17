@@ -1,4 +1,4 @@
-##
+#
 - IT workers rely on knowledge in their jobs.
 - **writing** skills are the most important
   - be concise
@@ -6,7 +6,7 @@
   - KISS rule
   - use appropriate language (no LOL, ROFL)
   -
-## Vocabulary
+# Vocabulary
 - connectedness: being joined or linked
 - Adhoc: created or done for a particular purpose
 
@@ -95,10 +95,26 @@ soft skills: communicate, be able to work with other people
 2. distribute an agenda
 3. use digital calendar for scheduling
 4. train participants on technology
+distribute documents in advance and log on early
 
 ## running the meetings
-1. start on time and introduce the agenda
-2. appoint a secretary and a recorder
-3. encourage participation
+1. start on time and **introduce the agenda**
+2. **appoint a secretary and a recorder**
+3. **encourage participation**
 4. confront conflict frankly
 5. summarize along the way
+stay focus on the topic
+silence the phone
+be ready to deal with the confilct
+
+## ending the meeting and following up
+1. review meeting decisions
+2. distribute minutes of meeting
+3. remind what participants need to do
+
+# be a good listener
+- avoid interruptting, let them finish
+- make a note
+- avoid seeming judgmental (don't make an opinion on the speaker)
+- focus fully on the speaker eye contact
+- keep silence while others are speaking

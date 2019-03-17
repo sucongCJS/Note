@@ -55,3 +55,6 @@ tar zcvf CompressedFile.tar File
 =: 套接字
 @: 符号链接(软连接)
 |: 管道文件
+
+# wine uninstall software:
+wine uninstaller
