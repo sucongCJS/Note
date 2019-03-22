@@ -118,3 +118,8 @@ be ready to deal with the confilct
 - avoid seeming judgmental (don't make an opinion on the speaker)
 - focus fully on the speaker eye contact
 - keep silence while others are speaking
+
+
+# intercultural communication
+## high-context culture
+## low-context culture 

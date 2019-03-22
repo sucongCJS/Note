@@ -46,6 +46,15 @@ tar -zxvf FileName.zip -C /zzz/bbs
 tar zcvf CompressedFile.tar File
 ```
 
+## install sth
+Ubuntu/Mint linux support debian packages
+Fedora, centos, mandriva, and redhat support rpm packages
+`apt-get install alien dpkg-dev debhelper build-essential`
+To convert a package from rpm to debian format
+`alien packagen.rpm`
+Finally, install your package !
+`dpkg -i package.deb`
+
 
 # 零碎知识
 ## 文件符号

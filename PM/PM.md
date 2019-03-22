@@ -131,6 +131,9 @@ a **deliverable** is a product or service produced or provided as part of a proj
 
 # *business case
 - Introduction
+- Proposal
+- Justification
+> why spend the money on this project
 - preliminary project requirements
   - analysis of current system
   - define the problem
@@ -149,10 +152,13 @@ a **deliverable** is a product or service produced or provided as part of a proj
   - program inhouse cost $...
 - schedule estimate
   - purchase
-- risk .
+- risk
+> dont have to be specific
   - scope
   - time
   - cost
+  - viruses
+
 
 # Case Study:
 1. Business Case
@@ -161,7 +167,7 @@ a **deliverable** is a product or service produced or provided as part of a proj
     - Acquiring
     - Developingaffiliative
     - Manageing
-3. RAM -> Responsibilities Action Matrix
+3. RAM -> Responsibilities Assignment Matrix
    Who does that?
    RACI - chart
 4. WBS
@@ -230,3 +236,47 @@ overallocated
 - traning
   - physical execise (a little unsafe? activity can help bind them together)
 -
+
+# *project stakeholder management process
+1. **identifying** stakeholders
+outputs: **Stakeholder Register**(table of stakeholder's name, job, email(assessment), position, internal/external...)
+software: excel,
+
+internal stakeholder: staff, sponsor
+external stakeholder: customer, supplier
+
+## challenges a stakeholder may present
+- change the mind
+- disagree with the project plan
+- hard to contact
+- does not understand the project
+
+## ways to handle the challenges
+- be clear from the start
+- always have a plan B(contingency plan)
+- explain the consequences
+- take a stand
+
+Power/Interest Grid
+![](../resource/power_interest_grid.png)
+interest: the responsibility of doing the job
+
+2. **planning** stakeholder management
+outputs:
+3. **managing** stakeholder engagement3.
+outputs:
+4. **controlling** stakeholder engagement  3. 4.
+outputs:
+
+# critical path method & pert(CPM)
+> the critical path method is the sequence of scheduled activities that determines the duration of the project
+> program evaluation review technique(PERT)
+
+must follow the sequence one after another
+CPM descirbes the **longest** sequence of tasks in the project
+
+**CPM diagram**
+![](../resource/stakeholder_register.png)
+the CPM is the path that takes longest
+if we want to shorten the project, the task that on the critical path and takes more time will usually be shortened
+:warning: tasks on the lines, numbers in the nodes
