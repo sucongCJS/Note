@@ -1,4 +1,4 @@
-# *INTRODUCTION TO PROJECT MANGEMENTCHAPTER
+# * INTRODUCTION TO PROJECT MANGEMENTCHAPTER
 ## "Why IT projects fail"
 - ­changing objective during project
 -­ Unrealistic time or resource estimate
@@ -18,15 +18,19 @@
 - ­And project cost management of preparing and managing the project budget; includes resource planning, cost estimating, and cost budgeting
 
 ## the project management knowledge areas.
-­‐ Scope management
--­ Time management
--­ Cost management
--­ Quality management
--­ Human resource management
--­ Communications management
--­ Risk management
--­ Procurement management
--­ Project integration management
+-­ Project integration management 项目综合管理
+­‐ Scope management 范围管理 
+-­ Time management 时间管理 gantt
+-­ Cost management 成本管理
+-­ Quality management 质量管理
+-­ Human resource management 人力资源管理
+-­ Communications management 沟通管理
+-­ Risk management 风险管理
+-­ Procurement management 采购管理
+
+## 利益相关者
+包括项目发起人, 客户, 开发团队等
+甚至包括项目的反对者
 
 ## List and briefly explain what constitutes project success.
 -­ The project met scope, time and cost goals
@@ -42,7 +46,7 @@
 -­ Critical thinking, problem solving
 
 
-# *Organizational Structures
+# * Organizational Structures
 ## functional organizational structure
 > hierarchy
 > **functional managers** or **vice presidents** in specialties, and their staffs have specialized skills in their respective disciplines
@@ -69,6 +73,17 @@
 4. maintenance
     - 对应 control
 
+1. 软件定义阶段
+    1.1. 问题定义
+    1.2. 可行性分析
+    1.3. 需求分析 与 建模
+2. 软件开发阶段
+    2.1. 设计
+    2.2. 编码
+3. 运行维护阶段
+    3.1. 测试
+    3.2. 维护
+
 ### agile
 planning
 execution
@@ -88,7 +103,7 @@ execution
 - PRINCE 2
 - agile
 
-## *project life cycle
+## * project life cycle
 > a project life cycle is a collection of project phases that defines
 > - what work will be performed in each phase
 > - what deliverables will be produced and when
@@ -97,7 +112,7 @@ execution
 
 a **deliverable** is a product or service produced or provided as part of a project
 
-### *Phases (5 process)
+### * Phases (5 process)
 1. initiation phase
   - project definition
   - project constraints
@@ -129,11 +144,12 @@ a **deliverable** is a product or service produced or provided as part of a proj
 
 # fragement: kill point=phase exit
 
-# *business case
+# * business case
 - Introduction
 - Proposal
 - Justification
 > why spend the money on this project
+
 - preliminary project requirements
   - analysis of current system
   - define the problem
@@ -237,7 +253,7 @@ overallocated
   - physical execise (a little unsafe? activity can help bind them together)
 -
 
-# *project stakeholder management process
+# * project stakeholder management process
 1. **identifying** stakeholders
 outputs: **Stakeholder Register**(table of stakeholder's name, job, email(assessment), position, internal/external...)
 software: excel,
@@ -280,3 +296,22 @@ CPM descirbes the **longest** sequence of tasks in the project
 the CPM is the path that takes longest
 if we want to shorten the project, the task that on the critical path and takes more time will usually be shortened
 :warning: tasks on the lines, numbers in the nodes
+
+# 项目实施的误区
+- 边计划
+- 边实施
+- 边修改
+# 六拍
+- 拍脑门
+- 拍肩膀
+- 拍胸脯
+- 拍桌子
+- 拍屁股
+- 拍大腿
+
+# 软件项目管理的内容
+- who
+- what
+- how
+
+#

@@ -1,0 +1,4 @@
+Win #
+Ctrl ^
+Alt !
+Shift +

@@ -26,3 +26,11 @@ references:
 
 
 - [特殊符号](https://blog.csdn.net/vola9527/article/details/69948411)
+
+```dot
+digraph G{
+  A->B->C->A
+  /* A->C
+  A->D */
+}
+```

@@ -18,10 +18,11 @@ define('PRICE', 100);
 echo PRICE;
 ```
 ## 作用域
+
 超级全局变量:
-- $GLOBALS: 所有全局变量数组
-- $_SERVER: 服务器环境变量数组
-- $_REQUEST: 包括$_GET, $_POST, $_COOKIE
+- `$GLOBALS`: 所有全局变量数组
+- `$_SERVER`: 服务器环境变量数组
+- `$_REQUEST`: 包括`$_GET`, `$_POST`, `$_COOKIE`
 
 ## 从控制结构或脚本跳出
 `exit`终止PHP的执行
@@ -33,9 +34,9 @@ echo PRICE;
 `echo` is faster than `print`
 
 # PHP Date Type
-var_dump()
-gettype()
-settype()
+`var_dump()`
+`gettype()`
+`settype()`
 
 
 # 数据的存储和检索
@@ -47,20 +48,11 @@ foreach ($prices as $key => $value){
 }
 
 while ($element = each($prices)){
-  echo $element['key'].'-'.'$element['value'].'<br />';
+  echo $element['key'].'-'.$element['value'].'<br />';
 }
-
 ```
-
-# Class
-## PDO
-[PDO manual](http://php.net/manual/en/class.pdo.php)
-
-### different between `query` and `execute`
-`query`runs a standard SQL statement and requires you to properly escape all data to avoid SQL injections and other issues
-`execute`runs a prepared statement allows you a bind parameters to avoid the need to escape or quote the parameters. **execute will also perform better if you are repeating a query multiple times**. {qe1}
 
 
 
 <br/><br/>reference list:
-qe1 [query vs execute](https://stackoverflow.com/questions/4700623/pdos-query-vs-execute)
+- qe1 [query vs execute](https://stackoverflow.com/questions/4700623/pdos-query-vs-execute)
