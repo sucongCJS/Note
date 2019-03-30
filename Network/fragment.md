@@ -1,9 +1,12 @@
 # explore the network
 >
+
 ## LANs
 >
+
 ## WANs
 >
+
 ## Internet Access Tech
 ## Four Basic Characteristics
 - Fault Tolerance: 多条线路, multipleconnection,
@@ -17,7 +20,9 @@
 
 ## MAC Address
 > Media Access Contril Address
+
 48 位
+
 ### MAC frame structure:
 1. Receiver MAC address
 2. Sender MAC address
@@ -52,6 +57,7 @@ UDP的叫做Datagram。
 
 ## 广播地址
 > broadcast
+
 host_ID全为1的IP地址为广播地址. 例如对于 10.1.1.0/24 网段, 其广播地址为 10.1.1.255, 即当发送的一个目的地址为 10.1.1.255的分组(封包)时, 它将被发送给该网段上的所有主机
 受限的广播地址是 255.255.255.255. 该地址用于主机配置过程中...
 
@@ -68,7 +74,7 @@ packet never changes, only the frame challenges
 # 不同网段内的通信(A->D)
 
 - 没有D的MAC, 用route的MAC
--
+- 
 
 
 <br/><br/>reference list:

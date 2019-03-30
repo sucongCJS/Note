@@ -46,6 +46,7 @@ $P(B|A) = \dfrac{P(AB)}{P(A)}$
 ### 伯努利试验, 二项分布
 > n次 **独立重复** 试验
 > "重复"是指每次试验中P(A)=p保持不变, "独立"是指各次试验的结果互不影响
+
 n重伯努利试验服从二项分布 记作:
 $X\text{\textasciitilde} (n, p)$
 $P\{X=k\} = \begin{pmatrix} n\\k \end{pmatrix}p^kq^{n-k}$
@@ -58,6 +59,7 @@ $k$表示发生的次数
 > 设随机变量$X$的所有可能取值为0, 1, 2, ...而各个值的概率为
 > $P\{ X=k\}=\dfrac{\lambda^k e^{-k}}{k!}, k=1,2,...$
 > 其中$\lambda > $0$是常数, 则称$X$服从参数为$\lambda的 **泊松分布**, 记为:
+
 $X\text{\textasciitilde} \pi(\lambda)$
 
 
