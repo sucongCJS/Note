@@ -1,11 +1,5 @@
-# explore the network
->
-
-## LANs
->
-
-## WANs
->
+# 名词
+- PDU: protocol data unit协议数据单元
 
 ## Internet Access Tech
 ## Four Basic Characteristics
@@ -51,9 +45,7 @@ If you want to view the stream at multiple concurrent locations, then you would 
 
 # points
 二层的PDU叫做Frame;
-IP的叫做Packet;
-TCP的叫做Segment；
-UDP的叫做Datagram。
+IP Packets are also reffered to as IP datagrams by many;
 
 ## 广播地址
 > broadcast
@@ -72,9 +64,8 @@ frame没有被填完不能发送
 packet never changes, only the frame challenges
 
 # 不同网段内的通信(A->D)
-
 - 没有D的MAC, 用route的MAC
-- 
+-
 
 
 <br/><br/>reference list:

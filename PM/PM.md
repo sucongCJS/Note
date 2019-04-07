@@ -19,7 +19,7 @@
 
 ## the project management knowledge areas.
 -­ Project integration management 项目综合管理
-­‐ Scope management 范围管理 
+­‐ Scope management 范围管理
 -­ Time management 时间管理 gantt
 -­ Cost management 成本管理
 -­ Quality management 质量管理
@@ -46,16 +46,42 @@
 -­ Critical thinking, problem solving
 
 
-# * Organizational Structures
-## functional organizational structure
+# * Organizational Structures 组织
+## functional organizational structure 职能型
 > hierarchy
 > **functional managers** or **vice presidents** in specialties, and their staffs have specialized skills in their respective disciplines
 
-## project organizational structure
+优点:
+- 资源集中
+- 专家可以为不同项目使用
+缺点:
+- 项目和部门利益冲突, 会更重视本部门的目标
+- 没有产品经理, 只能靠职能经理之间的协调, 执行效率低
+适用情况: 规模小, 以技术为重点
+
+## project organizational structure 项目型
 > everything is a project
 
-## matrix organizational structure
+优点:
+-
+缺点:
+- 项目处于封闭状态
+适用情况: 一个系统包含多个相似
 
+## matrix organizational structure 矩阵型
+> 垂直方向: 职能型, 水平方向: 项目型
+
+缺点:
+- 双重管理
+
+## 框架
+- 人力资源框架
+- 政治框架
+- 组织结构
+-
+
+## 很多组织关注于组织结构
+屁股决定脑袋: 立场, 位置决定想法
 
 #
 ## methodology/framework

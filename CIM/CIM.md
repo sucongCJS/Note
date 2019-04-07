@@ -151,17 +151,17 @@ digraph G{
 
 ## 3-x-3 writing process
 1. prewriting(planning) (25% of time)
-analyze audience & purpose
-anticipate audience and its reaction to message(primary audience, secondary audience)
-adapt message to audience
+- analyze audience & purpose
+- anticipate audience and its reaction to message(primary audience, secondary audience)
+- adapt message to audience
 2. drafting (25% of time)
-research bg, collect info
-organize info
-draft first version
+- research bg, collect info
+- organize info
+- draft first version
 3. revising (50% of time)
-edit for clarity
-proofread
-evaluate whether the message will accomplish goals
+- edit for clarity
+- proofread
+- evaluate whether the message will accomplish goals
 
 ## expressions
 - "You" view
@@ -179,6 +179,16 @@ evaluate whether the message will accomplish goals
   - books
 
 先收集二手数据缩小范围, 再收集一手数据
+
+## main purposes of business reports
+- convey info
+- answer questions
+- solve problems
+
+## characteristics of business reports
+
+## audience analysis and report organization
+
 
 </br></br><b>Reference List</b>:
 -
