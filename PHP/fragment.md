@@ -7,10 +7,11 @@
 
 # PDO
 [PDO manual](http://php.net/manual/en/class.pdo.php)
+[不同的fetch类型](https://www.php.net/manual/zh/pdostatement.fetch.php)
 
 ### different between `query` and `execute`
 `query`runs a standard SQL statement and requires you to properly escape all data to avoid SQL injections and other issues
-`execute`runs a prepared statement allows you a bind parameters to avoid the need to escape or quote the parameters. **execute will also perform better if you are repeating a query multiple times**. {qe1}
+`execute`runs a prepared statement allows you a bind parameters to avoid the need to escape or quote the parameters. **execute will also perform better if you are repeating a query multiple times**.
 
 # include require
 - `include`

@@ -30,12 +30,26 @@ Linux下 Apache的配置文件是 /etc/apache2/apache2.conf，Apache在启动时
 
 所以，如果apache上配置了多个虚拟主机，每个虚拟主机的配置文件都放在 sites-available下，那么对于虚拟主机的停用、启用就非常方便了：当在sites-enabled下建立一个指向某个虚拟主机配置文件的链 接时，就启用了它；如果要关闭某个虚拟主机的话，只需删除相应的链接即可，根本不用去改配置文件。
 
+### win下
+虚拟主机配置文件: \xampp\apache\conf\extra\httpd-vhosts.conf
+
 ## 模块Module
 ### prefork＆worker
 Prefork MPM(Multi-Processing Module) uses multiple child processes with one thread each and each process handles one connection at a time.
 Worker MPM uses multiple child processes with many threads each. Each thread handles one connection at a time.
 
 # set up apache **Virtual Hosts**
+## virtual hosting
+> virtual hosting allows your web server from the same machine to serve different websites identified by their domain names or IP addresses
+
+The virtual hosting feature comes in three flavours:
+- IP based hosting:
+each domain name or host name is assigned **a unique IP** address. Each address maps a virtual directory
+- name based hosting:
+each domain name points to the **same IP address** and maps to a respective virtual directory
+- mass virtual hosting:
+same as Name Based except a wild card is used to determine the mapping to a virtual directory
+
 Apache comes with a default virtual host file called **000-default.conf** that we can use as a jumping off point. We are going to copy it over to create a virtual host file for each of our domains.
 
 [set up apache Virtual Hosts](https://www.digitalocean.com/community/tutorials/how-to-set-up-apache-virtual-hosts-on-ubuntu-16-04)
@@ -46,7 +60,7 @@ Apache comes with a default virtual host file called **000-default.conf** that w
 - Error: 'You don't have permission to access / on this server. '
 modify your site conf file like [this](https://stackoverflow.com/questions/52391440/you-dont-have-permission-to-access-on-this-server)
 - Error: 'Bad Request Your browser sent a request that this server could not understand. Additionally, a 400 Bad Request error was encountered while trying to use an ErrorDocument to handle the request.'
-you must have included '_' in your DocumentRoot or somewhere in your conf file. [see detail](https://stackoverflow.com/questions/43925672/bad-request-your-browser-sent-a-request-that-this-server-could-not-understand)
+you must have included '_ ' in your DocumentRoot or somewhere in your conf file. [see detail](https://stackoverflow.com/questions/43925672/bad-request-your-browser-sent-a-request-that-this-server-could-not-understand)
 
 :warning: everytime you change the conf file, you need to reload the apache2 (`sudo systemctl reload apache2`)
 :warning: remember to read to `error.log`(in `/var/log/`) is important

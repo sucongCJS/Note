@@ -22,4 +22,27 @@
 
 由术而道 术: 技巧, 道:
 
-# 
+## 好的应急预案
+- what(信息分类)
+- who(责任到人)
+- action(措施具体)
+- when(时效性)
+
+## 概念
+- players
+- information
+- strategies
+- action
+- payoff 损益
+- equilibrium 均衡: 所有参与者的最有策略组合
+- rules of th game:
+- game theory: 是一种研究人们怎么做策略(行动)选择及其最后的均衡结果会是什么的理论
+
+## 博弈的分类
+- 合作博弈
+- 非合作博弈
+
+- 静态博弈
+- 动态博弈
+
+- 完全信息博弈: 

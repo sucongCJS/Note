@@ -1,0 +1,3 @@
+- header checksum 算法
+- 为什么路由表自己端口的IP的掩码是32
+- 不是给自己的arp没有将别人的mac和ip加到arp表里

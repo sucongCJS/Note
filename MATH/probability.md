@@ -122,6 +122,8 @@ $P\{X=a\}=0$
 \end{cases}$
 > 则称$X$在区间$(a,b)$上服从均匀分布, 记为$X\text{\textasciitilde} U(a,b)$
 
+# 三 多维随机变量及其分布
+
 
 </br></br><b>Reference List</b>:
 - [概率论和数理统计 第四版]
