@@ -26,6 +26,8 @@ vlan间的通信仅靠数据链路层(2层交换机)是做不到的, 必须依�
 ![](../resource/多臂路由.png)
 - 三层交换机
 
+泛洪（Flooding）是交换机和网桥使用的一种数据流传递技术，将从某个接口收到的数据流向除该接口之外的所有接口发送出去
+
 ## IEEE 802.1Q
 ![](../resource/dot_one_Q.png)
 [802.1Q ](https://www.bilibili.com/video/av34491171)
@@ -39,16 +41,20 @@ vlan 10 # 创建vlan10, 切换到vlan10
 name VLAN10 # 命名vlan10为VLAN10
 show vlan brief # 查看vlan和接口信息(特权模式下)
 interface range f0/1-3,f0/8 # 配置端口f0/1, f0/2, f0/3, f0/8
-switch mode access # 设置接口类型为access类型
-switch access vlan 10 # 将接口划分到vlan 10
-#################
-interface g0/0.1 # 创建逻辑子接口g0/0.1
-encapsulation dot1q 10 # 设置该逻辑子接口可以接收vlan id为10的802.1Q帧, 并且可将数据报封装成vlan id为10的802.1Q帧
+switchport mode access # 设置接口类型为access类型
+switchport access vlan 10 # 将接口划分到vlan 10
+
+switchport trunk  native  vlan  vlan-id # 给trunk接口划分vlan-id
+
+switchport allowed vlan add 10,20
 ```
+[vlan相关命令](https://blog.51cto.com/ganbing/1212922)
 ### 路由器
 ```bash
 interface g0/0
 no shutdown # 开启g0/0接口, 其下的子接口也会开启
+interface g0/0.1 # 创建逻辑子接口g0/0.1
+encapsulation dot1q 10 # 设置该逻辑子接口可以接收vlan id为10的802.1Q帧, 并且可将数据报封装成vlan id为10的802.1Q帧
 ```
 
 ## 连线
@@ -68,10 +74,11 @@ router: `enable` -> `clear arp`
 
 ## routing table
 类型
-- C: 直接连接的 网络号对应接口 (自动生成)
-- L: 自己各个接口的IP (32?) (自动生成)
-- S: 静态路由
-- R: 通过RIP协议学习来的 下一跳是经过路由最少的
+- C(onnected): 直接连接的 网络号对应接口 (自动生成)
+- L(ocal): 自己各个接口的IP (32?) (自动生成)
+- S(tatic): 静态路由
+- R(IP): 通过RIP协议学习来的 下一跳是经过路由最少的
+- D(ynamic):
 
 example:
 - 0.0.0.0 0.0.0.0 10.0.0.1 (10.0.0.1是默认路由)

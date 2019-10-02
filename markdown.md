@@ -34,3 +34,11 @@ digraph G{
   A->D */
 }
 ```
+
+# 宏定义
+[1]:http://www.baidu.com
+[百度][1]
+[2]:resource
+![](resource/b1.png)
+![]([bbb][2]/b1.png)
+[![](resource/b1.png "我的知乎，欢迎关注")][zhihu]

@@ -97,7 +97,38 @@ packet never changes, only the frame challenges
 ### 隔离规则
 三层设备能隔离二层域和一层域：路由器可以隔离广播域和冲突域
 二层设备能隔离一层域：交换机可以隔离冲突域；
-简单地说，高层可以隔离低层的域。
+简单地说，高层可以隔离低层的域
+
+# IPv6
+[IPv6地址格式及子网划分方法](https://blog.csdn.net/qq_20240999/article/details/60364484)
+- 地址长度128bit
+- 十六进制数表示法表示的IPv6地址中, 如果几个连续的段值都是0, 那么这些0可以简记为::, 每个地址中只能有一个::
+
+## 地址类型
+- 单播地址(Unicast IPv6 Address)
+可聚合的全球单播地址（Aggregatable Global Unicast Addresses）
+可在全球范围内路由和到达的，相当于IPv4里面的global addresses。前三个bit是001
+例如：2000::1:2345:6789:abcd
+
+- 链路本地地址(Link-Local Addresses)
+用于同一个链路上的相邻节点之间通信，相当于IPv4里面的169.254.0.0/16地址。IPv6的路由器不会转发链路本地地址的数据包。前10个bit是1111 1110 10，由于最后是64bit的interface ID，所以它的前缀总是fe80::/64
+例如：fe80::1
+
+- 站点本地地址(Site-Local Addresses)
+对于无法访问internet的本地网络，可以使用站点本地地址，这个相当于IPv4里面的private address（10.0.0.0/8, 172.16.0.0/12, and 192.168.0.0/16）。它的前10个bit是1111 1110 11，它最后是16bit的Subnet ID和64bit的interface ID，所以它的前缀是FEC0::/48
+
+- 唯一的本地IPv6单播地址(ULA，Unique Local IPv6
+  Unicast Address)
+在RFC4193中标准化了一种用来在本地通信中取代单播站点本地地址的地址。ULA拥有固定前缀FD00::/8，后面跟一个被称为全局ID的40bit随机标识符
+
+- 未指定地址(Unspecified address)
+0:0:0:0:0:0:0:0 或者::
+当一个有效地址还不能确定，一般用未指定地址作为源地址。未指定地址不能作为一个目标地址来使用
+
+- 回环地址(Loopback address)
+回环地址::1用于标识一个回环接口，可以使一个节点可以给自己发送数据包。相当于IPv4的回环地址127.0.0.1
+
+
 
 <br/><br/>reference list:
 - [帧, 数据包, 数据报](https://blog.csdn.net/qq_25606103/article/details/51295965)

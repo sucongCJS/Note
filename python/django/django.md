@@ -1,4 +1,24 @@
 # 数据库
+
+## 新建数据库
+
+character set: utf8
+
+collation的选择
+
+utf8_general_ci校对速度快，但准确度稍差。
+utf8_unicode_ci准确度高，但校对速度稍慢。
+
+如果你的应用有德语、法语或者俄语，请一定使用utf8_unicode_ci。一般用utf8_general_ci就够了，到现在也没发现问题
+
+
+
+## 注意事项
+
+- 如果是必填字段, 前期有没有设置值的话, 保存到数据库中是会报错的, 所以要设置 `default=""` 
+
+
+
 ## makemigrations
 `python manage.py makemigrations app_name --name The_Name_of_The_Migration`
 > every you make some changes to your models, you can stored the changes as a migration by do so.
