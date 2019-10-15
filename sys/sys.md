@@ -113,7 +113,8 @@ GPT分区表的结构. 在上例中, 每个逻辑块(LBA)为512字节, 每个分
 
 
 
-<br/><br/>reference list:
+reference list:
+
 - [如何在 Linux 下安装 Windows 7？ - 薛莲晓](https://www.zhihu.com/question/23039001/answer/139007302)
 - [BIOS](https://zh.wikipedia.org/wiki/BIOS)
 - [统一可延展韧体介面](https://zh.wikipedia.org/wiki/%E7%B5%B1%E4%B8%80%E5%8F%AF%E5%BB%B6%E4%BC%B8%E9%9F%8C%E9%AB%94%E4%BB%8B%E9%9D%A2)
