@@ -6,7 +6,7 @@ UEFI BIOS 可以说是legacy BIOS的继承者
 > Basic Input/Output System
 
 ## UEFI
-> Unified Extensible Firmware Interface **统一可扩展固件接口**, **统一可延展韧体介面**
+> Unified Extensible Firmware Interface **统一可扩展固件接口**, **统一可延展22体介面**
 > ![](https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Efi-simple_zh-cn.svg/450px-Efi-simple_zh-cn.svg.png)
 
 UEFI BIOS 并不是开机时第一个被执行的程式

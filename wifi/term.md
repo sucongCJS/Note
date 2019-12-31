@@ -9,6 +9,16 @@
 - 特征提取
 - 行为识别
 
+# 数学
+
+## 协方差
+
+![image-20191103081033729](D:\Note\wifi\term.assets\image-20191103081033729.png)
+
+<img src="D:\Note\wifi\term.assets\image-20191103081049321.png" alt="image-20191103081049321" style="zoom: 67%;" />协方差表示的是两个变量总体的误差, 这与指标是一个变量误差的=方差不同, 如果两个变量的变化趋势一致, 比如说两个变量都大于自身的期望值, 那么两个变量之间的协方差就是正值. 如果两个变量的变化趋势相反, 比如一个变量大于自身的期望值, 另一个小于自身的期望值, 那么两个变量之间的协方差就是负值
+
+
+
 # 名词
 
 ## CSI
@@ -27,9 +37,120 @@
 
 表示第$j(j=1,2,...30)$个子载波在t时刻的幅值
 
+## 简谐运动
+
+ **简谐运动**（Simple harmonic motion）（SHM）随时间按余弦（或正弦）规律的振动，或运动。又称简谐振动。 
+
+ 无线电学中简谐信号实际上就是[正弦信号](https://baike.baidu.com/item/正弦信号) 
+
+## 相位
+
+> phase
+
+相位是是用来描述一个波形变化的度量
+
+用来描述波在某个特定时刻所在的位置
+
+### 相位差
+
+两个波位置的相对关系
+
+![image-20191031105800541](D:\Note\wifi\term.assets\image-20191031105800541.png)
+
+## 载波
+
+**载波**（carrier wave）是指被[调制](https://zh.wikipedia.org/wiki/调制)以传输[信号](https://zh.wikipedia.org/wiki/信号)的波形，一般为[正弦波](https://zh.wikipedia.org/wiki/正弦波)。一般要求**正弦载波的[频率](https://zh.wikipedia.org/wiki/频率)远远高于调制信号的[带宽](https://zh.wikipedia.org/wiki/带宽)**，否则会发生混叠，使传输信号有损。 可以这样理解，我们一般需要发送的数据的频率是低频的，如果按照本身的数据的频率来传输，不利于接收和同步。使用载波传输，我们可以**将数据的信号加载到载波的信号上**，接收方按照载波的频率来接收数据信号，有意义的信号波的波幅与无意义的信号的波幅是不同的，将这些信号提取出来就是我们需要的数据信号。 载波就是携带信息/信号的波形，它携带的方式是进行频率、幅度、相位间隔调制。
+
+[电子计算机科学](https://zh.wikipedia.org/w/index.php?title=電子計算機科學&action=edit&redlink=1)中，[基带](https://zh.wikipedia.org/wiki/基頻)（baseband）加上传波（carrier wave）而成为[宽带](https://zh.wikipedia.org/wiki/寬頻)（broadband）
+
+## 多径效应
+
+ 多径效应（multipath effect）：指电磁波经不同路径传播后，各分量场到达接收端时间不同，按各自相位相互叠加而造成干扰，使得原来的信号失真，或者产生错误。比如电磁波沿不同的两条路径传播，而两条路径的长度正好相差半个波长，那么两路信号到达终点时正好相互抵消了（波峰与波谷重合）。 
+
+##  频率 
+
+单位时间内完成周期性变化的次数，是描述周期运动频繁程度的量，常用符号f或u表示，单位为秒分之一 
+
+## 波长
+
+波长（wave length）是指波在一个振动周期内传播的距离。也就是沿着波的传播方向，相邻两个振动位相相差2π的点之间的距离。波长λ等于波速V和周期T的乘积，即$\lambda=VT$
+
+ 公式中V为传播速度，单位为米/秒，$\lambda$是波长，$f$是电磁波的频率，单位为赫兹(Hz，简称赫)。 
+
+![image-20191031112937637](D:\Note\wifi\term.assets\image-20191031112937637.png) 
+
+波长于频率的关系
+
+$\lambda = \frac{v}{f}$
+
+ $v$是波的[相速度](https://zh.wikipedia.org/wiki/相速度)。在[电磁波](https://zh.wikipedia.org/wiki/電磁波)的例子，例如光在真空中的速度，亦即[光速](https://zh.wikipedia.org/wiki/光速)，大约是3×108 m/s。对于[声波](https://zh.wikipedia.org/wiki/声波)在空气中传播的速度，在室温大约是344 m/s（即1238 km/h）
+
+## 滤波器
+
+> filter
+
+- 低通滤波器(lowpass):  减弱或阻隔高频信号，保留低频信号 
+- 高通滤波器(highpass):  减弱或阻隔低频信号，保留高频信号
+
+## 时域频域
+
+ 时域是真实世界，是惟一实际存在的域。因为我们的经历都是在时域中发展和验证的，已经习惯于事件按时间的先后顺序地发生。而评估数字产品的性能时，通常在时域中进行分析，因为产品的性能最终就是在时域中测量的。
+
+ 频域 指在对[函数](https://zh.wikipedia.org/wiki/函數)或[信号](https://zh.wikipedia.org/wiki/信号)进行分析时，分析其和[频率](https://zh.wikipedia.org/wiki/頻率)有关部分，而不是和[时间](https://zh.wikipedia.org/wiki/時間)有关的部分[[1\]](https://zh.wikipedia.org/wiki/頻域#cite_note-1)，和[时域](https://zh.wikipedia.org/wiki/時域)一词相对。 
+
+ 函数或信号可以透过一对数学的[运算子](https://zh.wikipedia.org/wiki/運算子)在时域及频域之间转换。例如[傅里叶变换](https://zh.wikipedia.org/wiki/傅里叶变换)可以将一个时域信号转换成在不同频率下对应的振幅及相位，其频谱就是时域信号在频域下的表现，而反傅里叶变换可以将频谱再转换回时域的信号。 
+
+ 正弦波是频域中唯一存在的[波形](https://baike.baidu.com/item/波形)，这是频域中最重要的规则，即正弦波是对频域的描述，因为频域中的任何波形都可用正弦波合成。这是正弦波的一个非常重要的性质。  
+
+ 信号在[时域](https://zh.wikipedia.org/wiki/時域)下的图形可以显示信号如何随着时间变化，而信号在频域下的图形（一般称为[频谱](https://zh.wikipedia.org/wiki/頻譜)）可以显示信号分布在哪些频率及其比例。  频域的表示法除了有各个频率下的大小外，也会有各个频率的[相位](https://zh.wikipedia.org/wiki/相位)，利用大小及相位的资讯可以将各频率的[弦波](https://zh.wikipedia.org/wiki/正弦曲線)给予不同的大小及相位，相加以后可以还原成原始的信号。 
+
+## 采样率
+
+ **采样率**（也称为**采样速度**或者**采样频率**）定义了每秒从[连续信号](https://zh.wikipedia.org/wiki/连续信号)中提取并组成[离散信号](https://zh.wikipedia.org/wiki/离散信号)的[采样](https://zh.wikipedia.org/wiki/采样)个数，它用[赫兹](https://zh.wikipedia.org/wiki/赫兹)（Hz）来表示。采样频率的倒数叫作**采样周期**或**采样时间**，它是[采样](https://zh.wikipedia.org/wiki/采样)之间的时间间隔。注意不要将采样率与[比特率](https://zh.wikipedia.org/wiki/比特率)（bit rate，亦称“位速率”）相混淆。 
+
+采样频率只能用于周期性采样的[采样器](https://zh.wikipedia.org/wiki/采样器)，对于非周期性采样的采样器没有规则限制。
+
+采样频率的常用的表示符号是$f_s$
+
+### 采样定理
+
+[采样定理](https://zh.wikipedia.org/wiki/采样定理)表明采样频率必须大于被采样信号[带宽](https://zh.wikipedia.org/wiki/带宽)的两倍，另外一种等同的说法是[奈奎斯特频率](https://zh.wikipedia.org/wiki/奈奎斯特频率)必须大于被采样信号的带宽。
+
+如果信号的带宽是100Hz，那么为了避免[混叠](https://zh.wikipedia.org/wiki/混叠)现象采样频率必须大于200Hz。
+
+换句话说就是采样频率必须至少是信号中最大频率分量频率的两倍，否则就不能从信号采样中恢复原始信号。
+
 # 算法
 
+## 插值
+
+> interpolation
+
+### 内插
+
+![image-20191031142956922](D:\Note\wifi\term.assets\image-20191031142956922.png)
+
+### 插值函数
+
+![image-20191031143056250](D:\Note\wifi\term.assets\image-20191031143056250.png)
+
+### 片段插值
+
+![image-20191031143331032](D:\Note\wifi\term.assets\image-20191031143331032.png)
+
+片段常数(或称为最近邻)插值
+
+最简单的插值方法是找到最近的数据值，并分配相同的值。这种方法又称为最近邻插值。在简单的问题中，不太可能使用这种方法，因为线性插值（见下一小节）几乎一样容易，但在**高维度**的多变量插值中，这可能是衡量速度和简单性的有利选择。
+
+###  线性插值
+
+![image-20191031144249870](D:\Note\wifi\term.assets\image-20191031144249870.png)
+
+ 误差与数据点之间的距离的平方成正比。
+
 ## DTW
+
+>  [动态时间规整](https://zhuanlan.zhihu.com/p/43247215) DTW(Dynamic Time Warping)
 
 ![img](https://pic2.zhimg.com/80/v2-cb7847982b803b42c745cab86489ee71_hd.jpg)
 
