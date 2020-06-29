@@ -1,5 +1,5 @@
 # Legacy BIOS 和 UEFI BIOS 的区别
-![](https://phoenixts.com/wp-content/uploads/2015/05/uefivslegacy.png)
+![](sys.assets/uefivslegacy.png)
 UEFI BIOS 可以说是legacy BIOS的继承者
 
 ## BIOS
@@ -7,7 +7,7 @@ UEFI BIOS 可以说是legacy BIOS的继承者
 
 ## UEFI
 > Unified Extensible Firmware Interface **统一可扩展固件接口**, **统一可延展22体介面**
-> ![](https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Efi-simple_zh-cn.svg/450px-Efi-simple_zh-cn.svg.png)
+> ![](sys.assets/450px-Efi-simple_zh-cn.svg.png)
 
 UEFI BIOS 并不是开机时第一个被执行的程式
 
@@ -56,8 +56,8 @@ UEFI+*GUID磁碟分割表*(GUID Partition Table, 缩写GPT)结合可以支持2.1
 
 # 磁盘分区
 ## MBR和主引导扇区的关系
-> ![](https://img-blog.csdn.net/20140223134137000?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveGlhb21pbnRoZXJl/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
-> ![](https://img-blog.csdn.net/20140223142722843?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQveGlhb21pbnRoZXJl/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
+> ![](sys.assets/20140223134137000)
+> ![](sys.assets/20140223142722843)
 > 主引导扇区是硬盘0号柱面, 0号磁头的第一个扇区, 大小为512个字节(硬盘可以用柱面, 磁头, 扇区定位)
 
 ## 主分区
@@ -78,7 +78,7 @@ linux的引导加载程序grub既能识别linux的核心启动文件，也能识
 
 ## 动态磁盘
 > 不受分区数量限制, 可以创建的盘集个数没有限制
-优点:
+> 优点:
 - 可以将磁盘容量扩展到非邻近的磁盘空间
 - 可以在不重启机器的情况下调整动态磁盘大小而不会丢失损坏已有的数据
 
@@ -88,7 +88,7 @@ linux的引导加载程序grub既能识别linux的核心启动文件，也能识
 - 在MBR硬盘中，分区信息直接存储于主引导记录（MBR）中（主引导记录中还存储着系统的引导程序）
 
 ## GPT分区表
-![GUID Partition Table Scheme](https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/GUID_Partition_Table_Scheme.svg/600px-GUID_Partition_Table_Scheme.svg.png)
+![GUID Partition Table Scheme](sys.assets/600px-GUID_Partition_Table_Scheme.svg.png)
 GPT分区表的结构. 在上例中, 每个逻辑块(LBA)为512字节, 每个分区的记录为128字节. 负数的LBA地址表示从最后的块开始倒数, -1表示最后一个块
 
 ### 特点, 不同
