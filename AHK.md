@@ -1,4 +1,0 @@
-Win #
-Ctrl ^
-Alt !
-Shift +
