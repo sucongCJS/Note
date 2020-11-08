@@ -1,4 +1,4 @@
-# 介绍
+介绍
 
 CG和CV的区别
 
@@ -718,16 +718,114 @@ Option 2: **Antialiasing**
 
 ## Diffuse Reflection
 
-角度
+### Blinn-Phong
+
+Diffusely(Lambertian) Reflected Light:
+$$
+L_d=k_d(I/r^2)max(0,\vec{n}\cdot \vec{l})
+$$
+
+- $\vec{n}$: 平面的法向量, 单位向量
+
+- $\vec{l}$: 光的入射方向, 单位向量
+
+- $L_d$: diffusely reflected light
+
+- $k_d$: diffuse coefficient(color) 反射系数, 如果是1说明全部反射; 如果是0说明全部吸收了
+
+- $(I/r^2)$: **到达的能量** energy arrived at the shading point
+
+  (球体表面积计算公式为S=4πr²) 能量跟距离成反比
+
+  <img src="GAMES101.assets/image-20201107195329213.png" alt="image-20201107195329213" style="zoom: 33%;" />
+
+- $\vec{n}\cdot \vec{l}$: **接收的能量** 与光线的直射的角度的关系, 如果结果是1, 说明是直射; 如果结果是0, 说明光线和平面平行, 没有光线照射; 如果结果是负的, 说明点光源在平面表面的另一边, 没有意义不考虑
 
 <img src="GAMES101.assets/image-20201107195216631.png" alt="image-20201107195216631" style="zoom: 67%;" />
 
-距离
+- 漫反射和观测角度 $\vec{v}$ 没有关系, 公式中也没有出现 $\vec{v}$
 
-(球体表面积计算公式为S=4πr²)
+## Specular Hightlights
 
-<img src="GAMES101.assets/image-20201107195329213.png" alt="image-20201107195329213" style="zoom:50%;" />
+- Intensity depends on view direction
+- Bright near mirror reflection direction
 
+<img src="GAMES101.assets/image-20201108163741494.png" alt="image-20201108163741494" style="zoom: 67%;" />
+
+- $\vec{R}$为可以看到高光的角度
+
+### Blinn-Phong
+
+<img src="GAMES101.assets/image-20201108165728527.png" alt="image-20201108165728527" style="zoom:67%;" />
+
+半程向量
+$$
+\begin{aligned}
+\vec{h} &= bisector(\vec{v},\vec{l})\\
+	    &= \frac{\vec{v}+\vec{l}}{||\vec{v}+\vec{l}||}
+\end{aligned}
+$$
+Specularly Reflected Light
+$$
+\begin{aligned}
+	L_s &=k_s(I/r^2)max(0,cos\alpha)^p\\
+		&=k_s(I/r^2)max(0,\vec{n}\cdot \vec{h})^p\\
+\end{aligned}
+$$
+
+- $\vec{n}$: normal vector, 平面的法向量, 单位向量
+
+- $\vec{h}$: half vector, $\vec{v}$和$\vec{l}$的中间向量, 单位向量
+
+  $\vec{v}$ close to mirror direction ⇔ **half vector near normal**, Measure “near” by dot product of unit vectors, 通过半程向量和法向量是否接近来判断观看角度和高光角度是否接近
+
+- $k_s$: 镜面反射系数
+
+- 颜色, 通常高光是白的
+
+- $\vec{n}\cdot \vec{h}$: 得两个向量夹角的$cos$值, 越接近1说明观看角度越接近高光角度
+
+- $^p$: Increasing p narrows the reflection lobe 控制高光大小
+
+  ![image-20201108172035193](GAMES101.assets/image-20201108172035193.png)
+
+  $cos$ 的容忍范围太大, 即使差了45°, 数值上也差不了多少, 导致高光范围太大, 即使角度偏很多还是能看到高光, 实际情况应该是和只要偏离一点就看不到高光. 所以需要让它的变化更陡峭一些
+
+  通常会取到100, 200
+
+  ![image-20201108173238708](GAMES101.assets/image-20201108173238708.png)
+
+- 没有考虑$\vec{n}\cdot \vec{l}$(接收的能量)……
+
+## Ambient Lighting
+
+- Shading that does not depend on anything
+  - Add constant color to account for disregarded
+    illumination and fill in black shadows
+
+  - This is approximate / fake!
+
+    
+
+$$
+L_a = k_aI_a
+$$
+
+- 公式中没有出现$\vec{l}$, 与直接光照方向无关; 也没有出现$\vec{v}$, 与观测方向也无关. 所以是一个常数
+- $k_a$: 环境光系数
+- $I_a$: 环境光的强度
+
+## Blinn-Phong Reflection Model
+
+![image-20201108174249515](GAMES101.assets/image-20201108174249515.png)
+$$
+\begin{aligned}
+	L &= L_a + L_d + L_s\\
+	  &= k_aI_a + 
+	  	 k_d(I/r^2)max(0,\vec{n}\cdot \vec{l}) +  
+	  	 k_s(I/r^2)max(0,\vec{n}\cdot \vec{h})^p
+\end{aligned}
+$$
 
 
 # Curves & Meshes
