@@ -193,7 +193,7 @@ $M^{-1}$is the inverse of transform $M$ in both a matrix and geometric sense
 
 > Rodrigues’ rotation formula
 >
-> 罗格里德斯旋转公式？？？
+> 罗格里德斯旋转公式
 
 ![image-20200927110824432](GAMES101.assets/image-20200927110824432-1604739314094.png)
 
@@ -269,7 +269,7 @@ $M^{-1}$is the inverse of transform $M$ in both a matrix and geometric sense
 
 > 投影变换
 
-![image-20200928045708014](GAMES101.assets/image-20200928045708014-1604739362541.png)
+![image-20200928045708014](GAMES101.assets/image-20200928045708014.png)
 
 #### Orthographic Projection
 
@@ -401,7 +401,7 @@ $$
 
 4. 整理一下已获得的线索
 
-   $An+B=n^2\\Af+B=f^2$，得$A=n+f\\B=-nf$ 
+   $An+B=n^2\\Af+B=f^2$，得 $A=n+f\\B=-nf$ 
 
 5. Finally, every entry in $M_{persp->ortho}$ is known! $ M_{persp->ortho} =    \begin{pmatrix}      n&0&0&0 \\      0&n&0&0 \\   	0&0&n+f&-nf\\      0&0&1&0   \end{pmatrix}$
 
