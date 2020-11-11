@@ -1,4 +1,4 @@
-介绍
+### 介绍
 
 CG和CV的区别
 
@@ -439,7 +439,7 @@ $$
 
 # Rasterization
 
-> 光栅化
+> 光栅化 (采样+深度测试)
 >
 > MVP之后图像在[-1,1]$^3$的立方体中，光栅化就是把图像画到屏幕上
 >
@@ -660,7 +660,11 @@ Option 2: **Antialiasing**
 
       ![image-20201107163009772](GAMES101.assets/image-20201107163009772.png)
 
-2. 采样: 采样就很简单了, 现在每个像素只有一个颜色了
+2. 采样: 采样很简单, 每个像素还是只有一个颜色
+
+效果对比嘿嘿(加了抗锯齿有不正常的黑边)
+
+![image-20201111164411428](GAMES101.assets/image-20201111164411428.png)
 
 #### FXAA
 
@@ -718,15 +722,27 @@ Option 2: **Antialiasing**
 
 # Shading
 
+> 着色
+
 ![image-20201107194645615](GAMES101.assets/image-20201107194645615.png)
 
 - 从上到下分别是 高光, 漫反射, 环境光照
 
 ![image-20201107194841473](GAMES101.assets/image-20201107194841473.png)
 
-## Diffuse Reflection
+## Blinn-Phong Reflection Model
 
-### Blinn-Phong
+![image-20201108174249515](GAMES101.assets/image-20201108174249515.png)
+$$
+\begin{aligned}
+	L &= L_a + L_d + L_s\\
+	  &= k_aI_a + 
+	  	 k_d(I/r^2)max(0,\vec{n}\cdot \vec{l}) +  
+	  	 k_s(I/r^2)max(0,\vec{n}\cdot \vec{h})^p
+\end{aligned}
+$$
+
+### Diffuse Reflection
 
 Diffusely(Lambertian) Reflected Light:
 $$
@@ -739,13 +755,13 @@ $$
 
 - $L_d$: diffusely reflected light
 
-- $k_d$: diffuse coefficient(color) 反射系数, 如果是1说明全部反射; 如果是0说明全部吸收了
+- $k_d$: diffuse coefficient(color) 定义一个点的不同属性, 可以是反射系数, 如果是1说明全部反射; 如果是0说明全部吸收了
 
 - $(I/r^2)$: **到达的能量** energy arrived at the shading point
 
   (球体表面积计算公式为S=4πr²) 能量跟距离成反比
 
-  <img src="GAMES101.assets/image-20201107195329213.png" alt="image-20201107195329213" style="zoom: 33%;" />
+  <img src="GAMES101.assets/image-20201107195329213.png" alt="image-20201107195329213" style="zoom: 80%;" />
 
 - $\vec{n}\cdot \vec{l}$: **接收的能量** 与光线的直射的角度的关系, 如果结果是1, 说明是直射; 如果结果是0, 说明光线和平面平行, 没有光线照射; 如果结果是负的, 说明点光源在平面表面的另一边, 没有意义不考虑
 
@@ -753,7 +769,7 @@ $$
 
 - 漫反射和观测角度 $\vec{v}$ 没有关系, 公式中也没有出现 $\vec{v}$
 
-## Specular Hightlights
+### Specular Hightlights
 
 - Intensity depends on view direction
 - Bright near mirror reflection direction
@@ -761,8 +777,6 @@ $$
 <img src="GAMES101.assets/image-20201108163741494.png" alt="image-20201108163741494" style="zoom: 67%;" />
 
 - $\vec{R}$为可以看到高光的角度
-
-### Blinn-Phong
 
 <img src="GAMES101.assets/image-20201108165728527.png" alt="image-20201108165728527" style="zoom:67%;" />
 
@@ -805,7 +819,7 @@ $$
 
 - 没有考虑$\vec{n}\cdot \vec{l}$(接收的能量)……
 
-## Ambient Lighting
+### Ambient Lighting
 
 - Shading that does not depend on anything
   - Add constant color to account for disregarded
@@ -823,18 +837,108 @@ $$
 - $k_a$: 环境光系数
 - $I_a$: 环境光的强度
 
-## Blinn-Phong Reflection Model
+## Shading Frequencies
 
-![image-20201108174249515](GAMES101.assets/image-20201108174249515.png)
-$$
-\begin{aligned}
-	L &= L_a + L_d + L_s\\
-	  &= k_aI_a + 
-	  	 k_d(I/r^2)max(0,\vec{n}\cdot \vec{l}) +  
-	  	 k_s(I/r^2)max(0,\vec{n}\cdot \vec{h})^p
-\end{aligned}
-$$
+<img src="GAMES101.assets/image-20201111183300681.png" alt="image-20201111183300681" style="zoom: 50%;" />
 
+当顶点数足够多, 用简单的模型就能达到挺好的效果
+
+### flat shading
+
+<img src="GAMES101.assets/image-20201111174842768.png" alt="image-20201111174842768" style="zoom: 67%;" />
+
+• Triangle face is flat — one normal vector 一个三角形一个法向量, 所以整个三角形的颜色都是一样的
+• Not good for smooth surfaces
+
+### Gouraud shading
+
+<img src="GAMES101.assets/image-20201111175125269.png" alt="image-20201111175125269" style="zoom:67%;" />
+
+- **Interpolate** colors from vertices across triangle 
+- Each vertex has a normal vector (how?) 三角形的三个顶点求法向量, 三角形内的颜色用插值
+
+#### Per-Vertex Normal Vectors
+
+> 逐顶点法向量
+
+- Best to get vertex normals from the underlying geometry 最好从基础几何体获取顶点法线
+
+  - e.g. consider a sphere 球
+
+    从球心连向顶点
+
+    <img src="GAMES101.assets/image-20201111183820159.png" alt="image-20201111183820159" style="zoom:67%;" />
+
+- Otherwise have to infer vertex normals from triangle faces
+
+  - Simple scheme: **average surrounding face normals**
+    $$
+    N_v = \frac{\sum_iN_i}{||\sum_iN_i||}
+    $$
+    相邻的面的法向量的平均(可以加上权重)
+
+    <img src="GAMES101.assets/image-20201111183926856.png" alt="image-20201111183926856" style="zoom:67%;" />
+
+### Phong shading
+
+- Interpolate normal vectors across each triangle
+- Compute full shading  model at each pixel 通过三角形三个顶点的法向量插值出三角形内每个像素的法向量, 然后再着色
+- Not the Blinn-Phong Reflectance Model
+
+#### Per-Pixel Normal Vectors
+
+- **Barycentric interpolation**
+
+  ![image-20201111184832397](GAMES101.assets/image-20201111184832397.png)
+
+  (Don’t forget to **normalize** the interpolated directions)
+
+## Shader Programs
+
+- Describe operation on a single vertex (or fragment) 只需要定义一个顶点或fragment(不是每个fragment都定义), 如果定义的是一个顶点的上色规则, 那就叫vertex shader(顶点着色器), 如果定义的是一个fragment, 那就叫fragment shader, pixel shader
+
+- Shader function executes once per fragment. 每个fragment执行一次
+
+- Outputs color of surface at the current fragment’s screen sample position.
+
+- This shader performs a texture lookup(纹理查找) to obtain the surface’s material color at this point, then performs a diffuse lighting calculation. 先查找纹理看应该是什么颜色, 再计算光线
+
+- Example GLSL fragment shader program
+
+  ```cpp
+  // uniform 全局变量
+  uniform sampler2D myTexture;  // 纹理
+  uniform vec3 lightDir;   // 光照方向
+  varying vec2 uv;  // 
+  varying vec3 norm;  // 顶点法线, 可以是插值出来的
+  void diffuseShader()
+  {
+  	vec3 kd;  // 漫反射系数
+  	kd = texture2d(myTexture, uv);  // // material color from texture
+  	kd *= clamp(dot(–lightDir, norm), 0.0, 1.0);  // 简化Lambertian shading model嘿嘿, 入射方向和上面的模型相反
+  	gl_FragColor = vec4(kd, 1.0); // // output fragment color
+  }
+  ```
+
+## Barycentric Coordinates
+
+## Texture
+
+### Texture mapping
+
+Each triangle “copies” a piece of the texture image to the surface.
+
+![image-20201111200425723](GAMES101.assets/image-20201111200425723.png)
+
+Each triangle vertex is assigned a texture coordinate (u,v). u, v的范围[0,1]
+
+![image-20201111200822810](GAMES101.assets/image-20201111200822810.png)
+
+
+
+### Texture queries
+
+### Application of texture
 
 # Curves & Meshes
 
@@ -848,9 +952,41 @@ $$
 
 > Simulation 模拟
 
+# Real-time Rendering Pipeline
 
+> Graphics (Real-time Rendering) Pipeline
+>
+> 实时渲染管线
 
+![image-20201111190934468](GAMES101.assets/image-20201111190934468.png)
 
+- 第二张图是把点投影到屏幕
+- Fragment是OpenGL的概念, 不考虑抗锯齿, MSAA的话, 一个Fragment可以类比一个像素?(每个基本采样点叫fragment?如果没用MSAA一个像素就是一个fragment, 如果用了MSAA, 那好多的fragment才能形成一个像素)
+- 定义所有的顶点, 然后定义哪三个顶点形成一个三角形, 也可以合为一步
+
+## Vertex, Triangle Processing
+
+Model, View, Projection transforms
+
+![image-20201111192611653](GAMES101.assets/image-20201111192611653.png)
+
+## Rasterization
+
+Sampling triangle coverage 采样, 判断是否在三角形内
+
+![image-20201111192814443](GAMES101.assets/image-20201111192814443.png)
+
+## Fragment Processing
+
+> 控制fragment如何着色
+
+判断fragment是否可见(也可以归到光栅化部分)
+
+![image-20201111192901847](GAMES101.assets/image-20201111192901847.png)
+
+如果是Gouraud shading, 那还和Vertex Processing有关
+
+![image-20201111193015901](GAMES101.assets/image-20201111193015901.png)
 
 作业一、二：史雨宸，syc0412@mail.ustc.edu.cn
 作业四、五：邓俊辰，1050106988[@qq](http://games-cn.org/forums/users/qq/).com
