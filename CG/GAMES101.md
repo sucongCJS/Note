@@ -155,10 +155,6 @@ $M^{-1}$is the inverse of transform $M$ in both a matrix and geometric sense
 
 ## Decomposing Comples Transforms
 
-
-
-
-
 ## 3D Transforms
 
 ![image-20200906124430617](GAMES101.assets/image-20200906124430617.png)
@@ -664,7 +660,11 @@ Option 2: **Antialiasing**
 
 效果对比嘿嘿(加了抗锯齿有不正常的黑边)
 
-![image-20201111164411428](GAMES101.assets/image-20201111164411428.png)
+![](GAMES101.assets/image-20201111164411428.png)
+
+16个采样点的效果:happy: ​
+
+![image-20201112120621465](GAMES101.assets/image-20201112120621465.png)
 
 #### FXAA
 
@@ -920,11 +920,76 @@ $$
   }
   ```
 
-## Barycentric Coordinates
+## Barycentric Coordinates Interpolate
+
+> 重心坐标 插值
+
+- Why do we want to interpolate?
+  - Specify values at vertices. 
+  - Obtain smoothly varying values across triangles. 因为很多属性都是定义在三角形的顶点上, 要想在三角形的内部得到一个平滑的过渡, 从一个顶点过渡到另一个顶点就需要用到插值
+- What do we want to interpolate?
+  - Texture coordinates, colors, normal vectors, … 三角形的顶点可以定义映射到纹理的哪一个三角形(空间的三角形到平面的三角形), 定义颜色, 法线(Phong shading)
+  - 所以要用到重心坐标
+
+### 公式
+
+<img src="GAMES101.assets/image-20201112083816496.png" alt="image-20201112083816496" style="zoom:67%;" />
+$$
+(x, y) = \alpha A+\beta B + \gamma C\\
+\alpha +\beta  + \gamma =1\\
+\alpha = \frac{A_A}{A_A+A_B+A_C}\\
+\beta = \frac{A_B}{A_A+A_B+A_C}\\
+\gamma = \frac{A_C}{A_A+A_B+A_C}
+$$
+
+- Inside the triangle if all three coordinates are **non-negative**. 
+
+- 举例: A点坐标$(\alpha, \beta, \gamma) = (1,0,0)$, 重心坐标A点坐标$(\alpha, \beta, \gamma) = (1/3,1/3,1/3)$
+
+- $A_A$表示三角形$A$的面积
+
+  <img src="GAMES101.assets/image-20201112084821775.png" alt="image-20201112084821775" style="zoom:50%;" />
+
+- 具体计算
+
+  <img src="GAMES101.assets/image-20201112101806974.png" alt="image-20201112101806974" style="zoom: 67%;" />
+
+- 编程 (上面公式+化简)
+
+```cpp
+// 插值三角形内点的z值
+static std::tuple<float, float, float> computeBarycentric2D(float x, float y, const Vector3f* v)
+{
+	float alpha = (x*(v[1].y() - v[2].y()) + (v[2].x() - v[1].x())*y + v[1].x()*v[2].y() - v[2].x()*v[1].y()) / (v[0].x()*(v[1].y() - v[2].y()) + (v[2].x() - v[1].x())*v[0].y() + v[1].x()*v[2].y() - v[2].x()*v[1].y());
+	float beta =  (x*(v[2].y() - v[0].y()) + (v[0].x() - v[2].x())*y + v[2].x()*v[0].y() - v[0].x()*v[2].y()) / (v[1].x()*(v[2].y() - v[0].y()) + (v[0].x() - v[2].x())*v[1].y() + v[2].x()*v[0].y() - v[0].x()*v[2].y());
+	// float gamma = (x*(v[0].y() - v[1].y()) + (v[1].x() - v[0].x())*y + v[0].x()*v[1].y() - v[1].x()*v[0].y()) / (v[2].x()*(v[0].y() - v[1].y()) + (v[1].x() - v[0].x())*v[2].y() + v[0].x()*v[1].y() - v[1].x()*v[0].y());
+	float  gamma = 1-alpha-beta;  // gamma和上面的算法最大有0.000001的不同
+return {alpha, beta, gamma};
+}
+
+// 调用
+auto[alpha, beta, gamma] = computeBarycentric2D(x, y, t.v);
+float w_reciprocal = 1.0/(alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());  // 倒数
+float z_interpolated = alpha * v[0].z() / v[0].w() + beta * v[1].z() / v[1].w() + gamma * v[2].z() / v[2].w();
+z_interpolated *= w_reciprocal;
+```
+
+  - v是三角形三个顶点的集合
+  - z_interpolated *= w_reciprocal是$\displaystyle{\frac{1}{\frac{\alpha}{A_w}+\frac{\beta}{B_w}+\frac{\gamma}{C_w}}×(\frac{\alpha}{A_w}A_z + \frac{\beta}{B_w}B_z + \frac{\gamma}{C_w}C_z)}$
+
+### 使用
+
+<img src="GAMES101.assets/image-20201112085153746.png" alt="image-20201112085153746" style="zoom:67%;" />
+$$
+V = \alpha V_A+\beta V_B+\gamma V_C
+$$
+
+- $V_A$, $V_B$, $V_C$ can be positions, texture coordinates, color, normal, depth, material attributes…
+- However, barycentric coordinates are not invariant under projection! 投影前后重心坐标可能会不一样. 如果要插值三维中的属性, 不能用投影了的三角形的坐标去算, **要用投影前的三维坐标去算**(应用逆变换可得到投影前的坐标) 
 
 ## Texture
 
-### Texture mapping
+### Texture Mapping
 
 Each triangle “copies” a piece of the texture image to the surface.
 
@@ -934,11 +999,163 @@ Each triangle vertex is assigned a texture coordinate (u,v). u, v的范围[0,1]
 
 ![image-20201111200822810](GAMES101.assets/image-20201111200822810.png)
 
+### Texture Applying
 
+```cpp
+for each rasterized screen sample (x,y):
+	(u,v) = evaluate texture coordinate at (x,y)  // Using barycentric coordinates
+	texcolor = texture.sample(u,v);
+	set sample’s color to texcolor;  // Usually the diffuse albedo Kd (recall the Blinn-Phong reflectance model)
+```
 
-### Texture queries
+- 纹理坐标都定义在三角形的顶点上, 通过插值得到点在三角形的哪, 算出(u, v), 然后查纹理, 就可以知道颜色
 
-### Application of texture
+### Texture Magnification
+
+> texture is too small
+
+<img src="GAMES101.assets/image-20201112150024492.png" alt="image-20201112150024492" style="zoom:67%;" />
+
+- Generally don’t want this — insufficient texture resolution. 通常不会这么做, 但还是会存在这种现象
+
+- A pixel on a texture — a **texel** (纹理元素、纹素)
+- ![image-20201112142819745](GAMES101.assets/image-20201112142819745.png)
+
+#### Nearest
+
+<img src="GAMES101.assets/image-20201112143419978.png" alt="image-20201112143419978" style="zoom:67%;" />
+
+- Red point: Want to sample texture value f(x,y) at red point
+- Black points: indicate texture sample locations, 
+- $u11$方格内的点都会被映射到$u11$, 所以会一块块
+
+- 点对应到纹理上的位置时, 因为点多纹理小, 所以位置可能是小数, 就只能四舍五入, 这样的话不同的pixel会被映射到用一个texel上, 所以生成的效果图中有小方格
+
+#### Bilinear
+
+> bilinear 插值两趟, 下图是水平两次, 竖直一次
+
+<img src="GAMES101.assets/image-20201112143337254.png" alt="image-20201112143337254" style="zoom: 67%;" />
+
+- Take 4 nearest sample locations, with texture values as labeled. And fractional offsets, (s,t) as shown
+
+- 线性插值 Linear interpolation(1D)
+  $$
+  lerp(x,v_0 ,v_1 ) = v_0 + x(v_1 - v_0)
+  $$
+  $x$是0时, 值为$v_0$, $x$是1时, 值为$v_1$
+
+- 双线性插值
+  $$
+  f(x,y) = lerp(t, u_0, u_1)\\
+  u_0 = lerp(s, u_{00}, u_{10})\\
+  u_1 = lerp(s, u_{01}, u_{11})\\
+  $$
+
+- Bilinear interpolation usually gives pretty good results at reasonable costs
+
+#### Bicubic
+
+> bi cubic
+
+- bilinear 取周围4个点, bicubic 取周围16个点
+
+### Texture Minification
+
+如果还是插值, 然后取纹理上的点, 那么由于远近的像素覆盖的纹理范围不同, 远处的一个像素要覆盖一大片纹理, 会导致摩尔纹, 近处一个像素要覆盖的纹理还是比较大的话, 会产生锯齿. 可以用超采样MSAA来解决, 有效果但是比较费力
+
+<img src="GAMES101.assets/image-20201112145936798.png" alt="image-20201112145936798" style="zoom:67%;" />
+
+<img src="GAMES101.assets/image-20201112150024492.png" alt="image-20201112150024492" style="zoom:67%;" />
+
+#### Mipmap
+
+![image-20201112151625860](GAMES101.assets/image-20201112151625860.png)
+
+<center><small><small><small>“Mip” comes from the Latin “multum in parvo", meaning a multitude in a small space</small></small></small></center>
+
+- Allowing (fast, approx., square) range queries
+
+  - 范围查询, 如查找一个范围内颜色的平均值
+  - 快, 只能做近似的正方形的范围查询
+
+- Mid hierachy 
+
+  <img src="GAMES101.assets/image-20201112152103518.png" alt="image-20201112152103518" style="zoom:50%;" />
+
+  - level = D
+
+- storage overhead of a mipmap: 1/3 of the original
+
+##### Computing Mipmap Level
+
+- 计算到哪一层去查找
+
+- 屏幕上点与点之间的距离是一个像素, 
+
+![image-20201112201105178](GAMES101.assets/image-20201112201105178.png)
+
+Estimate texture footprint using texture coordinates of neighboring screen samples. 
+
+<img src="GAMES101.assets/image-20201112201345243.png" alt="image-20201112201345243" style="zoom:80%;" />
+
+<img src="GAMES101.assets/image-20201112201437388.png" alt="image-20201112201437388" style="zoom:80%;" />
+$$
+D = log_2L\\
+L = max(\sqrt{(\frac{du}{dx})^2+(\frac{dv}{dx})^2}, \sqrt{(\frac{du}{dy})^2 + (\frac{dv}{dy})^2})
+$$
+
+- 用上图中的实线框来近似上上图中的虚线框中的区域, 取到上面的点和到右边的点中最长的那一段作为边长
+
+- 如果L的长度是1, 那么$D=log_21=0$, 就在第0层, 也就是最原始的纹理上去查找; 如果L的长度是4(4*4的区域), 屏幕上一个区域可以覆盖纹理中的4\*4的区域, 那说明要到第$D=log_24=2$层上去查, 因为第0层经过第1层的mipmap后变为2\*2, 在到第2层变为1\*1, 原来纹理上16个区域的信息映射到屏幕只有一个区域, 第2层的一个区域就汇总了这16个区域的信息, 所以到第2层上去查
+
+- D rounded to nearest integer level. D取整数, 没有0.5层这种, 所以过渡不是很好
+
+  <img src="GAMES101.assets/image-20201112204715492.png" alt="image-20201112204715492" style="zoom:80%;" />
+
+##### Trilinear Interpolation
+
+> tri linear, 水平插值两趟, 在竖直方向(mipap层与层之间)再插值一次
+
+![image-20201112205310294](GAMES101.assets/image-20201112205310294.png)
+
+<img src="GAMES101.assets/image-20201112204658091.png" alt="image-20201112204658091" style="zoom: 80%;" />
+
+- 开销不会大很多, 游戏中很常用
+
+![image-20201112210001147](GAMES101.assets/image-20201112210001147.png)
+
+- 但是在远处, 图片糊了(Overblur), 原因有: 插值与真实值的误差, mipmap取的是一个**方块**的平均值, 如果不是方块那就没办法了
+
+#### Anisotropic Filtering
+
+> 各向异性过滤
+
+<img src="GAMES101.assets/image-20201112210641505.png" alt="image-20201112210641505" style="zoom:67%;" />
+
+<img src="GAMES101.assets/image-20201112210742693.png" alt="image-20201112210742693" style="zoom:80%;" />
+
+<center><small>Ripmaps(水平竖直压扁) and summed area tables</small></center>
+
+- mipmap都是等比例缩放的, 也就是只计算了上图中对角线部分. 各向异性过滤过滤会多很多不等比例的缩放, 不用限制在正方形区域内
+- Diagonal footprints still a problem
+
+- Can look up axis-aligned rectangular zones. 如果是垂直压扁的图, 那么压扁的图的一个方格其实代表了压扁前的原图的一个长方形区域. 
+- 从上图中可以看出, 开销是原来的三倍(原图只占了1/4)
+
+![image-20201112212034774](GAMES101.assets/image-20201112212034774.png)
+
+- mipmap把上图中的长方形也用方格框起来, 因为取的是最长的距离作为方格的边长, 所以会框出上图中的红色区域, 再取个平均, 糊得就很厉害
+- 各向异性过滤对矩形能够很好地框起来, 但是如果是斜着的矩形依然不好框
+
+#### EWA filtering
+
+![image-20201112212701925](GAMES101.assets/image-20201112212701925.png)
+
+- Use multiple lookups
+- Weighted average
+- Mipmap hierarchy still helps
+- Can handle irregular footprints
 
 # Curves & Meshes
 
