@@ -1,4 +1,6 @@
-### 介绍
+<center><bold><large>感谢闫令祺老师的精彩课程!</large></bold></center>
+
+# Introduction
 
 CG和CV的区别
 
@@ -744,6 +746,8 @@ $$
 
 ### Diffuse Reflection
 
+> 漫反射
+
 Diffusely(Lambertian) Reflected Light:
 $$
 L_d=k_d(I/r^2)max(0,\vec{n}\cdot \vec{l})
@@ -755,7 +759,7 @@ $$
 
 - $L_d$: diffusely reflected light
 
-- $k_d$: diffuse coefficient(color) 定义一个点的不同属性, 可以是反射系数, 如果是1说明全部反射; 如果是0说明全部吸收了
+- $k_d$: diffuse coefficient(color) 定义一个点的不同属性, 可以是反射系数, 如果是1说明全部反射, 如果是0说明全部吸收了; 也可以是纹理的颜色
 
 - $(I/r^2)$: **到达的能量** energy arrived at the shading point
 
@@ -769,7 +773,9 @@ $$
 
 - 漫反射和观测角度 $\vec{v}$ 没有关系, 公式中也没有出现 $\vec{v}$
 
-### Specular Hightlights
+### Specular Highlights
+
+> 镜面高光
 
 - Intensity depends on view direction
 - Bright near mirror reflection direction
@@ -820,6 +826,8 @@ $$
 - 没有考虑$\vec{n}\cdot \vec{l}$(接收的能量)……
 
 ### Ambient Lighting
+
+> 环境光照
 
 - Shading that does not depend on anything
   - Add constant color to account for disregarded
@@ -989,6 +997,9 @@ $$
 
 ## Texture
 
+- In modern GPUs, texture = memory + range query (filtering) 纹理就是一块内存，然后可以在这块内存上进行范围查询，不局限于图像上
+  - General method to bring data to fragment calculations
+
 ### Texture Mapping
 
 Each triangle “copies” a piece of the texture image to the surface.
@@ -1157,9 +1168,274 @@ $$
 - Mipmap hierarchy still helps
 - Can handle irregular footprints
 
+### Texture Application
+
+纹理不局限于图像，它还有很多应用，比如：
+
+- Environment lighting 环境光照
+- Store microgeometry 
+- Procedural textures
+- Solid modeling
+- Volume rendering
+- ......
+
+#### Environment lighting 
+
+犹他茶壶
+
+![image-20201204104117551](GAMES101.assets/image-20201204104117551.png)
+
+
+
+![image-20201204104133476](GAMES101.assets/image-20201204104133476.png)
+
+##### Spherical Map
+
+![image-20201204104147635](GAMES101.assets/image-20201204104147635.png)
+
+![image-20201204104224736](GAMES101.assets/image-20201204104224736.png)
+
+spherical map problem
+
+![image-20201204104326126](GAMES101.assets/image-20201204104326126.png)
+
+
+
+##### Cube Map
+
+> A vector maps to cube point along that direction. 
+>
+> The cube is textured with 6 square texture maps.
+
+![image-20201204105117260](GAMES101.assets/image-20201204105117260.png)
+
+![image-20201204105158882](GAMES101.assets/image-20201204105158882.png)
+
+但是需要先计算在哪一个面
+
+#### Bump Mapping
+
+> 凹凸贴图 法线贴图
+
+- Adding surface detail without adding more triangles
+
+- Perturb surface normal per pixel (for shading computations only) 扰动法线
+
+- “Height shift” per texel defined by a texture **纹理定义的任何一个点相对法线方向的高度移动**. 通过改变高度来改变法线. 高度变了, 计算出来的法线就跟着变了,  着色也会变, 从而欺骗人眼, 让人以为有凹凸(height->normal->shading)
+
+  ![image-20201204122240675](GAMES101.assets/image-20201204122240675.png)
+
+  (黑色线为原本物体的表面)
+
+  
+
+##### How to perturb the normal (in flatland) 
+
+> 计算法线的变化
+
+1. Original surface normal n(p) = (0, 1)  原来的法线是垂直向上的
+2. Derivative at p is dp = c * [h(p+1) - h(p)]  p点的导数是相邻两个点的高度差除以距离1. c是一个常数, 定义凹凸贴图的影响程度
+3. Perturbed normal is then n(p) = **(-dp, 1)**.normalized() 导数逆时针旋转90°得到法线, 然后归一化
+
+##### How to perturb the normal (in 3D)
+
+1. Original surface normal n(p) = (0, 0, 1)
+2. Derivatives at p are
+   - dp/du = c1 * [h(u+1) - h(u)]
+   - dp/dv = c2 * [h(v+1) - h(v)]
+3. Perturbed normal is n = **(-dp/du, -dp/dv, 1)**.normalized()
+4. Note that this is in local coordinate!
+
+#### Displacement Mapping
+
+> 位移贴图
+>
+> a more advanced approach
+> - Uses the same texture as in bumping mapping
+> - Actually moves the vertices
+
+![image-20201204135902929](GAMES101.assets/image-20201204135902929.png)
+
+- 凹凸贴图在边缘, 以及自己的突起的投影会露馅
+
+#### Provide Precomputed Shading
+
+- 比如先计算好阴影
+
+![image-20201204140421508](GAMES101.assets/image-20201204140421508.png)
+
+#### 3D Textures & Volume Rendering
+
 # Curves & Meshes
 
-> 几何
+> 几何 Geometry
+
+## Geometry
+
+分类
+
+### Implicit
+
+> 隐式
+
+- Points satisfy some specified relationship 满足一定关系的点
+  - E.g. sphere: all points in 3D, where x^2+y^2+z^2 = 1
+
+Pros & Cons
+
+- Pros
+  - certain queries easy (inside object, distance to surface) 很容易判断点在不在面上
+  - compact description (e.g., a function) 一个公式就能搞定
+  - good for ray-to-surface intersection
+  - for simple shapes, exact description / no sampling error
+  - easy to handle changes in **topology** (e.g., fluid)
+- Cons
+  - difficult to model complex shapes
+
+#### CSG
+
+> Constructive Solid Geometry
+
+- Combine implicit geometry via **Boolean** operations
+
+  ![image-20201204142358976](GAMES101.assets/image-20201204142358976.png)
+
+#### Distance Functions
+
+> 距离函数
+
+Instead of Booleans, gradually blend surfaces together using Distance functions:
+	giving minimum distance (could be **signed** distance) from anywhere to object 距离是点到物体表面的最短距离, 可以有符号, 比如在物体里面为负, 物体外面为正
+
+
+
+An Example: Blending (linear interp.) a moving boundary
+
+![image-20201204143900456](GAMES101.assets/image-20201204143900456.png)
+
+- A表示只遮挡了1/3, B表示遮挡了2/3, blend(A, B)应该是一个中间状态, 也就是遮挡了1.5/3 
+
+- SDF() 表示Signed Distance Function, 在面上SDF的值为0, 离面越远, SDF的绝对值越大
+
+- 要计算中间状态就将A, B的SDF加起来, 然后把其中SDF的值为0的部分恢复成一个面, 得到的就是中间状态
+
+  ![image-20201204145746613](GAMES101.assets/image-20201204145746613.png)
+
+#### Level Set Methods
+
+- Closed-form equations are hard to describe complex shapes. Alternative: store a grid of values approximating function
+
+![image-20201204150148387](GAMES101.assets/image-20201204150148387.png)
+
+​	(使用双线性插值找到0位置)
+
+- Surface is found where interpolated values equal zero
+- Provides much more explicit control over shape (like a
+  texture)
+
+#### Fractals
+
+### Explicit
+
+> 显示表示
+
+- All points are **given directly** or via **parameter mapping** 参数映射
+
+  ![image-20201204141646321](GAMES101.assets/image-20201204141646321.png)
+
+  遍历uv中的每个点, 然后做变换, 就能得到想要的几何
+
+- advantage
+
+  - 很容易得到几何长啥样
+
+- disadvantage
+
+  - 很难判断点在不在面上
+
+#### Point Clouds
+
+> 点云
+
+- Easiest representation: list of points (x,y,z)
+- Easily represent any kind of geometry
+- Useful for LARGE datasets (>>1 point/pixel)
+- Often converted into polygon mesh 点转成面, 如三角形
+- Difficult to draw in undersampled regions 点的密度低就不好画
+
+<img src="GAMES101.assets/image-20201204152247376.png" alt="image-20201204152247376" style="zoom:50%;" />
+
+#### Polygon Mesh
+
+> 如Triangle Mesh
+
+- Store vertices & polygons (often triangles or quads)
+- Easier to do processing / simulation, adaptive sampling
+- More complicated data structures
+- Perhaps most common representation in graphics
+
+![image-20201204152310310](GAMES101.assets/image-20201204152310310.png)
+
+#### Bezier Surfaces
+
+> 贝塞尔面
+
+#### Subdivision Surfaces
+
+#### NURBS
+
+## Curves
+
+### Bezier curves
+
+![image-20201204153410470](GAMES101.assets/image-20201204153410470.png)
+
+#### De Casteljau’s algorithm
+
+![image-20201204154142277](GAMES101.assets/image-20201204154142277.png)
+
+![image-20201204154156951](GAMES101.assets/image-20201204154156951.png)
+
+![image-20201204154218415](GAMES101.assets/image-20201204154218415.png)
+
+![image-20201204154238815](GAMES101.assets/image-20201204154238815.png)
+
+![image-20201204154437532](GAMES101.assets/image-20201204154437532.png)
+
+几何公式
+
+![image-20201204160343289](GAMES101.assets/image-20201204160343289.png)
+
+$b0$, $b1$ 线性插值得$b_0^1$ 
+
+比如计算下图中的$b_0^2$
+
+![image-20201204161104064](GAMES101.assets/image-20201204161104064.png)
+
+公式如下, 最终的公式可以看出, 只和四个控制点有关
+$$
+b_0^1(t) = (1-t)b_0+tb_1\\
+b_1^1(t) = (1-t)b_1+tb_2\\
+~\\
+b_0^2(t) = (1-t)b_0^1+tb_1^1\\
+~\\
+b_0^2(t) = (1-t)^2b_0 + 2t(1-t)b_1 + t^2b_2
+$$
+
+
+### B-splines
+
+## Surfaces
+
+### Bezier surfaces
+
+### Triangles & quads
+
+#### Subdivision
+
+#### simplification
+
+#### regularization
 
 # Ray Tracing
 
