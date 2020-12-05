@@ -1402,7 +1402,7 @@ An Example: Blending (linear interp.) a moving boundary
 
 ![image-20201204154437532](GAMES101.assets/image-20201204154437532.png)
 
-几何公式
+#### Algebraic Formular
 
 ![image-20201204160343289](GAMES101.assets/image-20201204160343289.png)
 
@@ -1422,20 +1422,127 @@ b_0^2(t) = (1-t)b_0^1+tb_1^1\\
 b_0^2(t) = (1-t)^2b_0 + 2t(1-t)b_1 + t^2b_2
 $$
 
+##### Bernstein polynomial
+
+$$
+b^n(t)=b_0^n=\sum^n_{i=0}b_iB_i^n(t)\\
+B_i^n(t)=\begin{pmatrix}
+            n\\
+            i
+        \end{pmatrix}
+        t^i(1-t)^{n-i}
+$$
+
+- $b_i$: 控制点control point, 总共有n+1个控制点(0~n)
+- $b^n(t)$: Bézier curve of order n (n阶贝塞尔曲线) 在任意的时间 $t$ 都是 n+1 个控制点的线性组合, 线性组合的系数是一个与时间有关的多项式, 这个多项式就是伯恩斯坦多项式
+
+
+
+Example:
+
+assume $n$ = 3 (and we are in $R^3$)
+
+we could have control points in 3D such as
+
+$b_0$ = (0, 2, 3), $b_1$ = (2, 3, 5), $b_2$ = (6, 7, 9), $b_3$ = (3, 4, 5)
+These points define a Bezier curve in 3D that is a cubic polynomial in t:
+
+$b^n(t) = b_0 (1-t)^3 + b_1 3t(1 - t)^2 + b_2 3t^2(1 - t) + b_3 t^3$
+
+
+
+![image-20201205163253922](GAMES101.assets/image-20201205163253922.png)
+
+![img](GAMES101.assets/31BA511E9340BEF9452F2BEE7DCCDF6D.png)
+
+#### Properties
+
+- 过起点, 终点
+
+- <u>Affine transformation</u> property: 把线上的每个点做仿射变换的结果等于将控制点做仿射变换再画线的结果, 所以可以Transform curve by transforming control points (但投影不行)
+- Convex hull property 凸包性质: Curve is within convex hull of control points, 比如4个控制点, 那么画出来的曲线在这个四边形内
+
+#### Piecewise Bézier Curves
+
+> 分段贝塞尔曲线
+
+![image-20201205165215625](GAMES101.assets/image-20201205165215625.png)
+
+##### Continuity
+
+- $C^0$ continuity
+
+  - ![image-20201205165731322](GAMES101.assets/image-20201205165731322.png)
+
+    中间那个控制点重合
+
+- $C^1$ continuity
+
+  - ![image-20201205165836997](GAMES101.assets/image-20201205165836997.png)
+
+    长度一样, 斜率一样(一阶导数连续)
+
+- $C^2$ continuity 二阶导数连续
 
 ### B-splines
+
+> 样条
+>
+> basis splines
+
+[link](https://www.bilibili.com/video/av66548502?from=search&seid=65256805876131485)
 
 ## Surfaces
 
 ### Bezier surfaces
 
-### Triangles & quads
+- Input: 4x4 control points
 
-#### Subdivision
+- Output is 2D surface parameterized by (u,v) in [0,1]$^2$ 
 
-#### simplification
+  ![image-20201205172242274](GAMES101.assets/image-20201205172242274.png)
 
-#### regularization
+  ![image-20201205172333672](GAMES101.assets/image-20201205172333672.png)
+
+  先画出四条曲线, 再用这四条曲线上的点画线, 所有线构成面
+
+### Mesh
+
+#### Mesh Subdivision
+
+> 网格细分
+
+![image-20201205172917953](GAMES101.assets/image-20201205172917953.png)
+
+- Common subdivision rule for triangle meshes: 
+  1. create more triangles (vertices)
+  2. tune their positions
+
+##### Loop Subdivision
+
+> Loop 是发明人的姓😓
+
+triangle meshes: 
+
+1. create more triangles (vertices): Split each triangle into four
+
+   ![image-20201205173214517](GAMES101.assets/image-20201205173214517.png)
+
+2. tune their positions: assign new vertex positions according to weights
+
+   - New / old vertices updated differently
+
+#### Mesh Simplification
+
+> Downsampling
+
+![image-20201205172935740](GAMES101.assets/image-20201205172935740.png)
+
+#### Mesh Regularization
+
+> 正规化
+
+![image-20201205172957210](GAMES101.assets/image-20201205172957210.png)
 
 # Ray Tracing
 
