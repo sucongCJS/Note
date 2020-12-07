@@ -1266,6 +1266,52 @@ spherical map problem
 
 #### 3D Textures & Volume Rendering
 
+## Shadow Mapping
+
+- An Image-space Algorithm
+  - no knowledge of scene’s geometry during shadow
+  computation
+  - must deal with aliasing artifacts
+- Key idea:
+  - the points NOT in shadow must be seen both **by the light and by the camera** 
+
+### 步骤
+
+1. 假设光源处有个一摄像机（虚拟的），从光源看向场景，记录能看到的任何点的深度值，也就是shadow map
+
+   <img src="GAMES101.assets/image-20201207193921587.png" alt="image-20201207193921587" style="zoom:80%;" />
+
+   <img src="GAMES101.assets/image-20201207194751061.png" alt="image-20201207194739557" style="zoom: 67%;" /><img src="GAMES101.assets/image-20201207194739557.png" alt="image-20201207194739557" style="zoom:50%;" />深度图
+
+2. 将真正的摄像机（Eye处）看到的点p投影回虚拟摄像机的位置，以查出光源处到点的深度是多少a；计算实际上点p到光源的距离是多少b。
+
+   - 如果 a==b，那么点p能够被光源看到
+   - 如果 a<b，说明光源看不到，点p在阴影中
+
+   <img src="GAMES101.assets/image-20201207193949008.png" alt="image-20201207193949008" style="zoom:80%;" />
+
+   <img src="GAMES101.assets/image-20201207194922215.png" alt="image-20201207194922215" style="zoom:80%;" />
+
+   - Green is where the distance(light, shading point) ≈ depth on the shadow map
+   - Non-green is where shadows should be
+   - 图片不是很清晰干净是因为：
+     - 浮点数的判等有误差
+     - 跟深度图shadow map的分辨率有关
+
+### Problems
+
+- Hard shadows (point lights only) 只支持点光源
+
+  - 上图是硬阴影，下图是软阴影
+
+    ![image-20201207195716149](GAMES101.assets/image-20201207195716149.png)
+
+- Quality depends on shadow map resolution (general problem with image-based techniques)  shadow map分辨率高的话开销也会很大
+
+- Involves equality comparison of floating point depth values means issues of scale, bias, tolerance
+
+  
+
 # Curves & Meshes
 
 > 几何 Geometry
@@ -1506,7 +1552,9 @@ $b^n(t) = b_0 (1-t)^3 + b_1 3t(1 - t)^2 + b_2 3t^2(1 - t) + b_3 t^3$
 
   先画出四条曲线, 再用这四条曲线上的点画线, 所有线构成面
 
-### Mesh
+### Triangle & quad
+
+> 三角形和四边形
 
 #### Mesh Subdivision
 
@@ -1528,15 +1576,85 @@ triangle meshes:
 
    ![image-20201205173214517](GAMES101.assets/image-20201205173214517.png)
 
-2. tune their positions: assign new vertex positions according to weights
+2. tune their positions: assign new vertex positions according to weights, new / old vertices updated differently
 
-   - New / old vertices updated differently
+   - new vertices
+
+     Update to: $3/8 * (A + B) + 1/8 * (C + D)$
+
+     ![image-20201205175827800](GAMES101.assets/image-20201205175827800.png)
+
+   - old vertices 更新老的顶点一部分要看自己原来的位置，一部分要看连接的点，如果连接的点少，那自己原来的位置的权重就要高一些，反之少一些
+
+     Update to: $(1 - n*u) * \text{original_position} + u * \text{neighbor_position_sum}$ 
+
+     - $n$: vertex degree 连接的点的数量, 如图中白点的degree为6
+     - $u$: $3/16 \text{ if } n=3, 3/(8n) \text{   otherwise}$, (如果n=3就取3/16, 否则...)
+
+     ![image-20201205180419884](GAMES101.assets/image-20201205180419884.png)
+
+   
+
+##### Catmull-Clark Subdivision
+
+- loop 细分只能处理三角形, 而这个算法可以处理多边形
+
+  ![image-20201205183855721](GAMES101.assets/image-20201205183855721.png)
+
+- 标三角形的面是Non-quad face, 非四边形面
+
+- 原点是奇异点Extraordinary vertex, 也就是degree != 4的点, 途中的紫色的的degree为5
+
+- Each subdivision step 每一步细分:
+
+  1. Add vertex in each face 取每个面的中点
+  2. Add midpoint on each edge 取每条边的中点
+  3. Connect all new vertices
+
+- Non-quad face一次细分后会引入一个奇异点, 这个奇异点能让Non-quad face变成quad face
+
+  ![image-20201205190220701](GAMES101.assets/image-20201205190220701.png)
+
+  ![image-20201205190247266](GAMES101.assets/image-20201205190247266.png)
+
+
+更新点(点有三种情况): 通过平均的方式来达到平滑, 类似图片的模糊
+
+- Face point ![image-20201207160721043](GAMES101.assets/image-20201207160721043.png)
+
+  $f = \frac{v1+v2+v3+v4}{4}$
+
+- Edge point ![image-20201207160821968](GAMES101.assets/image-20201207160821968.png) 边的中心
+
+  $e = \frac{v1+v2+f1+f2}{4}$
+
+- Vertex point ![image-20201207160921331](GAMES101.assets/image-20201207160921331.png)
+
+  $v = \frac{f1+f2+f3+f4+2(m1+m2+m3+m4)+4p}{16}$
+
+  - $m$: midpoint of edge
+  - $p$: old "vertex point"
+  - $v$: 是更新后新的点
 
 #### Mesh Simplification
 
 > Downsampling
 
 ![image-20201205172935740](GAMES101.assets/image-20201205172935740.png)
+
+##### Edge Collapse
+
+> 边坍缩
+
+![image-20201207191546638](GAMES101.assets/image-20201207191546638.png)
+
+如何确定坍缩后的新点可以使用Quadric Error Metrics（⼆次误差度量）
+
+![image-20201207191721483](GAMES101.assets/image-20201207191721483.png)
+
+- Quadric error: new vertex should minimize its sum of square
+  distance (L2 distance) to previously related triangle planes! 新点与相关的所有面的距离的平方和要最小（优化问题）
+- 先从二次误差度量最小的点开始坍缩。因为坍缩后会使这个点旁边的点的二次误差度量也发生变化，所以每一次坍缩后都要更新一下周边的点的二次误差度量，然后再取最小的进行坍缩（使用优先队列，堆）。
 
 #### Mesh Regularization
 
