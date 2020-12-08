@@ -972,7 +972,8 @@ static std::tuple<float, float, float> computeBarycentric2D(float x, float y, co
 	float beta =  (x*(v[2].y() - v[0].y()) + (v[0].x() - v[2].x())*y + v[2].x()*v[0].y() - v[0].x()*v[2].y()) / (v[1].x()*(v[2].y() - v[0].y()) + (v[0].x() - v[2].x())*v[1].y() + v[2].x()*v[0].y() - v[0].x()*v[2].y());
 	// float gamma = (x*(v[0].y() - v[1].y()) + (v[1].x() - v[0].x())*y + v[0].x()*v[1].y() - v[1].x()*v[0].y()) / (v[2].x()*(v[0].y() - v[1].y()) + (v[1].x() - v[0].x())*v[2].y() + v[0].x()*v[1].y() - v[1].x()*v[0].y());
 	float  gamma = 1-alpha-beta;  // gamma和上面的算法最大有0.000001的不同
-return {alpha, beta, gamma};
+	
+    return {alpha, beta, gamma};
 }
 
 // 调用
@@ -980,10 +981,12 @@ auto[alpha, beta, gamma] = computeBarycentric2D(x, y, t.v);
 float w_reciprocal = 1.0/(alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());  // 倒数
 float z_interpolated = alpha * v[0].z() / v[0].w() + beta * v[1].z() / v[1].w() + gamma * v[2].z() / v[2].w();
 z_interpolated *= w_reciprocal;
+
+float z_interpolated2 = alpha * v[0].z() + beta * v[1].z() + gamma * v[2].z();
 ```
 
   - v是三角形三个顶点的集合
-  - z_interpolated *= w_reciprocal是$\displaystyle{\frac{1}{\frac{\alpha}{A_w}+\frac{\beta}{B_w}+\frac{\gamma}{C_w}}×(\frac{\alpha}{A_w}A_z + \frac{\beta}{B_w}B_z + \frac{\gamma}{C_w}C_z)}$
+  - z_interpolated *= w_reciprocal是$\displaystyle{\frac{1}{\frac{\alpha}{A_w}+\frac{\beta}{B_w}+\frac{\gamma}{C_w}}×(\frac{\alpha}{A_w}A_z + \frac{\beta}{B_w}B_z + \frac{\gamma}{C_w}C_z)}$ 或者直接 z_interpolated = $\alpha A_z + \beta B_z + \gamma C_z$, 二者算出来的结果差别不大。
 
 ### 使用
 
@@ -994,6 +997,7 @@ $$
 
 - $V_A$, $V_B$, $V_C$ can be positions, texture coordinates, color, normal, depth, material attributes…
 - However, barycentric coordinates are not invariant under projection! 投影前后重心坐标可能会不一样. 如果要插值三维中的属性, 不能用投影了的三角形的坐标去算, **要用投影前的三维坐标去算**(应用逆变换可得到投影前的坐标) 
+- $\alpha + \beta + \gamma = 1$, 所以不需要再归一化
 
 ## Texture
 
