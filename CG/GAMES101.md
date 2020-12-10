@@ -1046,7 +1046,7 @@ for each rasterized screen sample (x,y):
 
 - 点对应到纹理上的位置时, 因为点多纹理小, 所以位置可能是小数, 就只能四舍五入, 这样的话不同的pixel会被映射到用一个texel上, 所以生成的效果图中有小方格
 
-#### Bilinear
+#### Bilinear 
 
 > bilinear 插值两趟, 下图是水平两次, 竖直一次
 
@@ -1233,22 +1233,40 @@ spherical map problem
 
   
 
-##### How to perturb the normal (in flatland) 
+##### Perturb the normal in flatland
 
 > 计算法线的变化
 
 1. Original surface normal n(p) = (0, 1)  原来的法线是垂直向上的
+
 2. Derivative at p is dp = c * [h(p+1) - h(p)]  p点的导数是相邻两个点的高度差除以距离1. c是一个常数, 定义凹凸贴图的影响程度
+
 3. Perturbed normal is then n(p) = **(-dp, 1)**.normalized() 导数逆时针旋转90°得到法线, 然后归一化
 
-##### How to perturb the normal (in 3D)
+   (FYI: 旋转公式$\begin{bmatrix} cos\theta & -sin\theta \\ sin\theta     & cos\theta\end{bmatrix}$ 逆时针90°就是$\begin{bmatrix} 0 & -1 \\ 1     & 0 \end{bmatrix}$ 也就是交换给y加上符号, 然后交换x, y, 所以原来的向量是(1, dp)旋转后就是(-dp, 1))
+
+   
+
+##### Perturb the normal in 3D
 
 1. Original surface normal n(p) = (0, 0, 1)
-2. Derivatives at p are
+2. Derivatives at p are 导数
    - dp/du = c1 * [h(u+1) - h(u)]
    - dp/dv = c2 * [h(v+1) - h(v)]
-3. Perturbed normal is n = **(-dp/du, -dp/dv, 1)**.normalized()
+3. Perturbed normal is n = **(-dp/du, -dp/dv, 1)**.normalized()  (类比上面, 推导比较麻烦:cry:)
 4. Note that this is in local coordinate!
+
+编程：
+
+```cpp
+Vector3f n = normal;
+
+// 第二步:
+float dU = c * (texture.getColor(u + 1/w, v) - texture.getColor(u, v));  // w是纹理的宽度, 1/w是纹理宽上的单位距离, color是一个Vector3, 所以要norm()
+float dV = c * (texture.getColor(u, v + 1/h) - texture.getColor(u, v));  // h是纹理的高度
+```
+
+*正规的凹凸纹理应该是只有一维参量的灰度图*
 
 #### Displacement Mapping
 
