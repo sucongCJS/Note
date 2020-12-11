@@ -1480,7 +1480,7 @@ $b0$, $b1$ 线性插值得$b_0^1$
 
 ![image-20201204161104064](GAMES101.assets/image-20201204161104064.png)
 
-公式如下, 最终的公式可以看出, 只和四个控制点有关
+公式如下, 最终的公式可以看出, 只和三个控制点有关
 $$
 b_0^1(t) = (1-t)b_0+tb_1\\
 b_1^1(t) = (1-t)b_1+tb_2\\
@@ -1521,7 +1521,7 @@ $b^n(t) = b_0 (1-t)^3 + b_1 3t(1 - t)^2 + b_2 3t^2(1 - t) + b_3 t^3$
 
 ![image-20201205163253922](GAMES101.assets/image-20201205163253922.png)
 
-![img](GAMES101.assets/31BA511E9340BEF9452F2BEE7DCCDF6D.png)
+<img src="GAMES101.assets/31BA511E9340BEF9452F2BEE7DCCDF6D.png" alt="img" style="zoom: 50%;" />
 
 #### Properties
 
