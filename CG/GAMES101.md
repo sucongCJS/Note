@@ -1688,6 +1688,137 @@ triangle meshes:
 
 > 光线追踪
 
+- why
+  - 光栅化不能很好地表示全局效果，比如soft shadow, indirect illumination(光线弹射的多次后再进入人眼)
+- 三个假设
+  - Light travels in straight lines (though this is wrong)
+  - Light rays do not “collide” with each other if they cross
+    (though this is still wrong)
+  - Light rays travel from the light sources to the eye (but
+    the physics is invariant under path reversal - reciprocity).
+
+## Recursive Ray Tracing
+
+> Recursive (Whitted-Style) Ray Tracing
+
+![image-20201212142109333](GAMES101.assets/image-20201212142109333.png)
+
+![image-20201212143127327](GAMES101.assets/image-20201212143127327.png)
+
+- 如果光源能够照亮每一个弹射的点(图中黑点), 就把这些点的着色值都加起来作为那个像素的值
+- primary ray: 也就是eye ray, 眼睛打出来的光线
+- secondary ray: eye ray 弹射的光线 (图中非eye ray的蓝线)
+
+## Ray-Surface Intersection
+
+### Ray Equation
+
+> Ray is defined by its origin and a direction vector 是一根射线
+>
+> ![image-20201212152528709](GAMES101.assets/image-20201212152528709.png)
+
+$$
+\bold{r}(t) = \bold{o} + t\bold{d} \quad 0\leq t\leq \infty
+$$
+
+- $\bold{r}$: point along ray, (vector)
+- $t$: "time"
+- $\bold{o}$: origin 起点
+- $\bold{d}$: (normalized) direction
+
+### Plane Equation
+
+> Plane is defined by normal vector and a point on plane
+>
+> ![image-20201212152514426](GAMES101.assets/image-20201212152514426.png)
+
+Plane Equation (if $\bold{p}$ satisfies it, then $\bold{p}$ is on the plane):
+$$
+\bold{p}: (\bold{p}-\bold{p'})\cdot \bold{N} = 0
+$$
+
+- $\bold{p}$: all points on plane
+- $\bold{p'}$: one point on plane
+- $\bold{N}$: normal vector
+
+### With Plane
+
+<img src="GAMES101.assets/image-20201212152834221.png" alt="image-20201212152834221" style="zoom:80%;" />
+
+#### Möller Trumbore Algorithm
+
+![image-20201212154045048](GAMES101.assets/image-20201212154045048.png)
+
+- 点用重心坐标表示
+- $t, b_1, b_2$共三个未知数, $\bold{O}, \bold{D}, \bold{P_0}, \bold{P_1}, \bold{P_2}$ 是3*1的向量, 所以可以解方程 (克拉默法则)
+- 解出来后看$t$是否是正的, 看$b_1, b_2$是否也是正的, 保证在三角形内部
+
+### With Implicit Surface
+
+> 光线和隐式平面的交点
+
+- Ray: $\bold{r}(t) = \bold{o} + t\bold{d} \quad 0\leq t\leq \infty$
+
+- General implicit surface: $\bold{p}: f(\bold{p}) = 0$  (比如圆的话就是 $\bold{p}: (\bold{p}-\bold{c})^2 - R^2 = 0$) 
+
+  ![image-20201212145030761](GAMES101.assets/image-20201212145030761.png)
+
+有没有交点就看有没有点同时满足光线和平面两条等式, 比如圆就是求解$(\bold{o} + t\bold{d} - c)^2 - R^2 = 0$, 如果求出来有两个$t$, 那么代入 Ray Equation 就能得到两个点的坐标
+
+### With Triangle Mesh
+
+> 光线和显式平面之三角形 mesh 的交点
+
+![image-20201212151145481](GAMES101.assets/image-20201212151145481.png)
+
+- Why
+  - Rendering: visibility, shadows, lighting …
+  - Geometry: inside/outside test 可以判断点在物体内还是外(连接光线和点, 如果穿过物体表面奇数次, 那么点在物体里面; 如果偶数次, 点在物体外面. 光线在物体外?)
+- 算和Triangle Mesh的交点其实就是算和Mesh中每个三角形的交点
+
+### With Triangle
+
+- 看光线与三角形是否有交点的最基本思想
+  1. Ray-plane intersection 光和三角形所在平面有没有交点 (*With plane* 在上面)
+  2. Test if hit point is inside triangle 如果有交点, 这个交点是否在三角形内
+
+### Accelerating
+
+- why
+  - 每个三角形去求交点太慢!
+
+#### Bounding Volumes
+
+> 类似包围盒 Bounding Box
+
+![image-20201212154515457](GAMES101.assets/image-20201212154515457.png)
+
+- often use an **Axis-Aligned Bounding Box (AABB)** (轴对齐包围盒) (i.e. any side of the BB is along either x, y, or z axis)
+
+  - 轴对齐的计算量少
+
+    ![image-20201212161822285](GAMES101.assets/image-20201212161822285.png)
+
+    计算光打到平面的时间t只需要计算p点和o点x坐标值的差除以d在x轴的分量
+
+##### 工作方式
+
+- Compute intersections with slabs and take intersection of t_min/t_max intervals (slabs是指和轴平行且过立方体面的无限大的平面)
+- 2D example; 3D is the same!
+
+![image-20201212160007861](GAMES101.assets/image-20201212160007861.png)
+
+- 求靠左的两个线段的**交集**就可以得出右边的线段(光线进入盒子和离开盒子的时间)
+- Recall: a box (3D) = three pairs of infinitely large slabs 三对平行于坐标轴的大平面围成一个立方体
+- Key ideas
+  - The ray enters the box **only when** it enters all pairs of slabs  光线在一对slab之间就算进入这对slab
+  - The ray exits the box **as long as** it exits any pair of slabs 光线只要离开任何一对slab就算离开了这个box
+- For each pair, calculate the t_min and t_max (negative is fine)
+- For the 3D box, t_enter = **max**{t_min}, t_exit = min{t_max}
+- <u>Ray and AABB intersect iff: t\_enter < t\_exit && t_exit >= 0</u>
+  - if t_exit < 0: The box is “behind” the ray — no intersection!
+  - if t_exit >= 0 and t_enter < 0: The ray’s origin is inside the box — have intersection!
+
 # Animation
 
 > Simulation 模拟
