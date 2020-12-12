@@ -1819,6 +1819,152 @@ $$
   - if t_exit < 0: The box is “behind” the ray — no intersection!
   - if t_exit >= 0 and t_enter < 0: The ray’s origin is inside the box — have intersection!
 
+#### Uniform Spatial Partitions
+
+> Gribs
+
+##### 工作方式
+
+1. Find bounding box 找到能包围所有物体的大盒子
+
+2. Create grid 大盒子分成小盒子
+
+   - 分太密太稀疏都不行, 和物体的数量有关
+
+3. Store each object in overlapping cells
+
+  ![image-20201212164031754](GAMES101.assets/image-20201212164031754.png)
+
+4. Step through grid in ray traversal order. 从光线进入的grib开始, 跟据光线的朝向去看看周围的grib有没有交点来判断光线下一个进入哪个grib
+
+   For each grid cell: Test intersection with all objects stored at that cell. 
+
+   ![image-20201212164359050](GAMES101.assets/image-20201212164359050.png)
+
+#### Spatial Partitions
+
+- why
+  - Grids work well on large collections of object that are distributed evenly in size and space 物体在空间中分布均匀的时候用Uniform spatial partitions 效果不错, 但是如果类似 “Teapot in a stadium” 就不合适
+
+##### Oct-Tree
+
+> 八叉树
+>
+> ![image-20201212165344084](GAMES101.assets/image-20201212165344084.png)
+
+- 把立方体切成8块
+- 维度高的时候就成了2^n叉树了
+
+##### KD-Tree
+
+> ![image-20201212165426794](GAMES101.assets/image-20201212165426794.png)
+
+![image-20201212170115171](GAMES101.assets/image-20201212170115171.png)
+
+Data Structure
+
+- Internal nodes store
+  - split axis: x-, y-, or z-axis 当前是沿哪个轴划分的
+  - split position: coordinate of split plane along axis 划分的位置
+  - children: pointers to child nodes 
+  - No objects are stored in internal nodes
+- Leaf nodes store
+  - list of objects
+
+##### BSP-Tree
+
+> ![image-20201212165437097](GAMES101.assets/image-20201212165437097.png)
+
+- 三维的话需要一个平面来划分, 高维的话需要超平面
+
+#### Object Partitions
+
+> Object Partitions & Bounding Volume Hierarchy (BVH)
+
+- Why
+  - Spatial Partitions 要求交包围盒和三角形. 这个的话一个三角形只能出现在一个包围盒中
+
+![image-20201212172504430](GAMES101.assets/image-20201212172504430.png)
+
+##### 工作方式
+
+1. Find bounding box
+2. **Recursively** split set of objects in two subsets 递归地把包围盒内的物体分成两部分
+   - subdivide a node
+     - Always choose the longest axis in node 沿着最长的轴分成两部分
+     - Split node at location of **median** object 1~n个三角形的话在1/2 n处分成两部分, 保证数量相当, 二叉树比较平衡些
+     - ...
+3. Recompute the bounding box of the subsets 
+4. Stop when necessary
+5. Store objects in each leaf node
+
+- Termination criteria: for example, stop when node contains few elements
+
+![image-20201212180225454](GAMES101.assets/image-20201212180225454.png)
+
+## Radimoetry
+
+### Radiant Energy
+
+> 能量
+>
+> ![image-20201212212036705](GAMES101.assets/image-20201212212036705.png)
+
+### Radiant Flux
+
+> 单位时间能量
+>
+> ![image-20201212212047174](GAMES101.assets/image-20201212212047174.png)
+
+### intensity
+
+> Radiant Intensity
+>
+> 能量每立体角
+>
+> ![image-20201212212602093](GAMES101.assets/image-20201212212602093.png)
+>
+> ![image-20201212212857677](GAMES101.assets/image-20201212212857677.png)
+>
+> ![image-20201212213023074](GAMES101.assets/image-20201212213023074.png)
+>
+> - The candela is one of the seven SI base units. intensity的单位, 标准单位制中的单位
+
+#### Solid angle
+
+- Angle: ratio of subtended arc length on circle to radius
+
+  - ![image-20201212213355750](GAMES101.assets/image-20201212213355750.png)
+
+    ![image-20201212213406765](GAMES101.assets/image-20201212213406765.png)
+
+- Solid angle: ratio of subtended area on sphere to radius squared
+
+  - ![image-20201212213428050](GAMES101.assets/image-20201212213428050.png)
+
+    ![image-20201212213438029](GAMES101.assets/image-20201212213438029.png)
+
+#### Differential Solid Angles
+
+> 单位立体角
+
+![image-20201212213611368](GAMES101.assets/image-20201212213611368.png)
+
+- 圆上的单位面积大小: ![image-20201212213812106](GAMES101.assets/image-20201212213812106.png)
+- 单位立体角: ![image-20201212213832588](GAMES101.assets/image-20201212213832588.png)
+- 整个球的立体角![image-20201212214005287](GAMES101.assets/image-20201212214005287.png)
+- 
+
+### irradiance
+
+> 接受的能量
+>
+> ![image-20201212212705547](GAMES101.assets/image-20201212212705547.png)
+
+### radiance
+
+> ![image-20201212212739666](GAMES101.assets/image-20201212212739666.png)
+
 # Animation
 
 > Simulation 模拟
