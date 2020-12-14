@@ -6,15 +6,17 @@ CG和CV的区别
 
 ![image-20200927092304202](GAMES101.assets/image-20200927092304202.png)
 
-# 基础知识
+# mathh
 
-## dot prodct
+## LA
+
+### dot prodct
 
 > [link](https://zh.wikipedia.org/wiki/%E7%82%B9%E7%A7%AF)
 
 
 
-## cross product
+### cross product
 
 > 叉乘
 
@@ -26,7 +28,7 @@ CG和CV的区别
 
 ![image-20201011194835883](GAMES101.assets/image-20201011194835883.png)
 
-### 计算
+#### 计算
 
 ![image-20200927091747964](GAMES101.assets/image-20200927091747964.png)
 
@@ -42,7 +44,7 @@ CG和CV的区别
 
 - <img src="GAMES101.assets/image-20200927092914322.png" alt="image-20200927092914322" style="zoom:50%;" />
 
-  ### 作用
+#### 作用
 
 - Determine left / right
 
@@ -51,6 +53,14 @@ CG和CV的区别
 - Determine inside / outside
 
   <img src="GAMES101.assets/image-20200927093218783.png" alt="image-20200927093218783" style="zoom:33%;" />
+
+## Probability
+
+### PDF
+
+> Probability Distribution Function 概率分布函数
+
+![image-20201214144142877](GAMES101.assets/image-20201214144142877.png)
 
 # Transformation
 
@@ -1902,7 +1912,9 @@ Data Structure
 
 ![image-20201212180225454](GAMES101.assets/image-20201212180225454.png)
 
-## Radimoetry
+## Radiometry
+
+> 辐射度量学
 
 ### Radiant Energy
 
@@ -1920,7 +1932,7 @@ Data Structure
 
 > Radiant Intensity
 >
-> 能量每立体角
+> 能量每立体角 与半径无关
 >
 > ![image-20201212212602093](GAMES101.assets/image-20201212212602093.png)
 >
@@ -1951,19 +1963,203 @@ Data Structure
 ![image-20201212213611368](GAMES101.assets/image-20201212213611368.png)
 
 - 圆上的单位面积大小: ![image-20201212213812106](GAMES101.assets/image-20201212213812106.png)
-- 单位立体角: ![image-20201212213832588](GAMES101.assets/image-20201212213832588.png)
+
+  (FYI: 弧度等于半径乘圆心角度数(弧度制))
+
+- 单位立体角: ![image-20201212213832588](GAMES101.assets/image-20201212213832588.png) (有$sin\theta$, 可以看出不是在球面上均匀变化)
+
 - 整个球的立体角![image-20201212214005287](GAMES101.assets/image-20201212214005287.png)
-- 
+
+- 所有方向的单位立体角的强度Intensity积分起来得到能量, 如果是Isotropic Point Source 均匀辐射能量的点光源: ![image-20201213103342609](GAMES101.assets/image-20201213103342609.png), 它的intensity就是![image-20201213103537307](GAMES101.assets/image-20201213103537307.png), 能量去除以立体角
 
 ### irradiance
 
 > 接受的能量
 >
+> The irradiance is the power per unit area incident on a surface point.
+>
 > ![image-20201212212705547](GAMES101.assets/image-20201212212705547.png)
+>
+> ![image-20201213112636725](GAMES101.assets/image-20201213112636725.png)
+
+- 和角度, 距离有关, 在布林冯模型有
+- 如果 light is emitting power in a uniform angular distribution 光线均匀辐射， 球面上点的能量是![image-20201213115854347](GAMES101.assets/image-20201213115854347.png)
 
 ### radiance
 
+> power **per unit solid angle**, **per projected unit area** 
+>
+> 能量每单位立体角，单位面积
+>
 > ![image-20201212212739666](GAMES101.assets/image-20201212212739666.png)
+>
+> ![image-20201213120237333](GAMES101.assets/image-20201213120237333.png)
+>
+> 比如这个灰色面积朝某个方向辐射的能量，与面积，方向有关。
+>
+
+$$
+L(p, \omega) ≡ \frac{d^2\varPhi(p, \omega)}{d\omega    \;dAcos\theta}
+$$
+
+- 两次积分 ($cos\theta$应该是光线和平面法向量的夹角, 详见布林冯模型)
+- ≡: 恒等于
+- $p$: power
+- $\omega$: 立体角
+
+
+
+与 intensity 和 irradiance的联系：
+
+- Recall
+
+  - Irradiance: power per projected unit area 能量每单位面积, <u>考虑来自任何方向的能量; radiance只考虑一个方向进来的能量</u>
+  - Intensity: power per solid angle 能量每立体角, 
+
+- So
+
+  - Incident Radiance 进来的光: Irradiance per solid angle 每单位立体角的能量进入到每单位面积 
+    $$
+    L(p, \omega) = \frac{dE(p)}{d\omega \;\cos\theta}
+    $$
+
+  - Exiting Radiance 辐射出去的光: Intensity per projected unit area 每单位面积的能量辐射到每单位立体角
+  $$
+    L(p, \omega) = \frac{dI(p, \omega)}{dA\;cos\theta}
+    $$
+
+
+
+Irradiance vs. Radiance
+
+- Irradiance: total power received by area dA
+
+- Radiance: power received by area dA from “direction” dω
+
+- ![image-20201213122932618](GAMES101.assets/image-20201213122932618.png)
+
+  irradiance 是各个方向的能量积分起来
+
+## BRDF
+
+> Bidirectional Reflectance Distribution Function
+>
+> 双向反射分布函数
+>
+> 光线从一个方向进来, 反射到其他地方的方程
+
+### Reflection
+
+1. Radiance from direction $\omega _i$ turns into the power E that $dA$ receives
+
+   Differential **irradiance** incoming 吸收能量(考虑的是单位面积): 
+   $$
+   dE(\omega_i) = L(\omega_i)\>cos\theta_i\>d\omega_i
+   $$
+
+2. Then power $E$ will become the radiance to any other direction $ω$ 辐射能量
+
+   Differential radiance exiting (due to $dE(\omega_i)$): 
+   $$
+   dL_r(\omega_r)
+   $$
+
+   - ?
+
+The BRDF represents how much light is reflected into each outgoing direction from each incoming direction 
+
+每个出射方向的radiance除以图中方格接收到的irradiance, 得到一个比例. 简单说就是光线打进来, 然后又辐射出去后的一个能量分布,  这就是BRDF. (如果是漫反射, 那就是均等分布)
+
+![image-20201214103630569](GAMES101.assets/image-20201214103630569.png)
+$$
+f_r(\omega_i\to \omega_r) = \frac{dL_r(\omega_r)}{dE_i(\omega_i)} = \frac{dL_r(\omega_r)}{L_i(\omega_i)\>cos\theta_i\>d\omega_i}
+$$
+
+### Reflection Equation
+
+> 反射方程
+
+$$
+L_r(p, \omega_r) = \int_{H^2} f_r(\omega_i\to \omega_r) \; L_i(\omega_i)\>cos\theta_i\>d\omega_i
+$$
+
+- $d\omega_i$: 表示一个方向, 积分后表示每个方向
+- $L_i(\omega_i)$: Incident Light (from light source) 入射光
+- $L_i(\omega_i)\>d\omega_i$: 积分后表示每个方向入射的光
+- $L_i(\omega_i)\>cos\theta_i\>d\omega_i$: 小方块收到的 irradiance
+- $f_r(\omega\to \omega_r)$: BRDF 这个光对出射的贡献率
+- $ f_r(\omega_i\to \omega_r) \; L_i(\omega_i)\>cos\theta_i\>d\omega_i$: irradiance × BRDF 就是出射的 radiance 
+- $H^2$: 表示半球, 来自半球下面的光不考虑
+- $\int_{H^2}$: 将所有入射对出射的贡献积起来
+
+![image-20201214124128622](GAMES101.assets/image-20201214124128622.png)
+
+- 入射方向 -> 着色点 -> 出射方向
+
+
+
+困难: Reflected radiance depends on incoming radiance, but incoming radiance depends on reflected radiance. 这个点接收光, 又辐射光, 辐射的光可能被其他点接收. 这是一个递归的过程
+
+### Rendering Equation
+
+> 渲染方程
+>
+> 所有限制于物体表面的光线传播都满足
+
+Adding an Emission term to make *Reflection Equation*  general
+$$
+L_r(p, \omega) = L_e(p, \omega_r) + 
+\int_{\varOmega+}
+f_r(p, \omega_i, \omega_r)\; 
+L_i(p, \omega_i)\;
+(n\cdot\omega_i)\;
+d\omega_i
+$$
+
+- $L_r(p, \omega)$: Reflected Light (Output Image)
+
+- $L_e(p, \omega_o)$: Emission, 物体自己产生的光
+
+- **NOTE**: 假设所有光都向外, 也就是从球心指向外面(即使是入射进来的)
+
+- $\varOmega+$: 表示上半球
+
+  ![image-20201214131701289](GAMES101.assets/image-20201214131701289.png)
+
+#### 全局光照
+
+- 如果多个光源, 将多个光源的结果加起来
+
+  ![image-20201214135923232](GAMES101.assets/image-20201214135923232.png)
+
+- 如果有面光源, 把面光源当成很多点光源的集合(积分)
+
+  ![image-20201214135934525](GAMES101.assets/image-20201214135934525.png)
+
+- 如果有其他物体反射过来光, 把其他物体当作光源
+
+  ![image-20201214140844460](GAMES101.assets/image-20201214140844460.png)
+
+  (因为方向相反, 所以$\omega_i$带了负号)
+
+- 给式子做一个简写
+
+  ![image-20201214142029986](GAMES101.assets/image-20201214142029986.png)
+
+  - 方框中是已知的, 可以定义物体的材质是glossy, 还是diffuse的...
+  - 未知的是物体反射出去的radiance
+
+- 消除递归
+
+  ![image-20201214142742905](GAMES101.assets/image-20201214142742905.png)
+
+  - $I$: 为单位矩阵
+
+- 全局光照
+
+  ![image-20201214142955637](GAMES101.assets/image-20201214142955637.png)
+
+  - Shading in Rasterization 光栅化就是 $L= E+KE$, 也就是光源直接到眼睛 + 一次弹射
 
 # Animation
 
