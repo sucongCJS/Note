@@ -62,6 +62,26 @@ CG和CV的区别
 
 ![image-20201214144142877](GAMES101.assets/image-20201214144142877.png)
 
+#### importance sampling
+
+> 允许arbitrary pdfs
+>
+> 针对不同函数有不同的采样方法
+
+### Monte Carlo 
+
+$$
+\int f(x)dx = \frac{1}{N}\sum^N_{i=1}\frac{f(X_i)}{p(X_i)}
+$$
+
+- $X_i\sim p(x)$
+
+- $f(X_i)$: $X_i$ 的函数值
+
+- 为什么要除以概率$p$? 因为
+
+  ![image-20201214160712553](GAMES101.assets/image-20201214160712553.png) 详见[link](https://blog.csdn.net/ACM_hades/article/details/104643999)
+
 # Transformation
 
 - 2D: rotation, scale(缩放), shear
@@ -1710,6 +1730,8 @@ triangle meshes:
 ## Recursive Ray Tracing
 
 > Recursive (Whitted-Style) Ray Tracing
+>
+> 这个是 Whitted style ray tracing
 
 ![image-20201212142109333](GAMES101.assets/image-20201212142109333.png)
 
@@ -2160,6 +2182,291 @@ $$
   ![image-20201214142955637](GAMES101.assets/image-20201214142955637.png)
 
   - Shading in Rasterization 光栅化就是 $L= E+KE$, 也就是光源直接到眼睛 + 一次弹射
+
+## Ray Tracing
+
+- why
+
+  - Whitted-style ray tracing:
+    - Always perform specular reflections / refractions
+
+    - Stop bouncing at diffuse surfaces 如左图所示，天花板都是黑的
+
+      ![image-20201214204115222](GAMES101.assets/image-20201214204115222.png)
+
+### 求解反射方程
+
+#### 1st step
+
+> 不考虑物体发光
+>
+> 只考虑直接光照
+
+使用蒙特卡洛
+$$
+\begin{equation}
+\begin{split}
+
+L_r(p, \omega_r)
+
+&= 
+\int_{\varOmega+}
+f_r(p, \omega_i, \omega_r)\; 
+L_i(p, \omega_i)\;
+(n\cdot\omega_i)\;
+d\omega_i
+\\
+&\approx 
+\frac{1}{N}\sum ^N_{i=1}
+\frac
+	{
+        f_r(p, \omega_i, \omega_r)\; 
+        L_i(p, \omega_i)\;
+        (n\cdot\omega_i)\; 
+	}
+	{
+		p(\omega_i)
+	}
+	
+\end{split}
+\end{equation}
+$$
+
+- assume uniformly sampling the hemisphere均匀采, 那么PDF is $p(\omega_i) = 1/2 \pi$
+- 在半球上均匀地取入射方向
+
+着色代码
+
+```cpp
+shade(p, wo)
+	Randomly choose N directions wi~pdf // 采N个不同的方向
+	Lo = 0.0  // 初始化结果
+	For each wi
+		Trace a ray r(p, wi)  // 打出一根光线
+		If ray r hit the light  // 如果光线打到光源
+			Lo += (1 / N) * L_i * f_r * cosine / pdf(wi)
+		
+	Return Lo
+```
+
+#### 2nd step
+
+> 全局光照
+>
+> 考虑间接光照
+
+![image-20201214212640549](GAMES101.assets/image-20201214212640549.png)
+
+```cpp
+shade(p, wo)
+	Randomly choose N directions wi~pdf // 采N个不同的方向
+	Lo = 0.0  // 初始化结果
+	For each wi
+		Trace a ray r(p, wi)  // 打出一根光线
+		If ray r hit the light  // 如果光线打到光源
+			Lo += (1 / N) * L_i * f_r * cosine / pdf(wi)
+		Else If ray r hit an object at q
+			Lo += (1 / N) * shade(q, -wi) * f_r * cosine / pdf(wi)  // 递归调用shade, Q点的直接光照的结果作为P点的入射光照, 方向相对来说相反, 因为都假设光线朝外(见上面)
+	Return Lo
+```
+
+#### 3rd step
+
+- why
+  1. 如果采样100个角度, 也就是打出100根光线, 那么如果打到一个物体, 那又得采样100个角度, 再打出100根光线, 指数爆炸. 解决方法: N取1, 只用1根光线
+  2. 递归停不下来. 如果限制在一定次数, 那么会有能量损失. 解决方法 RR
+
+```cpp
+shade(p, wo)
+	Randomly choose ONE direction wi~pdf(w)
+	Trace a ray r(p, wi)
+	If ray r hit the light
+		Return L_i * f_r * cosine / pdf(wi)
+	Else If ray r hit an object at q
+		Return shade(q, -wi) * f_r * cosine / pdf(wi)
+```
+
+##### Problem 1
+
+- N取1, 那一根光线结果会不会太noisy? 
+
+  ![image-20201214214102501](GAMES101.assets/image-20201214214102501.png)
+
+渲染图片代码
+
+```cpp
+ray_generation(camPos, pixel)
+	Uniformly choose N sample positions within the pixel // 在像素内均匀地取不同位置
+	pixel_radiance = 0.0
+	For each sample in the pixel
+		Shoot a ray r(camPos, cam_to_sample)  // 从摄像机位置连光线到样本
+		If ray r hit the scene at p  // 打到p点, 算p点着色
+			pixel_radiance += 1 / N * shade(p, sample_to_cam)  // 出射方向变成了从sample到camera
+	Return pixel_radiance
+```
+
+##### Problem 2
+
+Russian Roulette (RR)
+
+- Previously, we always shoot a ray at a shading point and get the shading result **Lo**
+- Suppose we manually set a probability P (0 < P < 1) 有时候打光线有时候不打
+  - With probability <u>P</u>, shoot a ray and return the **shading result divided by P: Lo / P**  打光线的话, 结果除以P
+  - With probability <u>1-P</u>, don’t shoot a ray and you’ll get **0** 
+- In this way, you can still **expect** to get Lo!:
+  E = P * (Lo / P) + (1 - P) * 0 = Lo  期望并没有变
+
+```cpp
+shade(p, wo)
+    Manually specify a probability P_RR
+    Randomly select ksi in a uniform dist. in [0, 1]
+    If (ksi > P_RR)  // 递归退出 
+    	return 0.0;
+
+    Randomly choose ONE direction wi~pdf(w)
+    Trace a ray r(p, wi)
+    If ray r hit the light
+    	Return L_i * f_r * cosine / pdf(wi) / P_RR
+    Else If ray r hit an object at q
+	    Return shade(q, -wi) * f_r * cosine / pdf(wi) / P_RR
+```
+
+#### 4th step
+
+- why
+
+  - 不够高效, 如果光源很小的话, 从物体均匀地打出光很难打中光源
+
+    ![image-20201214220201305](GAMES101.assets/image-20201214220201305.png)
+
+    A lot of rays are “wasted” if we uniformly sample the hemisphere at the shading point.
+
+    解决方法: 在光源上采样 Monte Carlo methods allows any sampling methods, so we can sample the light (therefore no rays are “wasted”)
+
+因为是在x上采样(采不同的立体角), 所以就得在x上积分, 要对光源进行采样, 就得做一些改写
+
+![image-20201214220703196](GAMES101.assets/image-20201214220703196.png)
+
+- $dA$: 光源表面
+
+- $d\omega$: $dA$投射到单位圆的立体角大小
+  $$
+  d\omega = \frac{dA\;cos \theta '}{||x'-x||^2}
+  $$
+
+  - $dA\;cos \theta '$: 表示正对单位圆的有效面积
+  - 除以$||x'-x||^2$: 可以参见立体角定义
+
+
+
+(针对直接光照的哦)
+$$
+\begin{equation}
+\begin{split}
+
+L_r(p, \omega_r)
+
+&= 
+\int_{\varOmega+}
+f_r(p, \omega_i, \omega_r)\; 
+L_i(p, \omega_i)\;
+cos\theta\;
+d\omega_i
+\\
+&=
+\int_{A}
+f_r(p, \omega_i, \omega_r)\; 
+L_i(p, \omega_i)\;
+cos\theta \frac{cos \theta'}{||x'-x||^2}dA
+\\
+&\approx 
+\frac{1}{N}\sum ^N_{i=1}
+\frac
+	{
+        f_r(p, \omega_i, \omega_r)\; 
+L_i(p, \omega_i)\;
+cos\theta \frac{cos \theta'}{||x'-x||^2}dA
+	}
+	{
+		p(\omega_i)
+	}
+
+	
+\end{split}
+\end{equation}
+$$
+
+- 改成对光源采样, 对光源积分
+- 对光源均匀采样, 那么PDF就是 1/A 咯
+
+##### 总结
+
+Previously, we assume the light is “accidentally” shot by uniform hemisphere sampling
+
+Now we consider the radiance coming from two parts:
+
+1. light source (direct, no need to have RR)  直接光照无需RR
+2. other reflectors (indirect, RR)
+
+```cpp
+shade(p, wo)
+	// Contribution from the light source.
+	Uniformly sample the light at x’ (pdf_light = 1 / A)
+	L_dir = L_i * f_r * cos θ * cos θ’ / |x’ - p|^2 / pdf_light
+    
+	// Contribution from other reflectors.
+	L_indir = 0.0
+	Test Russian Roulette with probability P_RR  // 如果通过RR, 计算这根光 
+	Uniformly sample the hemisphere toward wi (pdf_hemi = 1 / 2pi)
+	Trace a ray r(p, wi)
+	If ray r hit a non-emitting object at q  // q点不能是光源, 光源的贡献上面已经计算
+		L_indir = shade(q, -wi) * f_r * cos θ / pdf_hemi / P_RR
+    
+	Return L_dir + L_indir
+```
+
+#### 5th step
+
+- why
+  - 万一物体和光源之间有东西挡住呢. 解决方法: 从物体打一根光线, 如果能到光源, 就可以
+
+```cpp
+shade(p, wo)
+	// Contribution from the light source.
+	Uniformly sample the light at x’ (pdf_light = 1 / A)
+    Shoot a ray from p to x’
+    If the ray is not blocked in the middle
+        L_dir = L_i * f_r * cos θ * cos θ’ / |x’ - p|^2 / pdf_light
+    
+	// Contribution from other reflectors.
+	L_indir = 0.0
+	Test Russian Roulette with probability P_RR  // 如果通过RR, 计算这根光 
+	Uniformly sample the hemisphere toward wi (pdf_hemi = 1 / 2pi)
+	Trace a ray r(p, wi)
+	If ray r hit a non-emitting object at q  // q点不能是光源, 光源的贡献上面已经计算
+		L_indir = shade(q, -wi) * f_r * cos θ / pdf_hemi / P_RR
+    
+	Return L_dir + L_indir
+```
+
+#### more
+
+- Uniformly sampling the hemisphere
+  - How? And in general, how to sample any function?
+  (sampling)
+- Monte Carlo integration allows arbitrary pdfs
+- What's the best choice? (importance sampling)
+- Do random numbers matter?
+  - Yes! (low discrepancy sequences)
+- I can sample the hemisphere and the light
+  - Can I combine them? Yes! (multiple imp. sampling)
+
+- The radiance of a pixel is the average of radiance on all paths  passing through it 从一个像素打出去的光线的权重是否一样，从像素中心打出去的光线的权重是不是应该高一些
+  - Why? (pixel reconstruction filter)
+- Is the radiance of a pixel the color of a pixel?
+  - No. (gamma correction, curves, color space) 算出来的radiance不是颜色，需要伽马矫正
+- Asking again, is path tracing still “Introductory”?
+- This time, yes. Fear the science, my friends.
 
 # Animation
 

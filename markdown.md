@@ -59,3 +59,13 @@ digraph G{
 |                          |            |            |
 |                          |            |            |
 
+$$
+\begin{equation}
+\begin{split}
+x&=a+b+c\\
+&=d+e\\
+&=f+g
+\end{split}
+\end{equation}
+$$
+
