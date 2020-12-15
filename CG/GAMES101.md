@@ -1777,14 +1777,6 @@ $$
 
 <img src="GAMES101.assets/image-20201212152834221.png" alt="image-20201212152834221" style="zoom:80%;" />
 
-#### Möller Trumbore Algorithm
-
-![image-20201212154045048](GAMES101.assets/image-20201212154045048.png)
-
-- 点用重心坐标表示
-- $t, b_1, b_2$共三个未知数, $\bold{O}, \bold{D}, \bold{P_0}, \bold{P_1}, \bold{P_2}$ 是3*1的向量, 所以可以解方程 (克拉默法则)
-- 解出来后看$t$是否是正的, 看$b_1, b_2$是否也是正的, 保证在三角形内部
-
 ### With Implicit Surface
 
 > 光线和隐式平面的交点
@@ -1813,6 +1805,14 @@ $$
 - 看光线与三角形是否有交点的最基本思想
   1. Ray-plane intersection 光和三角形所在平面有没有交点 (*With plane* 在上面)
   2. Test if hit point is inside triangle 如果有交点, 这个交点是否在三角形内
+
+#### Möller Trumbore Algorithm
+
+![image-20201212154045048](GAMES101.assets/image-20201212154045048.png)
+
+- 如果光线和三角形的交点在三角形内，那就一定可以用重心坐标表示，就有解
+- $t, b_1, b_2$共三个未知数, $\bold{O}, \bold{D}, \bold{P_0}, \bold{P_1}, \bold{P_2}$ 是3*1的向量, 所以可以解方程 (克拉默法则)
+- 解出来后看$t$是否是正的, 看$b_1, b_2$是否也是正的, 保证在三角形内部
 
 ### Accelerating
 
