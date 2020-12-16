@@ -1771,7 +1771,7 @@ triangle meshes:
 // ior 是物体的折射率
 Vector3f refract(const Vector3f &I, const Vector3f &N, const float &ior)
 {
-    float cosi = clamp(-1, 1, dotProduct(I, N));  // cosi 就是公式中的 AO·OE    // 为什么? 这个的作用应该是把cosi的值严格限定在[-1, 1]之间吧, 防止精度损失导致大于1或者小于-1
+    float cosi = clamp(-1, 1, dotProduct(I, N));  // cosi 就是公式中的 AO·OE 这个的作用应该是把cosi的值严格限定在[-1, 1]之间吧, 防止精度损失导致大于1或者小于-1
     float n1 = 1, n2 = ior;
     Vector3f n = N;  // OE
     
@@ -1785,13 +1785,11 @@ Vector3f refract(const Vector3f &I, const Vector3f &N, const float &ior)
     return k < 0 ? 0 : eta * I + (eta * cosi - sqrtf(k)) * n;
 }
 
-inline float clamp(const float& lo, const float& hi, const float& v)
+inline float clamp(const float& low, const float& high, const float& v)
 {
-    return std::max(lo, std::min(hi, v));
+    return std::max(low, std::min(high, v));
 }
 ```
-
-
 
 ## Recursive Ray Tracing
 
@@ -1806,6 +1804,7 @@ inline float clamp(const float& lo, const float& hi, const float& v)
 - 如果光源能够照亮每一个弹射的点(图中黑点), 就把这些点的着色值都加起来作为那个像素的值
 - primary ray: 也就是eye ray, 眼睛打出来的光线
 - secondary ray: eye ray 弹射的光线 (图中非eye ray的蓝线)
+- eye-tracing: 从相机处连一根光线到物体, 最后到光源, 而不是反过来从光源到相机
 
 ## Ray-Surface Intersection
 
@@ -1878,7 +1877,7 @@ $$
 
 - 如果光线和三角形的交点在三角形内，那就一定可以用重心坐标表示，就有解
 - $t, b_1, b_2$共三个未知数, $\bold{O}, \bold{D}, \bold{P_0}, \bold{P_1}, \bold{P_2}$ 是3*1的向量, 所以可以解方程 (克拉默法则)
-- 解出来后看$t$是否是正的, 看$b_1, b_2$是否也是正的, 保证在三角形内部
+- 解出来后看$t$是否是正的, 看$b_1, b_2, 1-b_1-b_2$是否也是正的, 保证在三角形内部
 
 ### Accelerating
 
@@ -1999,6 +1998,32 @@ Data Structure
 - Termination criteria: for example, stop when node contains few elements
 
 ![image-20201212180225454](GAMES101.assets/image-20201212180225454.png)
+
+### 编程
+
+#### 方向的表示
+
+[Ray-Tracing: Generating Camera Rays](https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-generating-camera-rays/generating-camera-rays?http://www.scratchapixel.com/lessons/3d-basic-rendering/computing-pixel-coordinates-of-3d-point?)
+
+- 通常相机放在原点, 朝向-z(RenderMan, Maya, PBRT and OpenGL都是这样), image plane(见图中) is often placed exactly 1 unit away from the camera's origin, 也就是(0, 0, -1)
+
+  ![image-20201212143127327](GAMES101.assets/image-20201212143127327.png)
+
+![image-20201216192736363](GAMES101.assets/image-20201216192736363.png)
+
+- 从相机连一根光线到像素的中心
+
+- 坐标变换(遍历每一个像素的时候是从左上角到右下角, 也就是左上角是(0,0), 要变换成最下面[-1:1]的形式)
+
+  ![img](GAMES101.assets/cambasic1A.png)
+
+  Converting the coordinate of a point in the middle of a pixel to world coordinates requires a few steps. The coordinates of this point are first expressed in raster space (the pixels coordinate plus an offset of 0.5), then converted to NDC(Normalized Device Coordinates) space (the coordinates are remapped to the range [0,1]) then converted to screen space (the NDC coordinates are remapped to the [-1,1]). Applying the final camera-to-world transformation 4x4 matrix transform the coordinates in screen space to world space.
+
+- 公式
+
+  ![image-20201216204832424](GAMES101.assets/image-20201216204832424.png)
+
+  - 如果宽高比是1.4的话, 那么变换后y范围是[-1,1], x的范围是[-1.4, 1.4] (more generally [-aspect ratio, aspect ratio])
 
 ## Radiometry
 
@@ -2543,6 +2568,8 @@ shade(p, wo)
 > Graphics (Real-time Rendering) Pipeline
 >
 > 实时渲染管线
+>
+> render: assign a color to each pixel of the frame
 
 ![image-20201111190934468](GAMES101.assets/image-20201111190934468.png)
 
