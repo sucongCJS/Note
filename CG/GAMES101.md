@@ -1,12 +1,16 @@
 <center><bold><large>感谢闫令祺老师的精彩课程!</large></bold></center>
 
+
+
+[toc]
+
 # Introduction
 
 CG和CV的区别
 
 ![image-20200927092304202](GAMES101.assets/image-20200927092304202.png)
 
-# mathh
+# math
 
 ## LA
 
@@ -1727,6 +1731,68 @@ triangle meshes:
   - Light rays travel from the light sources to the eye (but
     the physics is invariant under path reversal - reciprocity).
 
+## Reflection & Refraction
+
+> 反射和折射
+
+### 反射
+
+- 推导 [link](https://blog.csdn.net/yinhun2012/article/details/79466517)
+
+<img src="GAMES101.assets/20180307124330611" alt="img" style="zoom: 80%;" />
+
+### 折射
+
+#### Snell's law
+
+> 斯涅尔定律
+
+- 推导 [link](https://blog.csdn.net/yinhun2012/article/details/79472364)
+
+  ![image-20201216112009881](GAMES101.assets/image-20201216112009881.png)
+
+  通过建立单位圆辅助计算，通过标量推导出向量的模长，然后通过向量平行和同异方向推导出向量，推出OB，推导到这里，我们就把OB的公式用cos sin以及入射光向量AO和介质法向量N来计算了，这时候我们就思考如何计算cosβ cosθ，让这两个值使用已知的n1，n2，AO，OE来替换，如下图：
+
+  ![image-20201216134017916](GAMES101.assets/image-20201216134017916.png)
+
+  总结
+
+  ![img](GAMES101.assets/20180308102210327)
+
+#### 代码
+
+- 需要考虑光线是否在物体内
+  - 如果光线在物体内：
+  - 如果光线在物体外：
+  
+```cpp
+// I 是入射光的方向, 即公式中的AO
+// N 是物体表面的法向量, 即公式中的OE
+// ior 是物体的折射率
+Vector3f refract(const Vector3f &I, const Vector3f &N, const float &ior)
+{
+    float cosi = clamp(-1, 1, dotProduct(I, N));  // cosi 就是公式中的 AO·OE    // 为什么? 这个的作用应该是把cosi的值严格限定在[-1, 1]之间吧, 防止精度损失导致大于1或者小于-1
+    float n1 = 1, n2 = ior;
+    Vector3f n = N;  // OE
+    
+    if (cosi < 0)  // 光线在外面
+    	{cosi = -cosi;}
+    else  // 光线在里面
+    	{std::swap(n1, n2); n= -N;}
+    
+    float eta = n1 / n2;
+    float k = 1 - eta * eta * (1 - cosi * cosi);
+    return k < 0 ? 0 : eta * I + (eta * cosi - sqrtf(k)) * n;
+}
+
+inline float clamp(const float& lo, const float& hi, const float& v)
+{
+    return std::max(lo, std::min(hi, v));
+}
+```
+
+
+
 ## Recursive Ray Tracing
 
 > Recursive (Whitted-Style) Ray Tracing
@@ -1783,7 +1849,7 @@ $$
 
 - Ray: $\bold{r}(t) = \bold{o} + t\bold{d} \quad 0\leq t\leq \infty$
 
-- General implicit surface: $\bold{p}: f(\bold{p}) = 0$  (比如圆的话就是 $\bold{p}: (\bold{p}-\bold{c})^2 - R^2 = 0$) 
+- General implicit surface: $\bold{p}: f(\bold{p}) = 0$  (比如圆的话就是 $\bold{p}: (\bold{p}-\bold{c})^2 - R^2 = 0$)
 
   ![image-20201212145030761](GAMES101.assets/image-20201212145030761.png)
 
@@ -1797,7 +1863,7 @@ $$
 
 - Why
   - Rendering: visibility, shadows, lighting …
-  - Geometry: inside/outside test 可以判断点在物体内还是外(连接光线和点, 如果穿过物体表面奇数次, 那么点在物体里面; 如果偶数次, 点在物体外面. 光线在物体外?)
+  - Geometry: inside/outside test 可以判断点在物体内还是外 (连接光线和点, 如果穿过物体表面奇数次, 那么点在物体里面; 如果偶数次, 点在物体外面. 光线在物体外?)
 - 算和Triangle Mesh的交点其实就是算和Mesh中每个三角形的交点
 
 ### With Triangle
@@ -2048,7 +2114,7 @@ $$
   - Exiting Radiance 辐射出去的光: Intensity per projected unit area 每单位面积的能量辐射到每单位立体角
   $$
     L(p, \omega) = \frac{dI(p, \omega)}{dA\;cos\theta}
-    $$
+  $$
 
 
 
