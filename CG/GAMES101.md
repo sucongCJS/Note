@@ -1735,13 +1735,13 @@ triangle meshes:
 
 > 反射和折射
 
-### 反射
+### Reflection
 
 - 推导 [link](https://blog.csdn.net/yinhun2012/article/details/79466517)
 
 <img src="GAMES101.assets/20180307124330611" alt="img" style="zoom: 80%;" />
 
-### 折射
+### Refraction
 
 #### Snell's law
 
@@ -1759,7 +1759,7 @@ triangle meshes:
 
   ![img](GAMES101.assets/20180308102210327)
 
-#### 代码
+#### Code
 
 - 需要考虑光线是否在物体内
   - 如果光线在物体内：
@@ -1775,7 +1775,7 @@ Vector3f refract(const Vector3f &I, const Vector3f &N, const float &ior)
     float n1 = 1, n2 = ior;
     Vector3f n = N;  // OE
     
-    if (cosi < 0)  // 光线在外面
+    if (cosi < 0)  // 光线在外面  因为光线是从其他地方指向交点, 法向量是从交点指向其他地方, 然后你仔细想
     	{cosi = -cosi;}
     else  // 光线在里面
     	{std::swap(n1, n2); n= -N;}
@@ -1790,6 +1790,72 @@ inline float clamp(const float& low, const float& high, const float& v)
     return std::max(low, std::min(high, v));
 }
 ```
+
+### Fresnel Reflection
+
+> 菲涅耳反射
+
+- [link](https://zhuanlan.zhihu.com/p/144403005), 
+
+- 折射的代码中要对k开根号, 其实k有可能是负的. 如果从一个折射率大的空间折射入一个折射率小的空间, 折射角度会变大, 且n1/n2 > 1, 要是入射的 θ 足够大, 1-cos$^2$θ 就会接近1, 那么此时k就是负的, **这意味着此时没有折射项, 所有的光线都被反射**
+
+- 下图展示了光线从空气射向不同材质时的菲涅耳反射比(来自 Akenine-Möller, Tomas, Eric Haines, and Naty Hoffman. *Real-time rendering,* Third Edition. CRC Press, 2008.  P. 233)
+
+  ![img](GAMES101.assets/v2-03de0b4495739ab29a32215d82590591_720w.jpg)
+
+  - $R_F$: 菲涅耳反射比, 为1时表示全都反射没有折射(透射)
+  - 横轴是入射角, 当入射角 接近90°的时候, 无论什么材质反射比都趋向于1
+  - 另外，导体（conductor）和半导体（semiconductor）的菲涅耳方程会更复杂一些，而且不同对波长的影响较大（上图中红色和紫色曲线分别对应 RGB 三种波长）。
+
+#### Fresnel equation
+
+> 描述光线经过两个介质的界面时, 反射和折射的光强比重
+>
+> [Milo_Yip_菲涅耳方程](https://zhuanlan.zhihu.com/p/31534769)
+
+<img src="GAMES101.assets/image-20201217093227296.png" alt="image-20201217093227296" style="zoom:80%;" />
+
+- $R$ 为反射比, 因能量守恒，透射比为 $T=1-R$ 
+
+  ![image-20201217093948950](GAMES101.assets/image-20201217093948950.png)
+
+#### Code
+
+```cpp
+// [comment]
+// Compute Fresnel equation
+// \param I is the incident view direction
+// \param N is the normal at the intersection point
+// \param ior is the material refractive index
+// [/comment]
+float fresnel(const Vector3f &I, const Vector3f &N, const float &ior)
+{
+    float cosi = clamp(-1, 1, dotProduct(I, N));
+    float etai = 1, etat = ior;
+    if (cosi > 0) { std::swap(etai, etat); }
+    
+    // Compute sini using Snell's law
+    float sint = etai / etat * sqrtf(std::max(0.f, 1 - cosi * cosi));
+    
+    // Total internal reflection
+    if (sint >= 1) {
+        return 1;
+    }
+    else {
+        float cost = sqrtf(std::max(0.f, 1 - sint * sint));  // 出射角cos
+        cosi = fabsf(cosi);
+        float Rs = std::pow(((etai * cosi) - (etat * cost)) / ((etai * cosi) + (etat * cost)), 2);
+        float Rp = std::pow(((etai * cost) - (etat * cosi)) / ((etai * cost) + (etat * cosi)), 2);
+        return (Rs + Rp) / 2;
+    }
+    // As a consequence of the conservation of energy, transmittance is given by:
+    // kt = 1 - kr;
+}
+```
+
+### Schlick 近似
+
+![image-20201217101216540](GAMES101.assets/image-20201217101216540.png)
 
 ## Recursive Ray Tracing
 
@@ -1999,7 +2065,7 @@ Data Structure
 
 ![image-20201212180225454](GAMES101.assets/image-20201212180225454.png)
 
-### 编程
+### Code
 
 #### 方向的表示
 
