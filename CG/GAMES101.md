@@ -2340,7 +2340,7 @@ $$
 
   - Shading in Rasterization 光栅化就是 $L= E+KE$, 也就是光源直接到眼睛 + 一次弹射
 
-## Ray Tracing
+## Path Tracing
 
 - why
 
