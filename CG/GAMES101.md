@@ -1735,19 +1735,39 @@ triangle meshes:
 
 > 反射和折射
 
+![image-20201220174021728](GAMES101.assets/image-20201220174021728.png)
+
+- 右边的有颜色, 说明光线被部分吸收(全吸收就是黑的), 因为颜色在球壳内
+
 ### Reflection
+
+> Perfect Specular Reflection
 
 - 推导 [link](https://blog.csdn.net/yinhun2012/article/details/79466517)
 
-<img src="GAMES101.assets/20180307124330611" alt="img" style="zoom: 80%;" />
+- 出射光线的计算方式
+
+  <img src="GAMES101.assets/image-20201220174518879.png" alt="image-20201220174518879" style="zoom:50%;" />
+
+  也可以旋转方位角, 俯视图如下
+
+  <img src="GAMES101.assets/image-20201220174757632.png" alt="image-20201220174757632" style="zoom:50%;" />
 
 ### Refraction
+
+> Specular Refraction
+
+- 折射率
+
+  <img src="GAMES101.assets/image-20201220175751541.png" alt="image-20201220175751541" style="zoom: 67%;" />
 
 #### Snell's law
 
 > 斯涅尔定律
 
-- 推导 [link](https://blog.csdn.net/yinhun2012/article/details/79472364)
+- ![image-20201220175953363](GAMES101.assets/image-20201220175953363.png)
+
+- 推导出射方向 [link](https://blog.csdn.net/yinhun2012/article/details/79472364)
 
   ![image-20201216112009881](GAMES101.assets/image-20201216112009881.png)
 
@@ -1757,7 +1777,7 @@ triangle meshes:
 
   总结
 
-  ![img](GAMES101.assets/20180308102210327)
+  ![image-20201220175539688](GAMES101.assets/image-20201220175539688.png)
 
 #### Code
 
@@ -1795,9 +1815,11 @@ inline float clamp(const float& low, const float& high, const float& v)
 
 > 菲涅耳反射
 
-- [link](https://zhuanlan.zhihu.com/p/144403005), 
+![image-20201220181414547](GAMES101.assets/image-20201220181414547.png)
 
-- 折射的代码中要对k开根号, 其实k有可能是负的. 如果从一个折射率大的空间折射入一个折射率小的空间, 折射角度会变大, 且n1/n2 > 1, 要是入射的 θ 足够大, 1-cos$^2$θ 就会接近1, 那么此时k就是负的, **这意味着此时没有折射项, 所有的光线都被反射**
+- [link](https://zhuanlan.zhihu.com/p/144403005)
+
+- 折射的代码中要对k开根号, 其实k有可能是负的. 如果从一个折射率大的空间折射入一个折射率小的空间, 折射角度会变大, 且n1/n2 > 1, 要是入射的 θ 足够大, 1-cos$^2$θ 就会接近1, 那么此时k就是负的, **这意味着此时没有折射项, 所有的光线都被反射, 也就是全反射现象**
 
 - 下图展示了光线从空气射向不同材质时的菲涅耳反射比(来自 Akenine-Möller, Tomas, Eric Haines, and Naty Hoffman. *Real-time rendering,* Third Edition. CRC Press, 2008.  P. 233)
 
@@ -1805,7 +1827,7 @@ inline float clamp(const float& low, const float& high, const float& v)
 
   - $R_F$: 菲涅耳反射比, 为1时表示全都反射没有折射(透射)
   - 横轴是入射角, 当入射角 接近90°的时候, 无论什么材质反射比都趋向于1
-  - 另外，导体（conductor）和半导体（semiconductor）的菲涅耳方程会更复杂一些，而且不同对波长的影响较大（上图中红色和紫色曲线分别对应 RGB 三种波长）。
+  - 另外，导体（conductor）和半导体（semiconductor）的菲涅耳方程会更复杂一些，而且不同波长的影响较大（上图中红色和紫色曲线分别对应 RGB 三种波长）。导体在垂直看的时候也是反射很多. 
 
 #### Fresnel equation
 
@@ -1818,6 +1840,8 @@ inline float clamp(const float& low, const float& high, const float& v)
 - $R$ 为反射比, 因能量守恒，透射比为 $T=1-R$ 
 
   ![image-20201217093948950](GAMES101.assets/image-20201217093948950.png)
+  
+  ![image-20201220182130668](GAMES101.assets/image-20201220182130668.png)
 
 #### Code
 
@@ -1853,9 +1877,14 @@ float fresnel(const Vector3f &I, const Vector3f &N, const float &ior)
 }
 ```
 
-### Schlick 近似
+### Schlick approximation
 
 ![image-20201217101216540](GAMES101.assets/image-20201217101216540.png)
+
+<img src="GAMES101.assets/image-20201220182243428.png" alt="image-20201220182243428" style="zoom:50%;" />
+
+- 90°的时候等于1
+- 不管是导体还是绝缘体都可以使用
 
 ## Recursive Ray Tracing
 
@@ -2123,37 +2152,47 @@ Data Structure
 
 #### Solid angle
 
-- Angle: ratio of subtended arc length on circle to radius
+- **Solid angle** $Ω$: ratio of subtended area on sphere to radius squared 覆盖半球表面区域的面积除以半径的平方
 
-  - ![image-20201212213355750](GAMES101.assets/image-20201212213355750.png)
+  - $Ω = \frac{A}{r^2}$, sphere has $4\pi$ steradians
 
-    ![image-20201212213406765](GAMES101.assets/image-20201212213406765.png)
+    <img src="GAMES101.assets/image-20201212213438029.png" alt="image-20201212213438029" style="zoom:50%;" />
+  
+- **Angle** $\theta$: ratio of subtended arc length on circle to radius
 
-- Solid angle: ratio of subtended area on sphere to radius squared
+  - $\theta = \frac{l}{r}$, circle has $2\pi$ radians 
 
-  - ![image-20201212213428050](GAMES101.assets/image-20201212213428050.png)
-
-    ![image-20201212213438029](GAMES101.assets/image-20201212213438029.png)
+    <img src="GAMES101.assets/image-20201212213406765.png" alt="image-20201212213406765" style="zoom:50%;" />
 
 #### Differential Solid Angles
 
 > 单位立体角
 
-![image-20201212213611368](GAMES101.assets/image-20201212213611368.png)
+<img src="GAMES101.assets/image-20201212213611368.png" alt="image-20201212213611368" style="zoom: 67%;" />
 
-- 圆上的单位面积大小: ![image-20201212213812106](GAMES101.assets/image-20201212213812106.png)
+- 圆上的单位面积大小: 
+  $$
+  dA = (r\>d\theta)(rsin\theta\> d\phi) = r^2sin\theta\>d\theta d\phi
+  $$
 
-  (FYI: 弧度等于半径乘圆心角度数(弧度制))
+  - FYI: 弧长等于半径乘圆心角度数(弧度制)
 
-- 单位立体角: ![image-20201212213832588](GAMES101.assets/image-20201212213832588.png) (有$sin\theta$, 可以看出不是在球面上均匀变化)
+- 单位立体角: 
+  $$
+  d\omega = \frac{A}{r^2}=sin\theta d\theta d\phi
+  $$
 
-- 整个球的立体角![image-20201212214005287](GAMES101.assets/image-20201212214005287.png)
+  - 有$sin\theta$, 可以看出不是在球面上均匀变化
+
+- 整个球的立体角
+
+  <img src="GAMES101.assets/image-20201212214005287.png" alt="image-20201212214005287" style="zoom: 67%;" />
 
 - 所有方向的单位立体角的强度Intensity积分起来得到能量, 如果是Isotropic Point Source 均匀辐射能量的点光源: ![image-20201213103342609](GAMES101.assets/image-20201213103342609.png), 它的intensity就是![image-20201213103537307](GAMES101.assets/image-20201213103537307.png), 能量去除以立体角
 
 ### irradiance
 
-> 接受的能量
+> 接受的能量 
 >
 > The irradiance is the power per unit area incident on a surface point.
 >
@@ -2262,16 +2301,19 @@ $$
 L_r(p, \omega_r) = \int_{H^2} f_r(\omega_i\to \omega_r) \; L_i(\omega_i)\>cos\theta_i\>d\omega_i
 $$
 
-- $d\omega_i$: 表示一个方向, 积分后表示每个方向
-- $L_i(\omega_i)$: Incident Light (from light source) 入射光
+- $\omega_i$: 光线入射的方向
+- $d\omega_i$: 入射光线的立体角的微元面积(也就是无穷小的面积, 即单位面积), 积分后就是整个半球的面积
+- $L_i(\omega_i)$: Incident Light (from light source) 入射光, 准确的说是入射光线单位面积光通量
 - $L_i(\omega_i)\>d\omega_i$: 积分后表示每个方向入射的光
 - $L_i(\omega_i)\>cos\theta_i\>d\omega_i$: 小方块收到的 irradiance
-- $f_r(\omega\to \omega_r)$: BRDF 这个光对出射的贡献率
+- $f_r(\omega\to \omega_r)$: BRDF 这个光对出射的贡献率, 其实也是入射光线和出射光线亮度的反射比例系数
 - $ f_r(\omega_i\to \omega_r) \; L_i(\omega_i)\>cos\theta_i\>d\omega_i$: irradiance × BRDF 就是出射的 radiance 
 - $H^2$: 表示半球, 来自半球下面的光不考虑
 - $\int_{H^2}$: 将所有入射对出射的贡献积起来
+- 整个积分要表达的意思就是在单位半球表面收集所有方向的入射光线亮度和面积信息以及对应的反射系数，用这些参数在半球表面的作积分。
+- [link](https://zhuanlan.zhihu.com/p/21489591)
 
-![image-20201214124128622](GAMES101.assets/image-20201214124128622.png)
+<img src="GAMES101.assets/image-20201214124128622.png" alt="image-20201214124128622" style="zoom:80%;" />
 
 - 入射方向 -> 着色点 -> 出射方向
 
@@ -2304,6 +2346,8 @@ $$
 - $\varOmega+$: 表示上半球
 
   ![image-20201214131701289](GAMES101.assets/image-20201214131701289.png)
+  
+- [link](https://zhuanlan.zhihu.com/p/21489591)
 
 #### 全局光照
 
@@ -2625,6 +2669,103 @@ shade(p, wo)
 - Asking again, is path tracing still “Introductory”?
 - This time, yes. Fear the science, my friends.
 
+# Materials & Appearances
+
+- 在渲染方程(rendering equation)中的BRDF决定了物体的材质是什么, 因为BRDF决定了光如何被反射
+
+  **Material == BRDF**
+
+## Diffuse Material
+
+> Diffuse / Lambertian Material
+
+- 假设物体不发光, 不吸收光, 入射和出射的irradiance相等, 且radiance都是uniform(均匀)的, 那么入射光的radiance和出射光的radiance是一样的
+
+  因为能量守恒, 有
+
+  ![image-20201220114119446](GAMES101.assets/image-20201220114119446.png)
+  - 入射的radiance($L_i$)是常数, BRDF($f_r$)也是常数, 提到外面
+
+  - $\int_{H^2} cos\theta_i\>d\omega_i = \int_{0}^{2\pi}\int_0^{\frac{\pi}{2}} cos\theta_isin\theta_id\theta d\phi$
+
+    1. $\int_0^{\frac{\pi}{2}} cos\theta_isin\theta_id\theta = \frac{1}{2}\int_0^{\frac{\pi}{2}} 2sin\theta_icos\theta_id\theta = \frac{1}{2}[sin^2(\frac{\pi}{2}) - sin^2(0)] = \frac{1}{2}$
+       - $2sin\theta cos\theta = sin(2\theta)$ 
+       - $(sin^2\theta)' = sin(2\theta)$
+
+    2. $\int_{H^2} cos\theta_i\>d\omega_i = \frac{1}{2}\int_{0}^{2\pi} d\phi = \pi$
+
+  - 能量守恒, 要使入射等于出射, $f_r$只能是$\frac{1}{\pi}$
+
+  - $\rho$: albedo, 反射率, 材质颜色, [0, 1] 可以是单通道, 也可以是多通道的
+
+  - (可以参见solid angle, rendering equation)
+
+  - [link](https://zhuanlan.zhihu.com/p/21489591)
+
+
+
+## Microfacet Material
+
+![image-20201220183436761](GAMES101.assets/image-20201220183436761.png)
+
+- 从<u>近处</u>看有不同的<u>几何</u>, 从<u>远处</u>看几何会消失, 变成<u>材质</u>
+  - Macroscale: flat & rough 从远处看是一个粗糙(材质粗糙)的平面
+- Microscale: bumpy & specular 从近处看是一个表明是凹凸不平的, 每一个小的表面的微元是镜面的
+
+### BRDF
+
+$$
+f(\bold{i},\bold{o}) = \frac
+{\bold{F}(\bold{i},\bold{h})\;
+ \bold{G}(\bold{i},\bold{o},\bold{h})\;
+ \bold{D}(\bold{h})}
+{4(\bold{n}, \bold{i})(\bold{n}, \bold{o})}
+$$
+
+- $\bold{F}(\bold{i},\bold{h})$: Fresnel term 反射程度, 反射能量的多少
+
+- $ \bold{G}(\bold{i},\bold{o},\bold{h})$: shadowing-masking term 几何项 光比较和平面平行地打进来的时候(grazing angle), 会发生自遮挡, 自投影, 这一项就是为了修正grazing angle的, 不然渲染球的时候, 球的边界会很亮
+
+- $ \bold{D}(\bold{h})$: distribution of normals 法线分布
+
+  - ![image-20201220184059072](GAMES101.assets/image-20201220184059072.png)
+
+    光滑的表明法线集中, 粗糙的表明反之
+
+- $\bold{h}$: 是half vector
+
+  <img src="GAMES101.assets/image-20201220185859632.png" alt="image-20201220185859632" style="zoom: 50%;" />
+
+## Isotropic / Anisotropic Materials
+
+### BRDF
+
+- 如果$f_r(\theta_i, \phi_i, \theta_r, \phi_r) \neq f_r(\theta_i, \theta_r, \phi_r-\phi_i)$, 也就是在方位角上旋转得到的BRDF不一样, 那就是各向异性 [link 61:30](https://www.bilibili.com/video/BV1X7411F744?p=17)
+
+- ![image-20201220191159968](GAMES101.assets/image-20201220191159968.png)
+  - 各向同性的法线分布均匀
+
+## Properties of BRDFs
+
+- Reciprocity principle 可逆性
+
+  ![image-20201220192738663](GAMES101.assets/image-20201220192738663.png)
+
+- Energy conservation 能量守恒
+
+  ![image-20201220192828198](GAMES101.assets/image-20201220192828198.png)
+
+- Isotropic vs. anisotropic
+
+  ![image-20201220202244381](GAMES101.assets/image-20201220202244381.png)
+
+  - 如果是各向同性材质, 那BRDF只和相对的方位角($\phi_r - \phi_i$)有关, 因为不管怎么旋转, $\phi_r - \phi_i$都一样. 那么原来四维现在只要三维就够了. 
+  - 因为可逆性, 交换入射光和出射光结果不变, 所以绝对值号也可以省了
+
+## Measuring BRDFs
+
+
+
 # Animation
 
 > Simulation 模拟
@@ -2666,8 +2807,3 @@ Sampling triangle coverage 采样, 判断是否在三角形内
 如果是Gouraud shading, 那还和Vertex Processing有关
 
 ![image-20201111193015901](GAMES101.assets/image-20201111193015901.png)
-
-作业一、二：史雨宸，syc0412@mail.ustc.edu.cn
-作业四、五：邓俊辰，1050106988[@qq](http://games-cn.org/forums/users/qq/).com
-作业三、六、七：刘光哲，lgz17@mails.tsinghua.edu.cn
-作业八：禹鹏、郭文鲜，y2505418927@gmail.com，wxguojlu@hotmail.com
