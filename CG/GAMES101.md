@@ -2515,7 +2515,7 @@ Russian Roulette (RR)
   - With probability <u>P</u>, shoot a ray and return the **shading result divided by P: Lo / P**  打光线的话, 结果除以P
   - With probability <u>1-P</u>, don’t shoot a ray and you’ll get **0** 
 - In this way, you can still **expect** to get Lo!:
-  E = P * (Lo / P) + (1 - P) * 0 = Lo  期望并没有变
+  E = P * (Lo / P) + (1 - P) * 0 = Lo  期望并没有变, 也就是无偏(unbiased)
 
 ```cpp
 shade(p, wo)
