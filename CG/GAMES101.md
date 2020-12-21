@@ -2764,11 +2764,162 @@ $$
 
 ## Measuring BRDFs
 
+## Appearance Modeling
 
+外观就是材质, 材质就是BRDF
+
+### Non-Surface  Models
+
+#### Participating Media
+
+> 散射介质 参与介质
+
+- fog
+- cloud
+- Phase Function 
+
+
+
+# Light
+
+## The Plenoptic Function
+
+> 全光函数
+>
+> the set of all things that we caan ever see
+
+![image-20201221144943809](GAMES101.assets/image-20201221144943809.png)
+
+- Can reconstruct every possible view, at every moment, from every position, at every wavelength($\lambda$)
+- completely captures our visual reality
+
+## Light Field
+
+>也叫Lumigraph
+>
+>在任何一个位置, 往任何一个方向, 发射出的光的强度
+>
+>![image-20201221152529030](GAMES101.assets/image-20201221152529030.png)
+
+- 光场是全光函数的一部分, 只有位置(二维, 三维物体的表面用二维的平面就能表示, texture mapping)和方向(二维, $\theta, \phi$)
+
+- 由于我们看一个三维的物体其实也只是看他发出的光映射到我们视网膜上的二维图像, 所以如果是二维的平面能发出一样的光其实也是一样的.
+
+- 可以把物体抽象成一个立方体
+
+  ![image-20201221154551115](GAMES101.assets/image-20201221154551115.png)
+
+  只要它发出的光和原来的物体一样, 那在眼睛看来就是一样的, 而不用去管盒子里是什么
+
+- 光线可以用一个原点和方向来表示
+
+  ![image-20201221155024474](GAMES101.assets/image-20201221155024474.png)
+
+  也可以用两个点带上正负号来表示
+
+  ![image-20201221155130895](GAMES101.assets/image-20201221155130895.png)
+
+  ![image-20201221155512343](GAMES101.assets/image-20201221155512343.png)
+
+- ![image-20201221155810396](GAMES101.assets/image-20201221155810396.png)
+
+  - 物体在st右边
+
+  - (a)是从uv连线到st, 所以得到的是从一个角度看物体的一张物体的图像 (右上的图); 从不同的角度看物体得到的所有图像就是光场 (中上的图)
+
+    ![image-20201221160653919](GAMES101.assets/image-20201221160653919.png)
+
+    每个相机的位置就是uv上的点, 从uv上一个点连到所有st上的点就是一个相机拍出来的图像
+
+  - (b)是从st连线到uv, 得到的是从不同的角度看物体同一个位置的图像(就是盯着一个点, 然后改变自己的位置看到的) (右下的图)
+
+## Light Field Camera
+
+![image-20201221162122463](GAMES101.assets/image-20201221162122463.png)
+
+- 普通的摄像机会把成像平面放在图中黄色透镜的位置, 也就是将来自不同方向的光(irradiance)给平均起来, 得到一个个像素. 但是光场摄像机在原本像素的位置放置了一个个微透镜, 透镜可以将来自不同方向的光分散到不同的方向上去, 分开后再成像
+- 黄色透镜左边的那部分其实就是一个光场
+
+光场摄像机拍出来的原始图片(可以放大看看🔍)
+
+![image-20201221163618815](GAMES101.assets/image-20201221163618815.png)
+
+![image-20201221163459552](GAMES101.assets/image-20201221163459552.png)
+
+- Each pixel (irradiance) is now stored as a block of pixels (radiance), 原本的一个像素现在是一个圆, 如果将一个圆内所有的像素平均起来得到的就是普通相机拍出来的一个像素. 一个圆内部的所有像素记录的其实就是在这个位置来自不同方向的光(可以看上面Light Field的(b))
+- 一个像素原本记录的irradiance被拆开, 每个方向的radiance都被分别记录
+
+![image-20201221164724400](GAMES101.assets/image-20201221164724400.png)
+
+- How to get a “regular” photo from the light field photo? 从光场图片中得到普通照片
+  - 每个透镜只取来自某一个方向的光, 如图得到的结果就相当于普通照相机从上面拍得到的结果
+  - Essentially “moving the camera around” 所以有了光场摄像机就可以虚拟地移动摄像机的位置
+- Computational / digital refocusing
+  - Same idea: visually changing focal length, picking the refocused ray directions accordingly
+
+### problems
+
+- Insufficient spatial resolution (same film used for both spatial and directional information) 分辨率不足, 原本一个像素的信息现在需要更多的像素来记录
+- High cost (intricate designation of microlenses) 
+- Computer Graphics is about trade-offs
 
 # Animation
 
 > Simulation 模拟
+
+## Keyframe animation
+
+## Physical simulation
+
+### Mass Spring System
+
+> 质点弹簧系统
+
+![image-20201221195126778](GAMES101.assets/image-20201221195126778.png)
+
+$a$ 点受到 $b$ 点的力的公式: 
+$$
+f_{a\to b} = k_S\frac{\bold{b}-\bold{a}}{||\bold{b} - \bold{a}||}(||\bold{b} - \bold{a}||-l)
+$$
+
+- $k_S$: 劲度系数 a spring coefficient: stiffness
+- $\bold{b}-\bold{a}$: 两个都是向量, 所以即表示长度又表示方向
+- $\frac{\bold{b}-\bold{a}}{||\bold{b} - \bold{a}||}$: 力的方向
+- $||\bold{b} - \bold{a}||-l$: 弹簧形变长度
+
+还需要摩擦力, 不然弹簧会一直运动下去, 摩擦力公式: 
+$$
+f_b = -k_d\frac{\bold{b}-\bold{a}}{||\bold{b} - \bold{a}||}\cdot(\bold{\dot{b}} -\bold{\dot{a}})\cdot\frac{\bold{b}-\bold{a}}{||\bold{b} - \bold{a}||}
+$$
+
+- $-$: 负号表示力的方向是和速度方向相反的
+- $k_d$: damping coefficient
+- $\bold{\dot{b}}$: $\bold{b}$ is vector fot the position of a point of interest.  $\bold{\dot{b}}$ 是 $\bold{b}$ 的一阶导数, 也就是速度 ($\bold{\ddot{b}}$ 则表示二阶导数, 即加速度)
+- $(\bold{\dot{b}}-\bold{\dot{a}})$: 要考虑的是$\bold{b}$和$\bold{a}$的相对速度, 因为弹簧可能作为一个整体一起运动. 
+- $\frac{\bold{b}-\bold{a}}{||\bold{b} - \bold{a}||}\cdot(\bold{\dot{b}}-\bold{\dot{a}})$: Relative velocity projected to the direction from a to b (scalar) 只取沿力方向的速度
+- $\frac{\bold{b}-\bold{a}}{||\bold{b} - \bold{a}||}$: 方向
+
+
+
+应用
+
+- 布
+
+  ![image-20201221203804460](GAMES101.assets/image-20201221203804460.png)
+
+### Particle Systems
+
+> 粒子系统
+
+先模拟后渲染, 先模拟例子怎么运动的, 再根据需要渲染成水或沙子
+
+## Kinematics
+
+> 运动学
+
+## Rigging
+
+- 加控制点
 
 # Real-time Rendering Pipeline
 
