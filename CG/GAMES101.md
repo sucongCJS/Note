@@ -1,9 +1,5 @@
 <center><bold><large>感谢闫令祺老师的精彩课程!</large></bold></center>
 
-
-
-[toc]
-
 # Introduction
 
 CG和CV的区别
@@ -1886,6 +1882,10 @@ float fresnel(const Vector3f &I, const Vector3f &N, const float &ior)
 - 90°的时候等于1
 - 不管是导体还是绝缘体都可以使用
 
+### Reflection Mapping
+
+> 环境贴图（Environment Mapping, EM）也称为反射贴图（Reflection Mapping）
+
 ## Recursive Ray Tracing
 
 > Recursive (Whitted-Style) Ray Tracing
@@ -2102,7 +2102,7 @@ Data Structure
 
 - 通常相机放在原点, 朝向-z(RenderMan, Maya, PBRT and OpenGL都是这样), image plane(见图中) is often placed exactly 1 unit away from the camera's origin, 也就是(0, 0, -1)
 
-  ![image-20201212143127327](GAMES101.assets/image-20201212143127327.png)
+  <img src="GAMES101.assets/image-20201212143127327.png" alt="image-20201212143127327" style="zoom:80%;" />
 
 ![image-20201216192736363](GAMES101.assets/image-20201216192736363.png)
 
@@ -2110,7 +2110,7 @@ Data Structure
 
 - 坐标变换(遍历每一个像素的时候是从左上角到右下角, 也就是左上角是(0,0), 要变换成最下面[-1:1]的形式)
 
-  ![img](GAMES101.assets/cambasic1A.png)
+  <img src="GAMES101.assets/cambasic1A.png" alt="img" style="zoom:80%;" />
 
   Converting the coordinate of a point in the middle of a pixel to world coordinates requires a few steps. The coordinates of this point are first expressed in raster space (the pixels coordinate plus an offset of 0.5), then converted to NDC(Normalized Device Coordinates) space (the coordinates are remapped to the range [0,1]) then converted to screen space (the NDC coordinates are remapped to the [-1,1]). Applying the final camera-to-world transformation 4x4 matrix transform the coordinates in screen space to world space.
 
@@ -2119,6 +2119,8 @@ Data Structure
   ![image-20201216204832424](GAMES101.assets/image-20201216204832424.png)
 
   - 如果宽高比是1.4的话, 那么变换后y范围是[-1,1], x的范围是[-1.4, 1.4] (more generally [-aspect ratio, aspect ratio])
+  
+- [GAMES101 Assignment5 ?]()
 
 ## Radiometry
 
@@ -2740,10 +2742,10 @@ $$
 
 ### BRDF
 
-- 如果$f_r(\theta_i, \phi_i, \theta_r, \phi_r) \neq f_r(\theta_i, \theta_r, \phi_r-\phi_i)$, 也就是在方位角上旋转得到的BRDF不一样, 那就是各向异性 [link 61:30](https://www.bilibili.com/video/BV1X7411F744?p=17)
+- 如果$f_r(\theta_i, \phi_i, \theta_r, \phi_r) \neq f_r(\theta_i, \theta_r, \phi_r-\phi_i)$, 也就是在方位角上旋转得到的BRDF不一样, 那就是各向异性 [link 61:30](https://www.bilibili.com/video/BV1X7411F744?p=17) 
 
 - ![image-20201220191159968](GAMES101.assets/image-20201220191159968.png)
-  - 各向同性的法线分布均匀
+  - 各向同性的法线分布均匀. 各向同性反射就是在整个半球空间均匀反射能量, 漫反射, 一个完全的漫射体称为朗伯体(Lambert)
 
 ## Properties of BRDFs
 
@@ -2764,11 +2766,360 @@ $$
 
 ## Measuring BRDFs
 
+## Appearance Modeling
 
+外观就是材质, 材质就是BRDF
+
+### Non-Surface  Models
+
+#### Participating Media
+
+> 散射介质 参与介质
+
+- fog
+- cloud
+- Phase Function 
+
+
+
+# Light
+
+## The Plenoptic Function
+
+> 全光函数
+>
+> the set of all things that we caan ever see
+
+![image-20201221144943809](GAMES101.assets/image-20201221144943809.png)
+
+- Can reconstruct every possible view, at every moment, from every position, at every wavelength($\lambda$)
+- completely captures our visual reality
+
+## Light Field
+
+>也叫Lumigraph
+>
+>在任何一个位置, 往任何一个方向, 发射出的光的强度
+>
+>![image-20201221152529030](GAMES101.assets/image-20201221152529030.png)
+
+- 光场是全光函数的一部分, 只有位置(二维, 三维物体的表面用二维的平面就能表示, texture mapping)和方向(二维, $\theta, \phi$)
+
+- 由于我们看一个三维的物体其实也只是看他发出的光映射到我们视网膜上的二维图像, 所以如果是二维的平面能发出一样的光其实也是一样的.
+
+- 可以把物体抽象成一个立方体
+
+  ![image-20201221154551115](GAMES101.assets/image-20201221154551115.png)
+
+  只要它发出的光和原来的物体一样, 那在眼睛看来就是一样的, 而不用去管盒子里是什么
+
+- 光线可以用一个原点和方向来表示
+
+  也可以用两个点带上正负号来表示
+
+  <img src="GAMES101.assets/image-20201221155130895.png" alt="image-20201221155130895" style="zoom:50%;" />
+
+  ![image-20201221155512343](GAMES101.assets/image-20201221155512343.png)
+
+  - uv面也叫 camera plane
+  - st面也叫 focal plane
+
+- ![image-20201221155810396](GAMES101.assets/image-20201221155810396.png)
+
+  - 物体在st右边
+
+  - (a)是从uv连线到st, 所以得到的是从一个角度看物体的一张物体的图像 (右上的图); 从不同的角度看物体得到的所有图像就是光场 (中上的图)
+
+    如果要连续地旋转视角来看物体, 需要在uv上插值, 在st上插值, 也就是quadrilinear interpolation
+
+    [Light Field Rendering - Siggraph '96 video](https://www.youtube.com/watch?v=dMcZpeGOBPI&ab_channel=PatriciaPate)
+
+    ![image-20201221160653919](GAMES101.assets/image-20201221160653919.png)
+  
+    每个相机的位置就是uv上的点, 从uv上一个点连到所有st上的点就是一个相机拍出来的图像
+  
+  - (b)是从st连线到uv, 得到的是从不同的角度看物体同一个位置的图像(就是盯着一个点, 然后改变自己的位置看到的) (右下的图)
+
+## Light Field Camera
+
+![image-20201221162122463](GAMES101.assets/image-20201221162122463.png)
+
+- 普通的摄像机会把成像平面放在图中黄色透镜的位置, 也就是将来自不同方向的光(irradiance)给平均起来, 得到一个个像素. 但是光场摄像机在原本像素的位置放置了一个个微透镜, 透镜可以将来自不同方向的光分散到不同的方向上去, 分开后再成像
+- 黄色透镜左边的那部分其实就是一个光场
+
+光场摄像机拍出来的原始图片(可以放大看看🔍)
+
+![image-20201221163618815](GAMES101.assets/image-20201221163618815.png)
+
+![image-20201221163459552](GAMES101.assets/image-20201221163459552.png)
+
+- Each pixel (irradiance) is now stored as a block of pixels (radiance), 原本的一个像素现在是一个圆, 如果将一个圆内所有的像素平均起来得到的就是普通相机拍出来的一个像素. 一个圆内部的所有像素记录的其实就是在这个位置来自不同方向的光(可以看上面Light Field的(b))
+- 一个像素原本记录的irradiance被拆开, 每个方向的radiance都被分别记录
+
+![image-20201221164724400](GAMES101.assets/image-20201221164724400.png)
+
+- How to get a “regular” photo from the light field photo? 从光场图片中得到普通照片
+  - 每个透镜只取来自某一个方向的光, 如图得到的结果就相当于普通照相机从上面拍得到的结果
+  - Essentially “moving the camera around” 所以有了光场摄像机就可以虚拟地移动摄像机的位置
+- Computational / digital refocusing
+  - Same idea: visually changing focal length, picking the refocused ray directions accordingly
+
+### problems
+
+- Insufficient spatial resolution (same film used for both spatial and directional information) 分辨率不足, 原本一个像素的信息现在需要更多的像素来记录
+- High cost (intricate designation of microlenses) 
+- Computer Graphics is about trade-offs
 
 # Animation
 
 > Simulation 模拟
+
+## Keyframe animation
+
+## Physical simulation
+
+### Mass Spring System
+
+> 质点弹簧系统
+
+![image-20201221195126778](GAMES101.assets/image-20201221195126778.png)
+
+$a$ 点受到 $b$ 点的力的公式: 
+$$
+f_{a\to b} = k_S\frac{\bold{b}-\bold{a}}{||\bold{b} - \bold{a}||}(||\bold{b} - \bold{a}||-l)
+$$
+
+- $k_S$: 劲度系数 a spring coefficient: stiffness
+- $\bold{b}-\bold{a}$: 两个都是向量, 所以即表示长度又表示方向
+- $\frac{\bold{b}-\bold{a}}{||\bold{b} - \bold{a}||}$: 力的方向
+- $||\bold{b} - \bold{a}||-l$: 弹簧形变长度
+
+还需要摩擦力, 不然弹簧会一直运动下去, 摩擦力公式: 
+$$
+f_b = -k_d\frac{\bold{b}-\bold{a}}{||\bold{b} - \bold{a}||}\cdot(\bold{\dot{b}} -\bold{\dot{a}})\cdot\frac{\bold{b}-\bold{a}}{||\bold{b} - \bold{a}||}
+$$
+
+- $-$: 负号表示力的方向是和速度方向相反的
+- $k_d$: damping coefficient
+- $\bold{\dot{b}}$: $\bold{b}$ is vector fot the position of a point of interest.  $\bold{\dot{b}}$ 是 $\bold{b}$ 的一阶导数, 也就是速度 ($\bold{\ddot{b}}$ 则表示二阶导数, 即加速度)
+- $(\bold{\dot{b}}-\bold{\dot{a}})$: 要考虑的是$\bold{b}$和$\bold{a}$的相对速度, 因为弹簧可能作为一个整体一起运动. 
+- $\frac{\bold{b}-\bold{a}}{||\bold{b} - \bold{a}||}\cdot(\bold{\dot{b}}-\bold{\dot{a}})$: Relative velocity projected to the direction from a to b (scalar) 只取沿力方向的速度
+- $\frac{\bold{b}-\bold{a}}{||\bold{b} - \bold{a}||}$: 方向
+
+
+
+应用
+
+- 布
+
+  ![image-20201221203804460](GAMES101.assets/image-20201221203804460.png)
+
+### Particle Systems
+
+> 粒子系统
+
+先模拟后渲染, 先模拟例子怎么运动的, 再根据需要渲染成水或沙子
+
+## Kinematics
+
+> 运动学
+
+## Rigging
+
+- 加控制点
+
+# Modeling
+
+## Neural Rendering
+
+- Multi-Plane Images
+
+  ![image-20201224103525008](GAMES101.assets/image-20201224103525008.png)
+
+  - Renderer: (Alpha深度) compositing
+  - 放置不同深度的scene, 然后shoot ray, 根据不同深度取不同scene上的颜色?
+  - Pros: Fast rendering, High quality, Generalizes
+  - Cons: Only 2.5D size 看不到背面
+
+- Voxelgribs
+
+  ![image-20201224104132951](GAMES101.assets/image-20201224104132951.png)
+
+  - Renderer: Volumetric Ray-Based
+  - 体渲染
+  - Pros: 真3D
+  - Cons: 占空间 O(n$^3$), no reconstruction priors
+
+-  Image-based
+
+  ![image-20201224104621616](GAMES101.assets/image-20201224104621616.png)
+
+  - Renderer: Reprojection
+  - Pros: 
+  - Cons: 
+
+- Point Clouds
+
+  - Renderer: 
+  - Pros:
+  - Cons: 
+
+- Implicit Function
+
+  - Renderer: 
+  - Pros: 
+  - Cons: 
+
+[Neural Rendering (CVPR 2020) - Morning Session - YouTube](https://www.youtube.com/watch?v=LCTYRqW-ne8&ab_channel=NeuralRendering)
+
+
+
+## Differentiable Rendering
+
+> 可微分渲染
+
+- 逆向绘制(Inverse Rendering): 给你2D图像，获得生成这张图像所需的3D场景信息，这个信息可以是3D几何，灯光，材质，视角中的一种或多种
+  - 逆向绘制过程：
+    1. 定义了目标图片 A ，目标是找到能够生成这张图片的3D 场景B,
+    2. 一开始会做一个初始的3D 场景 B', 这个场景可以是错的，或者大致是对的
+    3. 拿着个B' 送到渲染器中,渲染得到图片 A'
+    4. 这一步就是和 神经网络类似了，比较 A 和 A' 的差别，计算出Loss
+    5. 将 Loss Backprop 到场景B' 中的不同参数上，比如 材质参数，镜头参数，修改这些参数的值，获得新的场景 B1'  (这部分就是**可微分渲染**的的关键部分,因为这一步需要算Gradient，而从传统来看, 绘制的计算过程是Monte Carlo Ray Tracing, 光线在整个场景中跳来跳去，这个计算过程是很多值都是离散的，不好算出合适的Gradient)
+    6. 和训练神经网络一样，继续 3-5 这个过程。 
+  - 绘制中有很多效果，BSDF函数，现在还没有很好的探索过可微分的框架，性能，这个都是很新的领域。
+  - [什么是可微分渲染](https://www.zhihu.com/question/364770565)
+
+-   
+
+## Volume Rendering
+
+> 体渲染, 体绘制
+>
+> volume rendering is a set of techniques used to display a 2D projection of a 3D discretely [sampled](https://en.wikipedia.org/wiki/Sampling_(signal_processing)) [data set](https://en.wikipedia.org/wiki/Data_set), typically a 3D [scalar field](https://en.wikipedia.org/wiki/Scalar_field). (A typical 3D data set is a group of 2D slice images acquired by a CT, [MRI](https://en.wikipedia.org/wiki/Magnetic_resonance_imaging), or [MicroCT](https://en.wikipedia.org/wiki/Microtomography) [scanner](https://en.wikipedia.org/wiki/Image_scanner).)
+
+- 自然界中很多视觉效果是不规则的体，如流体、云、烟等，它们很难用常规的几何元素进行建模，使用粒子系统的模拟方法也不能尽善尽美，而使用体绘制可以达到较好的模拟效果
+- 体绘制是科学可视化领域中的一个技术方向。体绘制的目标是在一副图片上展示空间体细节。举例而言，你面前有一间房子，房子中有家具、家电，站在房子外面只能看到外部形状，无法观察到房子的布局或者房子中的物体；假设房子和房子中的物体都是半透明的，这样你就可以同时查看到所有的细节。这就是体绘制所要达到的效果。
+- 体绘制技术以物体对光的吸收原理为理论基础，在实现方式上，最终要基于透明度合成计算模型。此外，经典的光照模型，例如 phong 模型， cook-torrance 模型都可以做为体绘制技术的补充，完善体绘制效果，增强真实感
+- 体绘制技术与透明光照模型: 透明光照模型，一般侧重于分析光在透明介质中的传播方式（折射，发散，散射，衰减等），并对这种传播方式所带来的效果进行模拟；而体绘制技术偏重于物体内部层次细节的真实展现。举例而言，对于一个透明的三棱镜，使用透明光照模型的目的在于 “ 模拟光的散射，折射现象（彩虹） ” ；而对于地形切片数据或者人体数据，则需要使用体绘制技术观察到其中的组织结构。此外，在实现方式上，透明光照模型一般是跟踪光线的交互过程，并在一系列的交互过程中计算颜色值；而体绘制技术是在同一射线方向上对体数据进行采样，获取多个体素的颜色值，然后根据其透明度进行颜色的合成。
+
+- [GPU编程与CG语言之阳春白雪下里巴人]()
+
+### Volume Data
+
+> 体数据
+
+- 举个例子，有一堆混凝土，其中包含了碳物质（ C ）若干，水分子（ H20 ）若干，还有胶状物三种物质，你用这种混凝土建造了块方砖，如果存在一个三维数组，将方砖 X 、 Y 、 Z 方向上的物质分布表示出来，则该数组可以被称为体数据。体数据本质上就是按照这个原理进行组织的！
+- 对比: <u>面数据</u>，并不是说二维平面数据，而是说这个数据中只有表面细节，没有包含体细节，实际上体数据和面数据的本质区别，在于是否包含了体细节，而不是在维度方面。
+- 体数据通常是由 CT 仪器进行扫描得到的，然后保存在图片的像素点上。
+- **纹理坐标是联系三维模型和体纹理数据之间的桥梁，通过计算光线穿越三维模型，可以计算体纹理在光线穿越方向上的变化，这就是计算采样纹理坐标的方法。**
+
+#### Voxel
+
+> 体素
+>
+> A voxel (a [portmanteau ](http://en.wikipedia.org/wiki/Portmanteau)of the words [volumetric ](http://en.wikipedia.org/wiki/Volumetric)and [pixel](http://en.wikipedia.org/wiki/Pixel)) is a volume element, representing a value on a [regular grid ](http://en.wikipedia.org/wiki/Regular_grid)in [three dimensional ](http://en.wikipedia.org/wiki/3D_computer_graphics)space. This is analogous to a [pixel ](http://en.wikipedia.org/wiki/Pixel), which represents [2D ](http://en.wikipedia.org/wiki/2D_computer_graphics)image data in a [bitmap ](http://en.wikipedia.org/wiki/Bitmap)
+>
+> “ 体素，是组成体数据的最小单元，一个体素表示体数据中三维空间某部分的值。体素相当于二维空间中像素的概念 ” 。 图 42 中每个小方块代表一个体素。体素不存在绝对空间位置的概念，只有在体空间中的相对位置，这一点和像素是一样的。
+
+- 通常我们看到的体数据都会有一个体素分布的描述，即，该数据由 n\*m\*t 个体素组成，表示该体数据在 X 、 Y 、 Z 方向上分别有 n 、 m 、 t 个体素。在数据表达上，体素代表三维数组中的一个单元。假设一个体数据在三维空间上 256\*256\*256 个体素组成，则，如果用三维数组表示，就必须在每一维上分配 256 个空间
+- 在实际的仪器采样中，会给出体素相邻间隔的数据描述，单位是毫米（ mm ），例如 0.412mm 表示该体数据中相邻体素的间隔为 0.412 毫米 
+
+![image-20201224141128590](GAMES101.assets/image-20201224141128590.png)
+
+#### Volume Texture
+
+> 体纹理 三维纹理
+>
+> 3D texture (Three Dimensional Texture), also known as "volume texture," is a logical extension of the traditional (and better known) 2D texture. In this context, a texture is simply a bitmap image that is used to provide surface coloring for a 3D model. A 3D texture can be thought of as a number of thin pieces of texture used to generate a three dimensional image map. 3D textures are typically represented by 3 coordinates.
+
+- 2d texture 指的是纹理只描述了空间的面数据，而 3d texture 则是描述了空间中的三维数据。 3d texture 另一个较为学术化的名称是： volume texture 
+- 三维纹理通过三维纹理坐标进行访问。
+- 体纹理并不是空间的模型数据，空间体模型（通常是规则的立方体或圆柱体）和体纹理相互结合才能进行体渲染. 在体绘制中同样需要一个三维模型作为体纹理的载体(就像二维纹理需要一个面片才能进行纹理贴图操作)，<u>体纹理通过纹理坐标（三维）和模型进行对应</u>，然后由视点向模型上的点引射线，该射线穿越模型空间等价于射线穿越了体纹理。
+
+### Algorithm
+
+#### Ray-casting
+
+> 光线投射算法
+
+- why
+  - 其一, 该算法在解决方案上基于射线扫描过程，符合人类生活常识，容易理解；其二，该算法可以达到较好的绘制效果；其三，该算法可以较为轻松的移植到 GPU 上进行实现，可以达到实时绘制的要求。
+
+- 光线投射方法是基于图像序列的直接体绘制算法。<u>从图像的每一个像素，沿固定方向（通常是视线方向）发射一条光线，光线穿越整个图像序列，并在这个过程中，对图像序列进行采样获取颜色信息，同时依据光线吸收模型将颜色值进行累加，直至光线穿越整个图像序列，最后得到的颜色值就是渲染图像的颜色</u>。
+
+  - 这里的图像序列，可以理解为切片数据。
+
+  - 为什么在上面的定义是穿越 “ 图像序列 ” ，而不是直接使用 “ 体纹理 ” ？原因在于体数据有多种组织形式，在基于 CPU 的高级语言编程中，有时并不使用体纹理，而是使用图像序列。<u>在基于 GPU 的着色程序中，则必须使用体纹理</u>。
+
+- 与光线追踪的区别:
+
+  - ray casting 是从视点到 “ 图像序列最表面的外层像素 ” 引射线穿越体数据. ray tracing 是从屏幕像素出发引出射线. 
+  - 光线投射方法中的光线是直线穿越数据场，而光线跟踪算法中需要计算光线的反射和折射现象
+  - 光线投射算法是沿着光线路径进行采样，根据样点的色彩和透明度，用体绘制的色彩合成算子进行色彩的累计，而光线跟踪算法并不刻意进行色彩的累计，而只考虑光线和几何体相交处的情况
+  - 光线跟踪算法中光线的方向是从视点到屏幕像素引射线，并要进行射线和场景实体的求交判断和计算，而光线投射算法，是从视点到物体上一点引射线，不必进行射线和物体的求交判断
+
+##### 流程
+
+![image-20201224164213173](GAMES101.assets/image-20201224164213173.png)
+
+###### 沿射线进行采样
+
+$$
+t = t_{start} + d *delta
+$$
+
+###### 透明度累加
+
+- 透明物体的渲染，本质上是将透明物体的颜色和其后物体的颜色进行混合，这被称为 alpha 混合技术, 公式如下
+  $$
+  c_0 = a_sc_s + (1-a_s)c_d
+  $$
+
+  - $c_0$: 通过透明物体观察目标物体所得到的颜色值
+  - $a_s$: 透明物体的透明度, 1为不透明, 0为全透明
+  - $c_s$: 透明物体的原本颜色
+  - $c_d$: 目标物体的原本颜色
+
+- 如果有多个透明物体，通常需要对物体进行排序，除非所有物体的透明度都是一样的. 在图形硬件中实现多个透明物体的绘制是依赖于 Z 缓冲区. 在光线投射算法中，射线穿越体纹理的同时也就是透明度的排序过程。所以这里存在一个合成的顺序问题。可以将射线穿越纹理的过程作为采样合成过程，这是从前面到背面进行排序，也可以反过来从背面到前面排序，这两种方式得到的效果是不太一样的。
+
+  从前面到背面进行采样合成，则合成公式为: 
+  $$
+  C_i^\Delta = (1-A_{i-1}^\Delta)C_i + C_{i-1}^\Delta\\
+  A_i^\Delta = (1-A_{i-1}^\Delta)A_i + A_{i-1}^\Delta
+  $$
+
+  - $C_i$: 在体纹理上采样所得到的颜色值
+  - $A_i$: 在体纹理上采样所得到的不透明度
+  - $C_i^\Delta$: 累加的颜色值, 由当前的颜色值乘上当前透明度加上后面累加的颜色值
+  - $A_i^\Delta$: 累加的透明度
+
+  从背面到前面进行采样合成，则公式为: 
+  $$
+  C_i^\Delta = (1-A_{i}^\Delta)C_{i+1} + C_{i}^\Delta\\
+  A_i^\Delta = (1-A_{i}^\Delta)A_{i+1} + A_{i}^\Delta
+  $$
+  
+
+###### 判断光线投射出体纹理
+
+计算距离 m 的方法如下：
+1. 剔除深度值较大的片段（正常的渲染状态），渲染场景深度图 frontDepth，此时 frontDepth 上的每个像素的颜色值都代表“某个方向上离视点最近的点的距离”；
+2. 剔除深度值较小的片段，渲染场景深度图 backDepth，backDepth 上的每个像素的颜色值都代表“某个方向上离视点最远的点的距离”；
+3. 将两张深度图上的数据进行相减，得到的值就是光线投射距离 m。
+
+三个顶点通常按逆时针顺序组成一个三角面，这样做的好处是，背面面片的法向量与视线法向量的点积为负数(角度是钝角)，可以据此做面片剔除算法（光照模型实现中也常用到），所以只是改变深度值的比较方法还不够，<u>还必须关闭按照逆\顺时针进行面片剔除功能</u>，这样才能渲染出背面深度图。图 46 是立方体的正面和背面深度图。
+
+#### Shear-warp
+
+> 错切-变形算法
+
+#### Frequency Domain
+
+>频域体绘制算法
+
+#### Splatting
+
+> 抛雪球算法
 
 # Real-time Rendering Pipeline
 
