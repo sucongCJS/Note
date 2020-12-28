@@ -63,13 +63,6 @@
 
   - 在物体边缘采样更多
 
----
-
-- [图形学新高潮? NeRF 笔记 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/187541908)
-- [非卷积5D中文翻译及学习笔记](https://blog.csdn.net/ftimes/article/details/105890744)
-- [Matthew Tancik: Neural Radiance Fields for View Synthesis - YouTube](https://www.youtube.com/watch?v=dPWLybp4LL0&ab_channel=AndreasGeiger) 
-- [Neural Rendering (CVPR 2020) - Morning Session](https://www.youtube.com/watch?v=LCTYRqW-ne8&ab_channel=NeuralRendering)
-
 ### Pipeline
 
 1. 让摄像机光线穿过场景生成一组采样的三维点
@@ -83,7 +76,7 @@
 ### Positional encoding
 
 - why
-  - 要表示更高频的函数
+  - 要表示更高频的函数, 不然会oversmooth
 
 - 作用: map each input 5D coordinate into a higher dimensional space. 
 
@@ -94,9 +87,48 @@
 - why
   - 高分辨率的采样频率要高很多, 使用分层采样能减少采样次数
 
+###  网络结构
+
+1. 输入: 3D coordinate $\bold{x} = (x, y, z, θ, φ)$ (位置, 方向)
+2. 中间: 8 fully connected layers (ReLU, 256 channels per layer)
+3. 输出: $\bold{\sigma}$(向量在当前camera ray的贡献值, camera ray上所有向量的贡献值加起来是1), a 256-dimensional feature vector 
+4. 输入: the 256-dimensional feature vector, camera ray's view direction
+5. 中间: fully connected layer (ReLU, 128 channels)
+6. 输出: view-dependent RGB color (颜色)
+
+### 计算
+
+期望的camera ray $\bold{r} = \bold{o} + t\bold{d}$ 的颜色 $C(\bold{r})$ 算法: 
+$$
+C(\bold{r}) = \int_{t_n}^{t_f}
+T(t)\;
+\sigma(\bold{r}(t))\;
+\bold{c}(\bold{r}(t), \bold{d})\;dt,\\
+\text{where}\;
+T(t) = exp(-\int_{t_n}^t\sigma(\bold{r}(s))\;ds).
+$$
+
+- $t_n$: near bound
+- $t_f$: far bound
+- $T$: 累计透过率 the accumulated transmittance along the ray from $t_n$ to $t$ (the probability that the ray travels from $t_n$ to $t$ without hitting any other  particle)
+
+实际的颜色 $\hat{C}(\bold{r})$ 算法:
+$$
+\hat{C}(\bold{r}) = \sum_{i=1}^{N}
+T_i(1-exp(-\sigma_iδ_i))\bold{c}_i, \;
+\\\text{where}\;
+T_i = exp(-\sum_{j=1}^{i-1}\sigma_jδ_j),
+\\\text{where}\; δ_i = t_{i+1}-t_i
+$$
+
+- $δ_i$: 两个相邻样本的距离
+- 
+
 ### ???
 
 - [ ] 不用卷积, 参数数量不会爆炸吗
+
+分成了两个网络
 
 - [ ] 这篇论文是怎么应用可微分渲染的?
 
@@ -105,48 +137,69 @@ optimize the scene representation by minimizing the error of rendering all camer
 把一个static的场景表示为一个连续的5D函数
 
 - [ ] 为什么半球形的采样没有深度估算误差造成的问题， 深度不也是网络预测出来的吗
-- [ ] 输出的数据是什么样的， RGB吗? 有深度吗? 
-- [x] 球形的采样是不是要建立3D模型? 
+
+深度也是网络预测出来的, 但是不一定和实际的深度一样, 只是看起来没问题, 
+
+- [x] 输出的数据是什么样的， RGB吗? 有深度吗? 
+
+RGB, 无深度
+
+- [x] 球形的采样是不是要建立3D模型?
 
 好像是由一系列向量构成的一个场景的volumetric representation, 每个向量都有($x, y, z, \theta, \phi$), 位置和方向, 同一个camera ray上的向量排成一条线, 然后优化这个vector-valued function. 回想ray-tracing, 图像不就是通过发射一根根光线构成的吗
 
 - [ ] 向量的方向都是从camera到物体的, 优化后也是, 那变换视角后, 这些向量还能用吗, 如果用, 怎么选用那个camera ray 上的向量? 
 
-体模型由3D grid中的每个格点(体素voxel)构成, 每个体素有颜色(RGB值)+透明度(α值)属性, NeRF的想法就是用一个全连接神经网络来<u>拟合出一个连续的体素表示</u>. 
+density(σ) 只和位置有关, color 和位置和相机的视角都有关
 
-- [ ] 如果是一个体模型, 每个体素有一个颜色, 那么当视角发生变化的时候, 颜色如何跟着发生变化? 不是还和输入的视角有关吗?
+- [x] 如果是一个体模型, 每个体素有一个颜色, 那么当视角发生变化的时候, 颜色如何跟着发生变化? 不是还和输入的视角有关吗? 
 
-- [ ] 那相机都在一个平面有深度吗? 
-- [ ] 这个全连接网络的输入和输出分别是什么?
+是和view direction有关, 所以每个体素?不是一个颜色, 想想Lumigraph
 
-输入就是每个向量的位置, 方向(5D)
+- [x] 那相机都在一个平面有深度吗? 
 
-输出的是那个向量的RGB radiance(view-dependent), 以及volume density(这个向量在当前camera ray的贡献值, camera ray上所有向量的贡献值加起来是1) 
+有
 
 - [x] 每个像素是怎么算出来的? 
 
 用体渲染的技术, camera ray 上的vector的值加起来
 
-- [ ]  网络结构是什么样的? 
-
-fully connected deep network
+渲染一个视角就是计算每个像素的$C(\bold{r})$
 
 - [ ] 高频信息如何处理? 用更多的 voxel 吗? 
 - [ ] 高频场景如何减少存储空间? 
-
-
-
-- [ ] voxel 和 向量什么关系? 
+- [ ] voxel 和向量什么关系? 
+- [ ] 如果是σ和位置和视角有光, color只和位置有关呢? 
 
 ### todo
 
 - [ ] 看看 https://github.com/bmild/nerf 跟unity的结合
+- [ ] 看看[issue](https://github.com/bmild/nerf/issues)里的问题
+
+### 参考
+
+- [图形学新高潮? NeRF 笔记 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/187541908)
+- [非卷积5D中文翻译及学习笔记](https://blog.csdn.net/ftimes/article/details/105890744)
+- [Matthew Tancik: Neural Radiance Fields for View Synthesis - YouTube](https://www.youtube.com/watch?v=dPWLybp4LL0&ab_channel=AndreasGeiger) 
+- [Neural Rendering (CVPR 2020) - Morning Session](https://www.youtube.com/watch?v=LCTYRqW-ne8&ab_channel=NeuralRendering)
+
+- [翻译+笔记 NeRF](https://blog.csdn.net/ftimes/article/details/105890744)
+- [翻译+笔记 NeRF 2](https://www.flyinghuster.com/[%E8%AE%BA%E6%96%87%E8%A7%A3%E8%AF%BB]NeRF-Representing%20Scene%20as%20Neural%20Radiance%20Fields%20for%20View%20Synthesis/)
+
+## NeRF-W
+
+> NeRF in the wild
+
+- 可能有两个误差
+  - 可能有遮挡, 所以要考虑一个参数, 这个参数只会影响到颜色, 不会影响到σ
+  - 空间位置可能不同, 这会影响到σ, 颜色
+- 都是用的网络, 没有图形学
+
+### ???
 
 
 
+### 参考
 
-
-
-
-
+[NeRF-W bilibili](https://www.bilibili.com/video/BV1Qi4y1u7Es?from=search&seid=501675493729586449)
 

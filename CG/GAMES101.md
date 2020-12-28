@@ -2102,7 +2102,7 @@ Data Structure
 
 - 通常相机放在原点, 朝向-z(RenderMan, Maya, PBRT and OpenGL都是这样), image plane(见图中) is often placed exactly 1 unit away from the camera's origin, 也就是(0, 0, -1)
 
-  ![image-20201212143127327](GAMES101.assets/image-20201212143127327.png)
+  <img src="GAMES101.assets/image-20201212143127327.png" alt="image-20201212143127327" style="zoom:80%;" />
 
 ![image-20201216192736363](GAMES101.assets/image-20201216192736363.png)
 
@@ -2110,7 +2110,7 @@ Data Structure
 
 - 坐标变换(遍历每一个像素的时候是从左上角到右下角, 也就是左上角是(0,0), 要变换成最下面[-1:1]的形式)
 
-  ![img](GAMES101.assets/cambasic1A.png)
+  <img src="GAMES101.assets/cambasic1A.png" alt="img" style="zoom:80%;" />
 
   Converting the coordinate of a point in the middle of a pixel to world coordinates requires a few steps. The coordinates of this point are first expressed in raster space (the pixels coordinate plus an offset of 0.5), then converted to NDC(Normalized Device Coordinates) space (the coordinates are remapped to the range [0,1]) then converted to screen space (the NDC coordinates are remapped to the [-1,1]). Applying the final camera-to-world transformation 4x4 matrix transform the coordinates in screen space to world space.
 
@@ -2119,6 +2119,8 @@ Data Structure
   ![image-20201216204832424](GAMES101.assets/image-20201216204832424.png)
 
   - 如果宽高比是1.4的话, 那么变换后y范围是[-1,1], x的范围是[-1.4, 1.4] (more generally [-aspect ratio, aspect ratio])
+  
+- [GAMES101 Assignment5 ?]()
 
 ## Radiometry
 
