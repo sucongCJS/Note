@@ -2740,10 +2740,10 @@ $$
 
 ### BRDF
 
-- 如果$f_r(\theta_i, \phi_i, \theta_r, \phi_r) \neq f_r(\theta_i, \theta_r, \phi_r-\phi_i)$, 也就是在方位角上旋转得到的BRDF不一样, 那就是各向异性 [link 61:30](https://www.bilibili.com/video/BV1X7411F744?p=17)
+- 如果$f_r(\theta_i, \phi_i, \theta_r, \phi_r) \neq f_r(\theta_i, \theta_r, \phi_r-\phi_i)$, 也就是在方位角上旋转得到的BRDF不一样, 那就是各向异性 [link 61:30](https://www.bilibili.com/video/BV1X7411F744?p=17) 
 
 - ![image-20201220191159968](GAMES101.assets/image-20201220191159968.png)
-  - 各向同性的法线分布均匀
+  - 各向同性的法线分布均匀. 各向同性反射就是在整个半球空间均匀反射能量, 漫反射, 一个完全的漫射体称为朗伯体(Lambert)
 
 ## Properties of BRDFs
 
@@ -2813,13 +2813,14 @@ $$
 
 - 光线可以用一个原点和方向来表示
 
-  ![image-20201221155024474](GAMES101.assets/image-20201221155024474.png)
-
   也可以用两个点带上正负号来表示
 
-  ![image-20201221155130895](GAMES101.assets/image-20201221155130895.png)
+  <img src="GAMES101.assets/image-20201221155130895.png" alt="image-20201221155130895" style="zoom:50%;" />
 
   ![image-20201221155512343](GAMES101.assets/image-20201221155512343.png)
+
+  - uv面也叫 camera plane
+  - st面也叫 focal plane
 
 - ![image-20201221155810396](GAMES101.assets/image-20201221155810396.png)
 
@@ -2827,10 +2828,14 @@ $$
 
   - (a)是从uv连线到st, 所以得到的是从一个角度看物体的一张物体的图像 (右上的图); 从不同的角度看物体得到的所有图像就是光场 (中上的图)
 
+    如果要连续地旋转视角来看物体, 需要在uv上插值, 在st上插值, 也就是quadrilinear interpolation
+
+    [Light Field Rendering - Siggraph '96 video](https://www.youtube.com/watch?v=dMcZpeGOBPI&ab_channel=PatriciaPate)
+
     ![image-20201221160653919](GAMES101.assets/image-20201221160653919.png)
-
+  
     每个相机的位置就是uv上的点, 从uv上一个点连到所有st上的点就是一个相机拍出来的图像
-
+  
   - (b)是从st连线到uv, 得到的是从不同的角度看物体同一个位置的图像(就是盯着一个点, 然后改变自己的位置看到的) (右下的图)
 
 ## Light Field Camera
@@ -2982,9 +2987,13 @@ $$
   - 绘制中有很多效果，BSDF函数，现在还没有很好的探索过可微分的框架，性能，这个都是很新的领域。
   - [什么是可微分渲染](https://www.zhihu.com/question/364770565)
 
+-   
+
 ## Volume Rendering
 
 > 体渲染, 体绘制
+>
+> volume rendering is a set of techniques used to display a 2D projection of a 3D discretely [sampled](https://en.wikipedia.org/wiki/Sampling_(signal_processing)) [data set](https://en.wikipedia.org/wiki/Data_set), typically a 3D [scalar field](https://en.wikipedia.org/wiki/Scalar_field). (A typical 3D data set is a group of 2D slice images acquired by a CT, [MRI](https://en.wikipedia.org/wiki/Magnetic_resonance_imaging), or [MicroCT](https://en.wikipedia.org/wiki/Microtomography) [scanner](https://en.wikipedia.org/wiki/Image_scanner).)
 
 - 自然界中很多视觉效果是不规则的体，如流体、云、烟等，它们很难用常规的几何元素进行建模，使用粒子系统的模拟方法也不能尽善尽美，而使用体绘制可以达到较好的模拟效果
 - 体绘制是科学可视化领域中的一个技术方向。体绘制的目标是在一副图片上展示空间体细节。举例而言，你面前有一间房子，房子中有家具、家电，站在房子外面只能看到外部形状，无法观察到房子的布局或者房子中的物体；假设房子和房子中的物体都是半透明的，这样你就可以同时查看到所有的细节。这就是体绘制所要达到的效果。
