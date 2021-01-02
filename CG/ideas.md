@@ -37,12 +37,6 @@
 
       <img src="ideas.assets/image-20201224201553776.png" alt="image-20201224201553776" style="zoom:50%;" />
 
-    - 
-
-  - one extra trick for passing coordinates into network to get high frequency details
-
-    - ?
-
 - position embedding 在实验中发现假如只是输入position, 输出会很模糊(over smooth), 因为好像神经网络只能学到低频的东西. 所以NeRF把输入做了embedding. 就是将3d的输入映射到一个高维的空间去
 
   - 将每个输入的坐标映射到一个更高的维空间中，这使得我们能够成功地优化神经辐射场，以表示高频场景内容。
@@ -87,7 +81,7 @@
 - why
   - 高分辨率的采样频率要高很多, 使用分层采样能减少采样次数
 
-###  网络结构
+###  Structure
 
 1. 输入: 3D coordinate $\bold{x} = (x, y, z, θ, φ)$ (位置, 方向)
 2. 中间: 8 fully connected layers (ReLU, 256 channels per layer)
@@ -96,7 +90,7 @@
 5. 中间: fully connected layer (ReLU, 128 channels)
 6. 输出: view-dependent RGB color (颜色)
 
-### 计算
+### Math
 
 期望的camera ray $\bold{r} = \bold{o} + t\bold{d}$ 的颜色 $C(\bold{r})$ 算法: 
 $$
@@ -122,9 +116,8 @@ T_i = exp(-\sum_{j=1}^{i-1}\sigma_jδ_j),
 $$
 
 - $δ_i$: 两个相邻样本的距离
-- 
 
-### ???
+### Questions
 
 - [ ] 不用卷积, 参数数量不会爆炸吗
 
@@ -170,13 +163,16 @@ density(σ) 只和位置有关, color 和位置和相机的视角都有关
 - [ ] 高频场景如何减少存储空间? 
 - [ ] voxel 和向量什么关系? 
 - [ ] 如果是σ和位置和视角有光, color只和位置有关呢? 
+- [ ] 是不是分成了两个网络来训练? 如果是, 为什么?
 
-### todo
 
-- [ ] 看看 https://github.com/bmild/nerf 跟unity的结合
+
+### Todo
+
+- [ ] 看看https://github.com/bmild/nerf跟unity的结合
 - [ ] 看看[issue](https://github.com/bmild/nerf/issues)里的问题
 
-### 参考
+### Reference
 
 - [图形学新高潮? NeRF 笔记 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/187541908)
 - [非卷积5D中文翻译及学习笔记](https://blog.csdn.net/ftimes/article/details/105890744)
@@ -195,11 +191,11 @@ density(σ) 只和位置有关, color 和位置和相机的视角都有关
   - 空间位置可能不同, 这会影响到σ, 颜色
 - 都是用的网络, 没有图形学
 
-### ???
+### Questions
 
 
 
-### 参考
+### Reference
 
 [NeRF-W bilibili](https://www.bilibili.com/video/BV1Qi4y1u7Es?from=search&seid=501675493729586449)
 
