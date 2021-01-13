@@ -467,6 +467,8 @@ $$
 
 # Rasterization
 
+> The process of finding all the pixels in an image that are occupied by a geometric primitive is called *rasterization*. (Any graphics system has one or more types of “primitive object” that it can handle directly, and more complex objects are converted into these “primitives.” Triangles are the most often used primitive. 很多复杂的图形由三角形组成)
+>
 > 光栅化 (采样+深度测试)
 >
 > MVP之后图像在[-1,1]$^3$的立方体中，光栅化就是把图像画到屏幕上
@@ -732,7 +734,7 @@ Option 2: **Antialiasing**
   **z is always positive**
   (smaller z -> closer, larger z -> further)
 
-### 实现
+### Implementation
 
 - Initialize depth buffer to $\infty$
 
@@ -751,6 +753,51 @@ Option 2: **Antialiasing**
 ![image-20201107193519149](GAMES101.assets/image-20201107193519149.png)
 
 - 复杂度: O(n)
+
+## Culling
+
+> Identifying and throwing away invisible geometry to save the time that would be spent processing it is known as culling. 
+>
+> culling 剔除
+
+### View Volume Culling
+
+> the removal of geometry that is outside the view volume
+>
+> also known as *view frustum culling*
+
+- When an entire primitive lies outside the view volume, it can be culled
+- 我们不希望将不存在View Frustum里面的物体送往流水线中进行处理。虽然现在的图形卡都已近支持了三角形剔除的技术。但是流水线是先进行Vertex Processing，然后才进行Geometry Processing。图形卡对三角形的剔除是在Geometry Processing这个阶段进行的。也就是说，即使能够剔除它们，依然要在Vertex Processing中对这些将来需要丢弃的顶点进行Vertex Processing处理。Vertex Processing这个阶段往往会进行坐标变换，光照计算等等费时的操作。所以，如果能够在Vertex Processing之前，也就是在Application阶段，在CPU中将这些根本不需要处理的物体剔除的话，会大大的提高程序的效率。而想要将物体剔除，就需要知道这个物体是否在View Frustum中。而为了判断这个条件，就需要确定构成View Frustum的6个平面的方程。[获取View Frustum的6个平面](https://blog.csdn.net/i_dovelemon/article/details/39693373)
+
+#### AABB-Plane Intersecting
+
+![img](GAMES101.assets/20141028194332454)
+
+根据要检测的平面法线的方向，在AABB盒上构造一个和这个方向最接近的一个向量，然后判断这个向量与平面的位置关系: 
+
+1. 如果P点在平面所划分的正半空间内，那么AABB盒就在平面的正半空间内
+2. 如果Q点在平面所划分的负半空间内，那么AABB盒就在平面的负半空间内
+3. 如果P点在负半空间内，Q点在正半空间内，那么AABB就与平面相交叉
+
+[View Frustum Culling 实现](https://blog.csdn.net/i_dovelemon/article/details/40543937)
+
+> the removal of geometry that may be within the view volume but is obscured, or occluded, by other geometry closer to the camera
+
+- (Akenine-M¨oller et al., 2008)
+
+### Back-face Culling
+
+> the removal of primitives facing away from the camera
+>
+> a method determines whether a polygon of a graphical object is visible. If not visible, the polygon is "culled" from [rendering](https://www.computerhope.com/jargon/r/render.htm) process, which increases efficiency by reducing the number of polygons that the hardware has to draw.
+
+- The vertices of front-facing polygons wind in a clockwise fashion. This way, polygons that face away from the camera are in a counter-clockwise order relative to the current view. When back-faces are culled, these polygons are not drawn.
+
+#### Implementation
+
+- 如果camera-to-triangle向量和三角形面的法向量的点乘大于等于0, 那这个三角形就在back-face, 不用绘制
+
+[Back-face culling - Wikipedia](https://en.wikipedia.org/wiki/Back-face_culling)
 
 # Shading
 
@@ -3128,6 +3175,9 @@ $$
 > 实时渲染管线
 >
 > render: assign a color to each pixel of the frame
+>
+> - 这里考虑的是 <u>object-order rendering</u> (also called rendering by rasterization) (不是像光线追踪, 逐像素考虑那种) 
+> - graphics pipelines 有两种, hardware pipelines & software pipelines, 这里考虑的主要是两者共有的, 通用的
 
 ![image-20201111190934468](GAMES101.assets/image-20201111190934468.png)
 
@@ -3135,13 +3185,44 @@ $$
 - Fragment是OpenGL的概念, 不考虑抗锯齿, MSAA的话, 一个Fragment可以类比一个像素?(每个基本采样点叫fragment?如果没用MSAA一个像素就是一个fragment, 如果用了MSAA, 那好多的fragment才能形成一个像素)
 - 定义所有的顶点, 然后定义哪三个顶点形成一个三角形, 也可以合为一步
 
-## Vertex, Triangle Processing
+![img](GAMES101.assets/021729497233272.png)
 
-Model, View, Projection transforms
+![image-20210107145548169](GAMES101.assets/image-20210107145548169.png)
 
-![image-20201111192611653](GAMES101.assets/image-20201111192611653.png)
+## Application
+
+> 应用程序阶段
+
+- 用阶段通常是在CPU端进行处理，包括碰撞检测、动画物理模拟以及一些加速管线的算法，比如层次视椎剔除（hierarchical view frustum culling）等等
+- 这个阶段会将数据送到渲染管线中。这一阶段可以利用CPU的多核心执行超标量（superscalar）计算，也可以利用GPU执行计算着色器，此时将GPU视为通用的高度并行的处理器
+
+## Vertex Processing
+
+> a sequence of vertices are processed via a series of Shaders(着色器). 
+
+- input: Vertex Date (可以包括顶点坐标、顶点颜色、顶点法线、纹理坐标等数据), 利用这些输入数据可以在fragment shader计算片段的光照信息，最终输出到颜色缓冲器。
+
+- vertex data 在流水线中以图元的方式进行处理，常见的图元有：点、线和三角面
+
+- In this stage, incoming vertices are transformed by the modeling, viewing, and projection transformations, mapping them from their original coordinates into screen space. 
+
+  At the same time, other information, such as colors, surface normals, or texture coordinates, is transformed as needed; we’ll discuss these additional attributes in the examples below.
+  
+- 
+
+
+
+## Mesh Processing
+
+> mesh 可以是 <u>triangle</u>, polygon, 所以也可以叫Triangle Processing?
+>
+> Geometry Processing
 
 ## Rasterization
+
+> the primitives using those vertices are sent to the *rasterization stage*. 
+>
+> rasterizer breaks each primitive into a number of fragments, one for each pixel covered by the primitive. 
 
 Sampling triangle coverage 采样, 判断是否在三角形内
 
@@ -3149,6 +3230,8 @@ Sampling triangle coverage 采样, 判断是否在三角形内
 
 ## Fragment Processing
 
+> The fragments are processed in the fragment processing stage. 
+>
 > 控制fragment如何着色
 
 判断fragment是否可见(也可以归到光栅化部分)
@@ -3158,3 +3241,9 @@ Sampling triangle coverage 采样, 判断是否在三角形内
 如果是Gouraud shading, 那还和Vertex Processing有关
 
 ![image-20201111193015901](GAMES101.assets/image-20201111193015901.png)
+
+## Blendinig
+
+> the various fragments corresponding to each pixel are combined in the *fragment blending stage*.
+
+[实时渲染管线](https://zhuanlan.zhihu.com/p/147236210)
