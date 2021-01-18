@@ -324,7 +324,9 @@ multi-view stereo pipeline.
 - [计算机视觉方向简介 | 多视角立体视觉MVS (careerengine.us)](https://posts.careerengine.us/p/5e1b48bf626378473bdf97f5)
 - MVS中的MRF是以mesh面为
 
-Energy Formulation(原始的)(能量函数, 能量越小越稳定, 和cost function的意义相似): 
+## Energy Formulation
+
+> 能量函数, 能量越小越稳定, 和cost function的意义相似
 
 why: :question: smoothing or stereo correspondence problem
 $$
@@ -355,6 +357,8 @@ $$
 
 - [Graph Cuts初步理解 - 钟离踏雪 - 博客园](https://www.cnblogs.com/saliency/p/3659026.html)
 
+- [Graph Cuts in Vision and Graphics概述 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/210236545?utm_source=qq)
+
 - Graph Cuts中的Cuts是指这样一个边的集合，很显然这些边集合包括了上面2种边，该集合中所有边的断开会导致残留”S”和”T”图的分开，所以就称为“割”。如果一个割，它的边的所有权值之和最小，那么这个就称为最小割，也就是图割的结果。:question:而福特-富克森定理表明，网路的最大流max flow与最小割min cut相等。所以由Boykov和Kolmogorov发明的max-flow/min-cut算法就可以用来获得s-t图的最小割。这个最小割把图的顶点划分为两个不相交的子集S和T，其中s ∈S，t∈ T和S∪T=V 。这两个子集就对应于图像的前景像素集和背景像素集，那就相当于完成了图像分割。
 
 - 图像分割可以看成pixel labeling（像素标记）问题，目标（s-node）的label设为1，背景（t-node）的label设为0，(s, t最后要分离), 这个过程可以通过:question:最小化图割来最小化能量函数得到。那很明显，发生在目标和背景的边界处的cut就是我们想要的（相当于把图像中背景和目标连接的地方割开，那就相当于把其分割了）。同时，这时候能量也应该是最小的。假设整幅图像的标签label（每个像素的label）为L= {l1,l2, , , , lp}，其中li为0（背景）或者1（目标）。那假设图像的分割为L时，图像的能量可以表示为：
@@ -373,9 +377,16 @@ $$
 
   [Grouping and segmentation (iitd.ac.in)](https://web.iitd.ac.in/~sumeet/14.pdf)
 
+  通常是相邻的像素点或者体素点, 但这篇论文用的相邻的mesh face
+
 - [ ] 贴纹理需要又不是图像分割, 这里应该如何修改
 
 ## α-expansion
+
+- why: minimize energy 能量最小化
+- 是一个[非凸优化](https://www.zhihu.com/question/20343349)问题, 求全局最优是NP-hard的, 可用蒙特卡洛?
+- *Fast Approximate Energy Minimization via Graph Cuts*
+- [Alpha-expansion and Alpha-beta-swap Algorithm Flow-CSDN](https://blog.csdn.net/nothinglefttosay/article/details/48554555)
 
 # ghost
 
