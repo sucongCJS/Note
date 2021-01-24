@@ -385,6 +385,13 @@ $$
 
 - why: minimize energy 能量最小化
 - 是一个[非凸优化](https://www.zhihu.com/question/20343349)问题, 求全局最优是NP-hard的, 可用蒙特卡洛?
+
+
+
+
+
+
+
 - *Fast Approximate Energy Minimization via Graph Cuts*
 - [Alpha-expansion and Alpha-beta-swap Algorithm Flow-CSDN](https://blog.csdn.net/nothinglefttosay/article/details/48554555)
 

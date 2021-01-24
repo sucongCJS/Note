@@ -2,8 +2,31 @@
 
 - [研究生如何做文献阅读笔记？](http://image.sciencenet.cn/olddata/kexue.com.cn/upload/blog/file/2009/10/20091019174812440381.pdf)
 - [存量阅读+增量阅读](https://mp.weixin.qq.com/s/zuDzvzTYrRMMqcWEq9YR-w)
+- [干货：论文读不懂怎么办？ - 华为云 (huaweicloud.com)](https://www.huaweicloud.com/articles/bda8b3b6f754f38045227ea22665a1ae.html) 不断涌现的论文，其实就是学术界的升级安装包。
+  - 搜一搜presentation
+  - 在Medium上搜一搜有没有相关博客
+  - 视频, 特别是大学老师讲的
+  - 代码
+  - 最好的方式，当然是与专家甚至是作者本人，做面对面的高效沟通反馈。当然，这样的机会很稀缺。如果你遇到，一定要抓住。
+- [如何快速梳理领域文献 (qq.com)](https://mp.weixin.qq.com/s/s0D4bNctjzilyGNqrQ4Kyg)
+- [如何高效做文献回顾？（工具篇） (qq.com)](https://mp.weixin.qq.com/s/k-G0TzfnYbLA0dYXfDpMdg)
+- [论文太多看不过来？快让人工智能帮你阅读分析 (qq.com)](https://mp.weixin.qq.com/s/zEco97zBRYb215bU0CypOQ)
+- [如何高效读论文？ - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/35170379) !!!
+- [How to Read a Paper Efficiently (By Prof. Pete Carr) - YouTube](https://www.youtube.com/watch?v=IeaD0ZaUJ3Y&ab_channel=SurvivingandThrivinginHigherEducation)
+  - 首先是<u>题目</u>, <u>关键词</u>, <u>摘要</u>, 然后是<u>结论</u> (确定自己是否感兴趣, 可以随时停止阅读一篇文章, 不要试图去打捞沉没成本，在已经不看好、或者不感兴趣的论文上投入更多时间)
+  - 千万不要一字一句，从头到尾线性阅读
+  - 先看<u>图表</u>（如果有）, 最后读<u>引言(</u>introduction 因为引言的主要作用是强调论文研究主题的价值和必要性，会尝试与更为宏大的图景、更重要的问题相联系。有的甚至会有“吹嘘”的成分。), 最最后看核心部分(研究结果和讨论, 不是实验)
+  - 实验需要慢慢看
 
-## 分布式
+## 选题
+
+- [如何有效选毕业论文题目？ - 少数派 (sspai.com)](https://sspai.com/post/63684)
+  - 熟悉, 要跟别人的优秀文献有关联
+  - 能够给别人带来认知差
+  - 得有证据
+- [如何做一份合格的毕业论文选题报告？（王树义） - International Research Collaboration Information P (ircip.cn)](http://www.ircip.cn/web/993897-1259818.html?id=26645&newsid=2349235)
+
+# 分布式
 
 - <数据密集型应用系统设计>
 
@@ -79,6 +102,12 @@ GAMES 203: 三维视觉和理解（黄其兴）（预期：2021年6月-8月）
 
 
 
+
+
+在对三维几何模型的构建过程中，还会涉及到很多需要处理的几何问题，比如数据去噪(denoising or smoothing)、补洞(repairing)、简化(simplification)、层次细节(level of detail)、参数化(parameterization)、变形(deformation or editing)、分割(segmentation)、形状分析及检索(shape analysis and retrieval)等。这些问题构成“数字几何处理”的主要研究内容。笔者自2005年起开设了多年的《数字几何处理》的研究生课程：
+
+http://staff.ustc.edu.cn/~lgliu/Courses/DGP_2012_spring-summer/default.htm
+
 # 技术书单
 
 ## 必看
@@ -125,7 +154,8 @@ GAMES 203: 三维视觉和理解（黄其兴）（预期：2021年6月-8月）
   1. C++ Primer
   2. 看到 C++ Primer 前8章, 开始刷题
   3. 看 effective, more effective
-  4. 看侯捷老师的视频
+  4. PAT?
+  5. 看侯捷老师的视频
 
   ![image-20210118121033594](resource.assets/image-20210118121033594.png)
 
@@ -134,3 +164,11 @@ GAMES 203: 三维视觉和理解（黄其兴）（预期：2021年6月-8月）
 1. 算法4
 2. 看完要自己实现一边, 包括各种数据结构, 各种查找算法, 排序算法... 如果有问题再回头去看
 3. 算法设计手册(时间够可以看, 时间不够直接刷题)
+
+
+
+
+
+# BLOG
+
+- [万维钢](https://www.geekonomics10000.com/) 
