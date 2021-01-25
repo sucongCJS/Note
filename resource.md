@@ -108,6 +108,13 @@ GAMES 203: 三维视觉和理解（黄其兴）（预期：2021年6月-8月）
 
 http://staff.ustc.edu.cn/~lgliu/Courses/DGP_2012_spring-summer/default.htm
 
+## B站
+
+这是十几年前我一个人用stereo vision 搭建的demo ![img](resource.assets/8LDO48C$8@%5BGWU0353$FOVS.png)https://m.bilibili.com/space/327617676
+
+
+各位cv学生们好。我最近更新了一下3D几何 CV的讲义。包括几何数学基础和一些这两年在CVPR文章的运用综述。课题包括：相机模型，内部和外部参数估计，对极几何，三维重建，图像深度估计。最新研究survey 包括，单图像到相机模型的估计，基于多视图的多人3D姿势估计，基于GAN的3D姿势估计，基于运动的深度结构，基于深度学习的深度估计。讲义可在这里下载 https://github.com/roboticcam/machine-learning-notes
+
 # 技术书单
 
 ## 必看
