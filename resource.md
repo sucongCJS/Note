@@ -179,3 +179,11 @@ http://staff.ustc.edu.cn/~lgliu/Courses/DGP_2012_spring-summer/default.htm
 # BLOG
 
 - [万维钢](https://www.geekonomics10000.com/) 
+
+# 招聘
+
+## 图形学
+
+- http://games-cn.org/jobs/
+- https://chinagraph2020.xmu.edu.cn/sponsors.html
+- http://cs.dlut.edu.cn/CADCG2021/CADCG2021zzqy.htm
