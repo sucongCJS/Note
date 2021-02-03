@@ -191,12 +191,6 @@ density(σ) 只和位置有关, color 和位置和相机的视角都有关
   - 空间位置可能不同, 这会影响到σ, 颜色
 - 都是用的网络, 没有图形学
 
-### Questions
-
-
-
-### Reference
-
 [NeRF-W bilibili](https://www.bilibili.com/video/BV1Qi4y1u7Es?from=search&seid=501675493729586449)
 
 - Target: given a set of photographs of an object or a scene, estimate the most likely 3D shape that explains those photographs, under the assumptions of known materials, viewpoints, and lighting conditions
