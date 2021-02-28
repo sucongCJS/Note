@@ -389,6 +389,12 @@ $$
 - *Fast Approximate Energy Minimization via Graph Cuts*
 - [Alpha-expansion and Alpha-beta-swap Algorithm Flow-CSDN](https://blog.csdn.net/nothinglefttosay/article/details/48554555)
 
+## mean shift
+
+- [Mean Shift 聚类算法](https://blog.csdn.net/hjimce/article/details/45718593) 
+  - 没核函数 就是相当于求解一个向量，使得圆心一直往数据集密度最大的方向移动。说的再简单一点，就是每次迭代的时候，都是找到圆里面点的平均位置作为新的圆心位置。
+  - 有核函数: 带权重的偏移
+
 # ghost
 
 ## Mini Cut

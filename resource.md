@@ -1,3 +1,31 @@
+# 文献阅读
+
+- [研究生如何做文献阅读笔记？](http://image.sciencenet.cn/olddata/kexue.com.cn/upload/blog/file/2009/10/20091019174812440381.pdf)
+- [存量阅读+增量阅读](https://mp.weixin.qq.com/s/zuDzvzTYrRMMqcWEq9YR-w)
+- [干货：论文读不懂怎么办](https://www.huaweicloud.com/articles/bda8b3b6f754f38045227ea22665a1ae.html) 不断涌现的论文，其实就是学术界的升级安装包。
+  - 搜一搜presentation
+  - 在Medium上搜一搜有没有相关博客
+  - 视频, 特别是大学老师讲的
+  - 代码
+  - 最好的方式，当然是与专家甚至是作者本人，做面对面的高效沟通反馈。当然，这样的机会很稀缺。如果你遇到，一定要抓住。
+- [如何快速梳理领域文献 (qq.com)](https://mp.weixin.qq.com/s/s0D4bNctjzilyGNqrQ4Kyg)
+- [如何高效做文献回顾？（工具篇） (qq.com)](https://mp.weixin.qq.com/s/k-G0TzfnYbLA0dYXfDpMdg)
+- [论文太多看不过来？快让人工智能帮你阅读分析 (qq.com)](https://mp.weixin.qq.com/s/zEco97zBRYb215bU0CypOQ)
+- [如何高效读论文？ - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/35170379) !!!
+- [How to Read a Paper Efficiently (By Prof. Pete Carr) - YouTube](https://www.youtube.com/watch?v=IeaD0ZaUJ3Y&ab_channel=SurvivingandThrivinginHigherEducation)
+  - 首先是<u>题目</u>, <u>关键词</u>, <u>摘要</u>, 然后是<u>结论</u> (确定自己是否感兴趣, 可以随时停止阅读一篇文章, 不要试图去打捞沉没成本，在已经不看好、或者不感兴趣的论文上投入更多时间)
+  - 千万不要一字一句，从头到尾线性阅读
+  - 先看<u>图表</u>（如果有）, 最后读<u>引言(</u>introduction 因为引言的主要作用是强调论文研究主题的价值和必要性，会尝试与更为宏大的图景、更重要的问题相联系。有的甚至会有“吹嘘”的成分。), 最最后看核心部分(研究结果和讨论, 不是实验)
+  - 实验需要慢慢看
+
+## 选题
+
+- [如何有效选毕业论文题目？ - 少数派 (sspai.com)](https://sspai.com/post/63684)
+  - 熟悉, 要跟别人的优秀文献有关联
+  - 能够给别人带来认知差
+  - 得有证据
+- [如何做一份合格的毕业论文选题报告？（王树义） - International Research Collaboration Information P (ircip.cn)](http://www.ircip.cn/web/993897-1259818.html?id=26645&newsid=2349235)
+
 # 分布式
 
 - <数据密集型应用系统设计>
@@ -80,7 +108,7 @@ http://staff.ustc.edu.cn/~lgliu/Courses/DGP_2012_spring-summer/default.htm
 
 ## B站
 
-这是十几年前我一个人用stereo vision 搭建的demo ![img](resource.assets/8LDO48C$8@%5BGWU0353$FOVS.png)https://m.bilibili.com/space/327617676
+这是十几年前我一个人用stereo vision 搭建的demo https://m.bilibili.com/space/327617676
 
 
 各位cv学生们好。我最近更新了一下3D几何 CV的讲义。包括几何数学基础和一些这两年在CVPR文章的运用综述。课题包括：相机模型，内部和外部参数估计，对极几何，三维重建，图像深度估计。最新研究survey 包括，单图像到相机模型的估计，基于多视图的多人3D姿势估计，基于GAN的3D姿势估计，基于运动的深度结构，基于深度学习的深度估计。讲义可在这里下载 https://github.com/roboticcam/machine-learning-notes
@@ -149,6 +177,14 @@ http://staff.ustc.edu.cn/~lgliu/Courses/DGP_2012_spring-summer/default.htm
 # BLOG
 
 - [万维钢](https://www.geekonomics10000.com/) 
+
+# 游戏
+
+- 斯坦福 CS193u C++和虚幻引擎开发视频游戏
+
+# AI
+
+- [什么是深度学习？45**分钟理解深度神经网络和深度学习**](http://staff.ustc.edu.cn/~lgliu/Resources/DL/What_is_DeepLearning.html)
 
 # 招聘
 
