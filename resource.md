@@ -186,6 +186,10 @@ http://staff.ustc.edu.cn/~lgliu/Courses/DGP_2012_spring-summer/default.htm
 
 - [什么是深度学习？45**分钟理解深度神经网络和深度学习**](http://staff.ustc.edu.cn/~lgliu/Resources/DL/What_is_DeepLearning.html)
 
+## 强化学习
+
+- [强化学习 基础](https://www.youtube.com/watch?v=vmkRMvhCW5c&list=WL&index=108&ab_channel=ShusenWang)
+
 # 招聘
 
 ## 图形学

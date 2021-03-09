@@ -310,15 +310,27 @@ multi-view stereo pipeline.
 >
 > 马尔可夫随机场，也叫马尔可夫网。无向图模型也叫马尔科夫随机场(Markov Random Fields)或马尔科夫网络
 
+- [马尔可夫随机场_百度](https://baike.baidu.com/item/马尔可夫随机场/3287733#reference-[1]-2313875-wrap)
+- [计算机视觉方向简介 | 多视角立体视觉MVS (careerengine.us)](https://posts.careerengine.us/p/5e1b48bf626378473bdf97f5)
 - 马尔可夫性质：它指的是一个随机变量序列按时间先后关系依次排开的时候，第N+1时刻的分布特性，与N时刻以前的随机变量的取值无关, 只与N时刻的随机变量的取值有关。
 - 随机场：当给每一个位置中按照某种分布随机赋予相空间的一个值之后，其全体就叫做随机场。我们不妨拿种地来打个比方。其中有两个概念：位置（site），相空间（phase space）。“位置”好比是一亩亩农田；“相空间”好比是种的各种庄稼。我们可以给不同的地种上不同的庄稼，这就好比给随机场的每个“位置”，赋予相空间里不同的值。所以，俗气点说，随机场就是在哪块地里种什么庄稼的事情。
 - 马尔可夫随机场：马尔科夫随机场是具有马尔科夫特性的随机拿种地打比方，如果任何一块地里种的庄稼的种类仅仅与它邻近的地里种的庄稼的种类有关，与其它地方的庄稼的种类无关，那么这些地里种的庄稼的集合，就是一个马尔可夫随机场。
 - 在随机场的基础上添加马尔科夫性质，从而得到马尔科夫随机场。把马尔科夫随机场映射到**无向图**中，此无向图中的节点都与某个随机变量相关，连接着节点的边代表与这两个节点有关的随机变量之间的关系，所以，马尔科夫随机场其实表达出随机变量之间有些关系因素是必须要考虑的，而另外则有些是可以不用考虑的。<u>马尔科夫随机场的某个随机变量，仅仅只与其相邻的随机变量有关，与那些不相邻的随机变量无关。</u>
-- [马尔可夫随机场_百度](https://baike.baidu.com/item/马尔可夫随机场/3287733#reference-[1]-2313875-wrap)
-- [计算机视觉方向简介 | 多视角立体视觉MVS (careerengine.us)](https://posts.careerengine.us/p/5e1b48bf626378473bdf97f5)
 - MVS中的MRF是以mesh面为
 
-## Energy Formulation
+ 
+
+- considerations
+  - $I_i = \alpha _iF_i + (1-\alpha _i)B_i \;\; \alpha_i \in [0,1]$
+    - matting equation
+    - $I_i$ 是像素块 $i$ 的 RGB 色彩，a pixel in the composite image
+    - $F_i$: foreground pixel
+    - $B_i$: background pixel
+    - $\alpha _i$: 未知蒙版估计（matte estimation） alpha channel is 0 if the pixel is transparent
+  - adjacent values of $\alpha$, $ F$, $B$ to be similar (except when there is an edge) 
+  -  $\alpha$, $ F$, $B$ should be guided by user scribbles (初始化的时候需要用户标一下哪是foreground，哪是background)
+
+### Energy Formulation
 
 > 能量函数, 能量越小越稳定, 和cost function的意义相似
 
@@ -375,6 +387,56 @@ $$
 
 - [ ] 贴纹理需要又不是图像分割, 这里应该如何修改
 
+### graph cut
+
+- a cut separates **F**(foreground) from **B**(background), and no path  between them
+- target: seek the minimum cut. 
+
+$$
+|C| = \sum _{(i, j)\in C} w_{ij}
+$$
+
+- $|C|$: the cost of the cut
+
+- each edge gets a weight
+  - $w_{ij}$: weight between adjacent pixels
+  - $w_{iF}, w_{iB}$: weight between pixel & terminals
+
+### edge weights
+
+![image-20210306091244805](ideas.assets/image-20210306091244805.png)
+
+- 像素到F, B的权重
+
+  - F scribble: 很肯定是属于foreground的
+    - $w_{iF} = \infty$: 要砍断它和F的代价是很大的, 所以不能分离
+    - $w_{iB} = 0$ 
+  - B scribble: 
+    - $w_{iF} = \infty$
+    - $w_{iB} = 0$
+  - for non-scribble pixels, use scribbles to build **P(F)** (probability of foreground pixel), **P(B)** distributions. 
+    - $w_{iF} = -\lambda\>log\>P_B(i)$ : 如果像素 $i$ 和 $B$ 连的概率很小, 那么 权重 $w_{iF}$ 就会很大, 要分开 $i$ 和 $F$ 的代价就很大
+    - $w_{iB} = -\lambda\>log\>P_F(i)$
+
+- 像素与像素之间的权重
+  $$
+  w_{ij} = e^{-\frac{1}{\alpha \sigma^2}||I_i-I_j||^2}
+  $$
+
+  - 如果颜色相似, 那么$w_{ij}$接近1
+  - 如果颜色差很多, 那么$w_{ij}$接近0, so that edge is appealing to cut
+  - $\sigma$: 表示高斯函数的宽度, 决定对 pixel similarity 的宽容度
+
+  
+
+  this can also be turned into an MRF/GIBBS energy
+  $$
+  E = E_{data} + E_{smoothness}
+  $$
+
+  - $E_{data}$: 相当于是 $w_{iF}, w_{iB}$
+  - $E_{smoothness}$: 相当于是 $w_{ij}$ 
+
 ## α-expansion
 
 - why: minimize energy 能量最小化
@@ -386,7 +448,7 @@ $$
 
 
 
-- *Fast Approximate Energy Minimization via Graph Cuts*
+- *Fast Approximate Energy Mi nimization via Graph Cuts*
 - [Alpha-expansion and Alpha-beta-swap Algorithm Flow-CSDN](https://blog.csdn.net/nothinglefttosay/article/details/48554555)
 
 ## mean shift
@@ -394,6 +456,266 @@ $$
 - [Mean Shift 聚类算法](https://blog.csdn.net/hjimce/article/details/45718593) 
   - 没核函数 就是相当于求解一个向量，使得圆心一直往数据集密度最大的方向移动。说的再简单一点，就是每次迭代的时候，都是找到圆里面点的平均位置作为新的圆心位置。
   - 有核函数: 带权重的偏移
+
+
+
+## Poisson image editing
+
+[Seamless cloning泊松克隆 通俗易懂](https://blog.csdn.net/hjimce/article/details/45716603)
+
+[Poisson Image Editing 公式](https://blog.csdn.net/zhaoyin214/article/details/88196575)
+
+[image blending](https://www.youtube.com/watch?v=UcTJDamstdk&t=613s&ab_channel=RichRadke)
+
+[一个真实的例子 人脸图像融合](https://blog.csdn.net/qq_20474257/article/details/89785478)
+
+[拉普拉斯算子 推导](https://blog.csdn.net/saltriver/article/details/78990520)   [图像二阶导数的本质](https://blog.csdn.net/saltriver/article/details/78990575)
+
+![ ](ideas.assets/20210302192822372.png)
+
+- 图片有低频信息也有高频信息(边界). 边界不需要blend, 不需要宽的transition band(过渡区, transition region), 低频的地方可以用宽的transition band, 
+
+### hard compositing
+
+> "硬"合成, "硬"混合
+
+$$
+I(x,y) = M(x,y)S(x,y) + (1-M(x,y))T(x,y)
+$$
+
+- 如果$M(x,y) = 1$ 那就是只要source的颜色
+- 如果$M(x,y) = 0$ 那就是只要target的颜色
+
+#### weight transition region
+
+![image-20210303093244855](ideas.assets/image-20210303093244855.png)
+
+- 两条虚线之间是一个过渡缓冲区. 外虚线处只有target的颜色, 然后慢慢递减到内虚线为0; 内虚线处只有source的颜色, 然后递减到外虚线为0. 
+
+- 操作方法: 将mask Gaussian blur 高斯模糊一下, 再应用上面的hard compositing (模糊的mask不是非0即1的, 所以融合得更自然一些) 
+
+  ![image-20210303100352725](ideas.assets/image-20210303100352725.png)
+
+### Gaussian Pyramid
+
+- $K = 5*5$ Gaussian Filter 高斯卷积核
+
+- $G_0 = $ Original image (full resolution)
+- $G_i = (K * G_{i-1})_{\downarrow2}$  模糊操作
+  - $K*G_{i-1}$: convolution
+  - $\downarrow2$: down sample by 2 in both dimension, 操作后图像会变成原来的1/2
+
+![image-20210302214855329](ideas.assets/image-20210302214855329.png)
+
+### Laplacian Pyramid
+
+- Differences of gaussian at each scale: $L_i= G_i - (K*G_i)$ 
+  - $L_i$: high-pass image at scale $i$ (high-pass = original - low-pass), 也就是得到边缘信息, $i$越大, 小的边缘信息保留得越少
+  - $G_i$: Gaussian Pyramid image at scale $i$
+  - $K*G_i$: blurred version of that image
+  - $\{L_i\}$: $L_i$的集合构成 Laplacian Pyramid
+  - $i$最大的时候, $L_{maxi}$是彩色的图像, 也就是$G_{maxi}$, 其余的都是"边缘"图像
+
+![image-20210302220457887](ideas.assets/image-20210302220457887.png)
+
+### recover original image
+
+recover original image as:  
+
+$I = \sum_{i=0}^N(L_i)_{\uparrow\text{ to full size}}$ 
+
+- Add back all the edges at different scales to get the original image. 
+- **Base image is smallest, blurriest image($G_N = L_N$)** 从那个最小的, 也就是最模糊的图片开始. 
+
+- [x] :question: 分辨率不一样怎么加: 
+
+放大, 小分辨率图的一个像素在大分辨率里表示好多个 up sample
+
+- [x] :question: 为什么用的是Laplacian加起来怎么会得到原图? Laplacian得到的不是边缘信息吗?
+
+最小那个$L_N$等于$G_N$, 不是边缘信息, 是彩色的
+
+### image composition
+
+![image-20210303090649918](ideas.assets/image-20210303090649918.png)
+
+- to do image composition
+
+  1. compute Laplacian pyramids for $S, T$, called $L^S, L^T$
+
+  2. compute Gaussian pyramids for mask $M$, called $G$
+
+  3. make a Laplacian pyramid for composite混合后的图像
+     $$
+     L^I_i = G_i*L_i^S + (1-G_i)*L_i^T\\
+     (i=0, ...N)
+     $$
+     (与上面的hard compositing思想一样, 但是符号不同)
+
+  4. add up to get the final composite 把最右边result那一列加起来就得到最终结果
+  
+     <img src="ideas.assets/image-20210303135705356.png" alt="image-20210303135705356" style="zoom:150%;" />
+
+### Poisson image editing
+
+![image-20210303170801370](ideas.assets/image-20210303170801370.png)
+
+- $\partial \Omega$: 边界
+
+
+
+- idea: to reduce color mismatch between source and target, create composite in **gradient domain**. 
+- Target: 
+  - gradient of the composite **inside the region($Ω$)** to look as close as possible to the source image gradient. 
+  - the composite must match(相等) target image **on the boundary of the region($\partial \Omega$)**
+
+- [x] :question:为了和source的梯度尽可能一样, target里的图像的边界不会被抹平吗? 感觉是和target的梯度一样才对啊. 
+
+emm 是看的那篇博客的图有问题. 就是我想的那样, composite 里的梯度要尽可能和source里的(也就是那头牛)一样. 
+
+![image-20210303171153112](ideas.assets/image-20210303171153112.png)
+
+- [x] :question:$\partial \Omega$ 不就是mask的那条线吗? 这个不是要尽可能看不见吗, 为什么是相等? 
+
+composite的边界要和target的边界完全一样
+
+写成公式: 
+
+#### problem
+
+$$
+\min\limits_{I(x,y)\in\Omega} 
+\iint\limits_\Omega 
+||\triangledown I(x,y) - \triangledown S(x,y)||^2 dxdy \\
+S.T. \> \> I(x,y) = T(x,y) \>\>\>on \> \partial \Omega
+$$
+
+- $S.T.$: subject to (the constraint) 约束条件, 边界要相等
+
+#### solution
+
+Poisson equation
+$$
+\triangledown^2I(x,y) = \triangledown^2S(x,y)\>\>in\>\> \Omega \\
+I(x, y) = T(x,y)\>\>on\>\>\partial\Omega
+$$
+
+- $\triangledown^2$: Laplacian
+- $I$: source中mask那部分混合后的RGB值
+
+- discretizing and solving the problem: 
+
+  1. for a pixel p inside $\Omega$
+
+     $\triangledown^2I(x,y) = \triangledown^2S(x,y)$
+
+     ![image-20210303155115036](ideas.assets/image-20210303155115036.png)
+
+  2. for a pixel p  whose neighborhood is  inside $\Omega$ 
+
+     ![image-20210303163255438](ideas.assets/image-20210303163255438.png)
+
+     - $T(x,y-1), T(x-1,y)$都是已知的. 
+
+![](ideas.assets/image-20210303164045530.png)
+
+![image-20210305143000657](ideas.assets/image-20210305143000657.png)
+
+![image-20210305143013958](ideas.assets/image-20210305143013958.png)
+
+- A: sparse matrix(mostly 0, some -4, 1)
+  - $I$ 中第 i 行是边界的RGB, 那么A中第 i 行存的就是一个1, 其余是0; 
+  - $I$ 中第 i 行不是边界的RGB, 那么A中第 i 行存的就是一个-4, 四个1, 其余是0; 
+- x: 存的是source贴到target应有的颜色
+- b: 
+  - $I$ 中第 i 行是边界的RGB, 那么b中第 i 行存的就是边界RGB, 因为边界要和target的颜色一样
+  - $I$ 中第 i 行不是边界的RGB, 那么b中第 i 行存的就是$I$中第 i 行那个像素的散度Laplacian. 计算的话可以拿target中那个位置的像素的Laplacian和source中那个位置的像素的Laplacian去做一个composition(见image composition部分)
+
+### Mixed-gradient compositing
+
+![image-20210303191625384](ideas.assets/image-20210303191625384.png)
+
+- [ ] :question: 偏导那个不会少了个平方吗? 
+
+- Difference: the right hand side need not arise from the Laplacian of a real image (non-conservative vector field).  原来是要和原图像的Laplacian(散度)一样, 现在只要不一定了, 可以是随机的一个散度. 
+
+e.g.
+
+![image-20210303203049606](ideas.assets/image-20210303203049606.png)
+
+![image-20210303203110377](ideas.assets/image-20210303203110377.png)
+
+比如图中山的部分的梯度要比source中天空的那部分梯度要大, 所以保留的是山
+
+
+
+## 图像配准
+
+> image registration
+
+[图像配准综述](https://zhuanlan.zhihu.com/p/80985475)
+
+**图像配准与相关**[[1\]](https://zhuanlan.zhihu.com/p/80985475#ref_1)是图像处理研究领域中的一个典型问题和技术难点，其目的在于比较或融合针对同一对象在不同条件下获取的图像，例如图像会来自不同的采集设备，取自不同的时间，不同的拍摄视角等等，有时也需要用到针对不同对象的图像配准问题。
+
+具体地说，对于一组图像数据集中的两幅图像，<u>通过寻找一种空间变换把一幅图像（浮动图像，moving image）映射到另一幅图像（参考图像，fixed image）上，使得两图中对应于空间同一位置的点一一对应起来</u>，从而达到信息融合的目的。
+
+
+
+Multi-view Analysis: 多视图配准：同一物体在同一场景不同视角下的图像配准。从多个视角捕获相似对象或场景的图像，以便获得扫描对象或场景的更好表示。如使用图像拼接，从2D图像重建3D模型等。
+
+## LTBC
+
+### view selection
+
+> select which view(s) should be used to texture each face
+
+- why: yield a preliminary texture
+
+### color adjustment
+
+> this texture is optimized for consistency
+
+- why: avoid seams between adjacent texture patches 
+
+
+
+1. global adjustment with support region 
+   - why: alleviate color artifact
+2. Poisson editing ()
+   - why: fix remaining visible seams
+
+
+
+## Seamless Mosaicing of Image-Based Texture Maps
+
+### 步骤
+
+1. backprojecting original view onto the obtained surface
+
+2. A texture is mosaiced from these backprojections, whereas the quality of the mosaic is maximized within the process of **Markov Random Field** energy optimization. MRF 用来选合适的view的texture
+
+   :question: 怎么选
+
+3. the residual seams between the mosaic components are removed via seam levelling procedure (which is equivalent to gradient domain based stitching techniques). 
+
+- 不需要resample所以没有质量损失
+
+### MRP-based mosaicing
+
+- labeling
+  - mesh faces: $F_1, F_2, ...F_K$
+
+  - texture fragments: $V^1, V^2,...V^N$
+
+  - labeling vector $M = \{m_1, m_2, ...,m_K\}\in\{0..N\}^K$
+
+    描述 $F_i$ 到 $V^{m_i}$ 的对应关系
+
+- smoothness term 是两个纹理块之间的缝隙的颜色差的积分
+
+  ![image-20210309164547258](ideas.assets/image-20210309164547258.png)
+
+- the MRF is **mesh-based**, its nodes correspond to mesh faces, and the node interactions are defined by faces adjacency. 
 
 # ghost
 
@@ -417,3 +739,22 @@ $$
 - [meanshift算法图解_csdn](https://blog.csdn.net/csdnforyou/article/details/81161840)
 
 - [Meanshift，聚类算法 - Liqizhou - 博客园 (cnblogs.com)](https://www.cnblogs.com/liqizhou/archive/2012/05/12/2497220.html)
+
+
+
+# IBR
+
+> image-based rendering
+
+- IBR 通常有两种方法: 
+  - VDTM (view-dependent texture mapping)
+    - 不用很多图, 但是几何要求高. VDTM assumes a relatively accurate geometric model, but requires only a small number of textures from input cameras that can be in general position.
+  - light field/lumigraph
+    - 需要大量图片, 但几何要求不高. Light field rendering requires **a large collection of images** from cameras whose centers lie on a regularly sampled two-dimensional patch, but it makes few assumptions about the **geometry** of the scene. 
+
+
+
+
+
+
+
