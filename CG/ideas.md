@@ -308,7 +308,14 @@ multi-view stereo pipeline.
 
 > Markov Random Field
 >
+> Undirected Graphical model(UGM)
+>
 > 马尔可夫随机场，也叫马尔可夫网。无向图模型也叫马尔科夫随机场(Markov Random Fields)或马尔科夫网络
+>
+> PGM（概率图模型）中的无向图模型. 是一个可以由无向图表示的联合概率分布，属于[生成式模型](https://zhuanlan.zhihu.com/p/74586507)
+
+- why
+  - 节点与节点之间没有明显的方向关系
 
 - [马尔可夫随机场_百度](https://baike.baidu.com/item/马尔可夫随机场/3287733#reference-[1]-2313875-wrap)
 - [计算机视觉方向简介 | 多视角立体视觉MVS (careerengine.us)](https://posts.careerengine.us/p/5e1b48bf626378473bdf97f5)
@@ -345,6 +352,82 @@ $$
 - $E_{data}(\cdot, \cdot)$: 数据项data term, prefers "good" views for texturing a face
 - $E_{smooth}(\cdot, \cdot, \cdot, \cdot)$: 平滑项smoothness term, minimizes seam(edge between faces textured with different images) visibility. 
 - $E(l)$ 越小越好: 通过 graph cuts 和 alpha expansion 来最小化
+- 都不能是负的
+
+### Markov Blanket
+
+> 马尔可夫毯
+
+[马尔可夫毯（Markov Blanket）](https://blog.csdn.net/jbb0523/article/details/78424522)
+
+![image-20210311192728774](ideas.assets/image-20210311192728774.png)
+
+在式(2-16)中，集合MB即为我说的集合A，{U-MB-{X}}即为我说的集合B，符号“⊥”表示“独立”，符号“|”表示在给定xx条件下，因此式(2-16)可读为“在给定集合MB时，变量X与{U-MB-{X}}独立”。
+
+### Conditional Independence
+
+- global Markov implies local Markov which implies pairwise Markov
+
+- assuming $p(x)>0$ for all $x$, pairwise Markov implies global Markov. 
+
+  - $p(x)>0$ : probability distribution 
+
+  <img src="ideas.assets/image-20210311174017672.png" alt="image-20210311174017672" style="zoom:67%;" /> 
+
+#### Global Markov Property
+
+![image-20210311172623068](ideas.assets/image-20210311172623068.png)
+
+- $X$ 表示node
+
+- global Markov implies local Markov: 
+
+  <img src="ideas.assets/image-20210311174737840.png" alt="image-20210311174737840" style="zoom: 67%;" />
+
+  ![image-20210311174753133](ideas.assets/image-20210311174753133.png)
+
+#### Local Markov Property
+
+![image-20210311172645300](ideas.assets/image-20210311172645300.png)
+
+- $V$ 表示所有nodes
+
+- local Markov implies pairwise Markov:
+
+  <img src="ideas.assets/image-20210311191925898.png" alt="image-20210311191925898" style="zoom: 50%;" /><img src="ideas.assets/image-20210311192051741.png" alt="image-20210311192051741" style="zoom: 50%;" />
+
+  ![image-20210311192020793](ideas.assets/image-20210311192020793.png)
+
+#### Pairwise Markov Property
+
+![image-20210311173234309](ideas.assets/image-20210311173234309.png)
+
+- pairwise Markov implies global Markov
+
+  <img src="ideas.assets/image-20210311193632392.png" alt="image-20210311193632392" style="zoom:67%;" />
+
+### Parameterization
+
+- difficult to do local parameterization base on conditional probabilities since no topological ordering associating UGMs. 
+- 
+
+### 势函数
+
+[势函数](https://www.jianshu.com/p/4c72e7fbed97)
+
+### 团
+
+[团](https://www.jianshu.com/p/4c72e7fbed97)
+
+每个结点至少出现在一个几大团中
+
+### 生成式模型
+
+[link](https://zhuanlan.zhihu.com/p/74586507)
+
+![image-20210312172934558](ideas.assets/image-20210312172934558.png)
+
+生成式模型计算: 根据特征去推它的类型, 已知特征1, 推是0的概率. 特征1的概率是3/4, 有特征1且是0的概率是2/3, (3/4)*(2/3) = 1/2
 
 ## Graph Cuts
 
@@ -374,8 +457,6 @@ $$
   其中，R(L)为区域项（regional term），B(L)为边界项（boundary term），而a就是区域项和边界项之间的重要因子，决定它们对能量的影响大小。如果a为0，那么就只考虑边界因素，不考虑区域因素。E(L)表示的是权值，即损失函数，也叫能量函数，图割的目标就是优化能量函数使其值达到最小。
 
 - [Graph Cuts 图分割学习 - 知乎](https://zhuanlan.zhihu.com/p/58185005)
-
-- 
 
 - [ ] 如何和MRF结合起来
 
@@ -444,12 +525,19 @@ $$
 
 
 
+- [ ] :question: 保留原标签是什么意思，如果想要表示原来属于两个标签的节点现在属于同一个应该怎么表示
+- [ ] :question: 如果两个原来属于不同标签的节点现在属于同一个了，a节点用不用去掉？如果要去掉那是每次都重新生成一个图吗
+- [ ] :question: 
+
+- 把问题拆解成一系列binary subproblem, 只分是alpha标签和不是alpha标签两类
+- 每一次都选择一个标签作为alpha标签，然后扩展之：然后遍历每一个元素（非alpha标签的元素）然后要么将它变为alpha标签元素，要么让他保持原来的标签。当不能再扩展的时候停止
+- 
 
 
 
-
-- *Fast Approximate Energy Mi nimization via Graph Cuts*
+- *Fast Approximate Energy Minimization via Graph Cuts*
 - [Alpha-expansion and Alpha-beta-swap Algorithm Flow-CSDN](https://blog.csdn.net/nothinglefttosay/article/details/48554555)
+- https://www.youtube.com/watch?v=EnKvla6mIGU&t=2423s&ab_channel=CVRPLabatNUS
 
 ## mean shift
 
@@ -457,11 +545,15 @@ $$
   - 没核函数 就是相当于求解一个向量，使得圆心一直往数据集密度最大的方向移动。说的再简单一点，就是每次迭代的时候，都是找到圆里面点的平均位置作为新的圆心位置。
   - 有核函数: 带权重的偏移
 
+### 高斯
 
+[多元高斯分布（The Multivariate normal distribution） - bingjianing - 博客园 (cnblogs.com)](https://www.cnblogs.com/bingjianing/p/9117330.html) 
+
+<img src="ideas.assets/image-20210318194040222.png" alt="image-20210318194040222" style="zoom: 150%;" />
 
 ## Poisson image editing
 
-[Seamless cloning泊松克隆 通俗易懂](https://blog.csdn.net/hjimce/article/details/45716603)
+[Seamless cloning 泊松克隆 通俗易懂](https://blog.csdn.net/hjimce/article/details/45716603)
 
 [Poisson Image Editing 公式](https://blog.csdn.net/zhaoyin214/article/details/88196575)
 
@@ -649,6 +741,16 @@ e.g.
 
 
 
+## 协方差
+
+[协方差的意义和计算公式](https://blog.csdn.net/beechina/article/details/51074750)
+
+## 似然
+
+https://zhuanlan.zhihu.com/p/46737512
+
+https://www.jianshu.com/p/f1d3906e4a3e
+
 ## 图像配准
 
 > image registration
@@ -686,7 +788,9 @@ Multi-view Analysis: 多视图配准：同一物体在同一场景不同视角�
 
 
 
-## Seamless Mosaicing of Image-Based Texture Maps
+## Mosaicing of Image-Based Texture Maps
+
+？全局调整
 
 ### 步骤
 
@@ -717,9 +821,154 @@ Multi-view Analysis: 多视图配准：同一物体在同一场景不同视角�
 
 - the MRF is **mesh-based**, its nodes correspond to mesh faces, and the node interactions are defined by faces adjacency. 
 
+  使用graph cut和alpha expansion最小化能量函数
+
+- [ ] :question: 需要scribble吗？如何初始化​
+- [ ] :question: graph cut是用来区分前景背景图的, 如何用来选优化能量函数? 
+
+graph cut不只是区分两个啊
+
+## Energy Minimization via Graph Cuts
+
+> Fast Approximate Energy Minimization via Graph Cuts
+
+## Masked Photo Blending
+
+> mapping dense photographic dataset on high-resolution sampled 3Dmodels
+
+
+
+## Multi-band Blending
+
+> Seamless Image-Based Texture Atlases using Multi-band Blending
+>
+> face project into view?
+
+- pipeline
+  1. compute a partition of mesh faces: obtain a close-to-optimal seam placement using graph cuts optimization
+  2. apply a pixel-wise color correction in the vicinity of patch boundaries with a principled 3D extension of multi-band image blending
+- trade-off: 能看到细节，接缝又小
+  - 细节通过texel数量来衡量
+
+## Seamless Montage for Texturing Models
+
+
+
+- 使用全局优化，将兼容的纹理分配给相邻的三角形，来消除接缝
+- 将面上的点反向投影到视角中来看那个点应该是什么颜色
+  - 把网格三角形投到图像上
+- 几何重建based on visual hull computation，三角形mesh使用marching cubes生成
+
+- 步骤
+  - calibration: bundle adjustment
+  - reconstruction: MVS
+  - texturing: project + MRF + 泊松
+    - 每个face一个label，标志用哪个input image：需要保证不同三角形之间接缝最小；同时high resolution, low anisotropy, and high contrast
+      - 输入图像 $I_1, ... I_N$
+      - ![image-20210317100537978](ideas.assets/image-20210317100537978.png)
+    - ![image-20210317101251085](ideas.assets/image-20210317101251085.png)
+
+### 问题
+
+- [ ] :question: 为什么选择梯度？梯度大能说明什么问题？
+
+图像变化。
+
+说明分辨率，模糊效果
+
+- [ ] :question: 如何把face投影到view上？
+
+
+
+- [ ] :question: 投影面积有什么影响？怎么和梯度结合起来考虑？
+
+乘起来。投影面积越大说明离得越近。
+
 # ghost
 
-## Mini Cut
+## max-flow mini-Cut
+
+[Max-Flow Min-Cut Theorem (& Ford-Fulkerson Algorithm)](https://www.youtube.com/watch?v=oHy3ddI9X3o&ab_channel=BackToBackSWE)
+
+[Graph cut and alpha expansion](https://www.youtube.com/watch?v=EAT3jLvr0HI&t=1251s&ab_channel=CVRPLabatNUS)
+
+![image-20210309203134350](ideas.assets/image-20210309203134350.png)
+
+- source: indegree(s) = 0
+- sink: outdegree(t) = 0
+- edge 上的数字表示capacity, edge上的flow(流量)不能超过capacity
+
+
+
+- 一个s-t cut就是把图分为两部分, 比如$S, T$, s, t节点要分别在两部分, 这两部分要满足条件:
+  - $S\cup T = V  \>\; S\cap T = \empty$
+- the max flow that we can push out of the start will be limited by the minimum cut that we can find in the network.   
+- max-flow = mini-cut, 从s流到t的数量取决于s和t的连接中的瓶颈大小
+- Max-Flow Min-Cut Theorem (Ford-Fulkerson): in any network, the value of max-flow equals capacity of min-cut. 
+
+### cut
+
+![image-20210310125657816](ideas.assets/image-20210310125657816.png)
+
+- 只要箭头方向从s部分指向t部分的, 所以第二个example中的7到3那个不算到capacity里
+
+### flow
+
+- 0 <= flow <= the capacity of the edge
+- flow leaving v_i = flow entering v_i (except at s and t)
+
+### flows and cuts
+
+- Let f be a flow, and let (S, T) be any s-t cut. Then, the net flow sent across the cut is equal to the amount reaching t ![image-20210310132807781](ideas.assets/image-20210310132807781.png)
+
+  ![image-20210310141348010](ideas.assets/image-20210310141348010.png)
+
+  28 - 4 = 24 (因为有的从t流到s了)
+
+- Let f be a flow, and let (S, T) be any s-t cut. Then the value of the flow is at most the capacity of the cut.
+
+- Let f be a flow, and let (S, T) be an s-t cut whose capacity equals the value of f. Then f is a max flow and (S, T) is a min cut.
+
+  ![image-20210310142019661](ideas.assets/image-20210310142019661.png)
+
+### Residual Graph
+
+residual graph 标明所有能够undo的flow和能够继续push的flow
+
+如果residual graph 中没有s-t path了就不能再push flow了, 连调整都没有必要了
+
+<img src="ideas.assets/image-20210309220616156.png" alt="image-20210309220616156" style="zoom: 67%;" />
+
+![image-20210310085023875](ideas.assets/image-20210310085023875.png)
+
+### Augmenting paths Algorithm
+
+
+
+- if any augmenting path exits, then not yet a max flow
+
+  augmenting path = path in  residual graph
+
+  ![image-20210310142711731](ideas.assets/image-20210310142711731.png)
+
+![image-20210310143840878](ideas.assets/image-20210310143840878.png)
+
+- Choosing good augmenting paths;
+  - fewest number of arcs(shortest path), easy to implement with Breadth-First-Search
+  - Max bottleneck capacity(fattest path), use Dijkstra-style(Best-First-Search) algorithm. 
+
+### Ford-Fulkerson Algorithm
+
+```js
+let f(e) = 0 for all e in E  // 让所有edge的flow为0, 也就是都没有流量
+    while s-t path in G_res  // 如果 Residual Graph还有路
+		let P be a simple path in G_res
+		augment along path P
+        update f to be f'
+		update G_res
+    end while
+end
+```
 
 ## Gradient Magnitude
 

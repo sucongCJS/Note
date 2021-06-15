@@ -491,6 +491,31 @@ $$
 
   z方向不动，x，y缩放到屏幕大小，然后平移到原点处
 
+## Line
+
+### DDA
+
+> digital differential analyzer
+>
+> 数字微分分析法
+
+![image-20210328200837246](GAMES101.assets/image-20210328200837246.png)
+
+- m是极限的微分
+
+- m大于一的时候线会不连续, 可以x, y对调一下
+
+  <img src="GAMES101.assets/image-20210328201126238.png" alt="image-20210328201126238" style="zoom:50%;" />
+
+### Bresenham
+
+- 不出现浮点运算
+- 本质: 线段是有方向的, 可以根据它的方向, 大幅度缩小下一个要光栅化的像素的可能范围
+
+### 光滑曲线
+
+
+
 ## Triangle
 
 > （fundamental shape primitive）
@@ -514,6 +539,22 @@ $$
 > 包围盒
 
 - 包围盒的水平范围是从x最小到x最大，垂直范围是从y最小到y最大，不在这个范围内的像素可以不光栅化。
+
+## Polygon
+
+### 是否在多边形内
+
+- 奇偶检测法(射线法): 计算穿过边界的次数, 但是要注意奇异点的处理, 比如刚好和线重合, 比如只和一个顶点相交, 但没有进入
+
+  ![image-20210328215806569](GAMES101.assets/image-20210328215806569.png)
+
+- 扫描线算法: 水平线是扫描线, 和边界相交(可以交多次), 在第奇个交点和第偶个交点之间进行填充
+
+  ![image-20210328220406061](GAMES101.assets/image-20210328220406061.png)
+
+  数据结构
+
+  ![image-20210328220635893](GAMES101.assets/image-20210328220635893.png)
 
 ## Sampling
 
@@ -2118,12 +2159,14 @@ Data Structure
 
 #### Object Partitions
 
-> Object Partitions & Bounding Volume Hierarchy (BVH)
+> Object Partitions & Bounding Volume Hierarchy (BVH 层次包围盒)
 
 - Why
   - Spatial Partitions 要求交包围盒和三角形. 这个的话一个三角形只能出现在一个包围盒中
 
 ![image-20201212172504430](GAMES101.assets/image-20201212172504430.png)
+
+[code](https://yangwc.com/2019/05/23/RayTracer-Advance/) 
 
 ##### 工作方式
 
@@ -2143,7 +2186,7 @@ Data Structure
 
 ### Code
 
-#### 方向的表示
+#### 方向表示
 
 [Ray-Tracing: Generating Camera Rays](https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-generating-camera-rays/generating-camera-rays?http://www.scratchapixel.com/lessons/3d-basic-rendering/computing-pixel-coordinates-of-3d-point?)
 
