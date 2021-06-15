@@ -1140,3 +1140,23 @@ graph cut不只是区分两个啊
 
 
 
+- [Meanshift，聚类算法 - Liqizhou - 博客园 (cnblogs.com)](https://www.cnblogs.com/liqizhou/archive/2012/05/12/2497220.html)
+
+
+
+# IBR
+
+> image-based rendering
+
+- IBR 通常有两种方法: 
+  - VDTM (view-dependent texture mapping)
+    - 不用很多图, 但是几何要求高. VDTM assumes a relatively accurate geometric model, but requires only a small number of textures from input cameras that can be in general position.
+  - light field/lumigraph
+    - 需要大量图片, 但几何要求不高. Light field rendering requires **a large collection of images** from cameras whose centers lie on a regularly sampled two-dimensional patch, but it makes few assumptions about the **geometry** of the scene. 
+
+
+
+
+
+
+

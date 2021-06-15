@@ -52,6 +52,8 @@
 - coding train(js, 可视化算法)
 - Design Code (swift ui)
 
+
+
 # 几何建模
 
 - GAMES102
@@ -71,7 +73,7 @@ http://staff.ustc.edu.cn/~lgliu/Courses/GAMES102_2020/default.html
 
 课程的10个作业我都精心做过设计，通过这10个作业能基本掌握几何建模与处理的大部分知识和技术。
 
-如果C/C++编程比较弱，想提高编程能力，建议可以按照我给本科生讲授的《计算机图形学》的作业来练习，其中的作业也是我花了很多时间来精心设计的，从最初的面向对象的编程思想、到图像编程、使用现成的类库、到图形编程等都能得到渐进式的训练，如能跟着作业来完成，你的面向对象C++编程一定会有快速提高：
+如果C/C++编程比较弱，想提高编程能力，建议可以按照我给本科生讲授的《计算机图形学》的作业来练习，其中的作业也是我花了很多时间来精心设计的，从最初的面向对象的编程思想、到图像编程、使用现成的类库、到图形编程等都能得到渐进式的训练：
 http://staff.ustc.edu.cn/~lgliu/Courses/ComputerGraphics_2020_spring-summer/default.htm
 同样地，主页上有所有的课件、作业及参考代码、课程视频等。
 
@@ -105,6 +107,12 @@ GAMES 203: 三维视觉和理解（黄其兴）（预期：2021年6月-8月）
 在对三维几何模型的构建过程中，还会涉及到很多需要处理的几何问题，比如数据去噪(denoising or smoothing)、补洞(repairing)、简化(simplification)、层次细节(level of detail)、参数化(parameterization)、变形(deformation or editing)、分割(segmentation)、形状分析及检索(shape analysis and retrieval)等。这些问题构成“数字几何处理”的主要研究内容。笔者自2005年起开设了多年的《数字几何处理》的研究生课程：
 
 http://staff.ustc.edu.cn/~lgliu/Courses/DGP_2012_spring-summer/default.htm
+
+
+
+有滤波啥的
+
+![image-20210331214400871](resource.assets/image-20210331214400871.png)
 
 ## B站
 
@@ -150,6 +158,8 @@ http://staff.ustc.edu.cn/~lgliu/Courses/DGP_2012_spring-summer/default.htm
 
 # 学习路线
 
+![image-20210315215423595](resource.assets/image-20210315215423595.png)
+
 ## C++
 
 - [(18 封私信 / 1 条消息) 研究生生涯还剩两年，学C++（达到可以找工作的标准）时间够用吗? - 知乎 (zhihu.com)](https://www.zhihu.com/question/437730620/answer/1662402460)
@@ -170,7 +180,12 @@ http://staff.ustc.edu.cn/~lgliu/Courses/DGP_2012_spring-summer/default.htm
 2. 看完要自己实现一边, 包括各种数据结构, 各种查找算法, 排序算法... 如果有问题再回头去看
 3. 算法设计手册(时间够可以看, 时间不够直接刷题)
 
+## 设计模式
 
+[Peter Norvig](http://norvig.com/design-patterns/design-patterns.pdf) 《设计模式》里面曾经提到，其中大部分的模式都是建立在smalltalk/C++的前提之下的。这个前提（框架）很可惜的被所有人扔到了风中，并将那些模式泛化为放之四海而皆准的准则。Peter Norvig老大有一个著名的ppt，里面提到在《设计模式》的23个模式里面有16个模式放到动态语言（尤其是LISP）下面就根本不是什么模式，而是显而易见无需费力就能完成的任务。
+————————————————
+版权声明：本文为CSDN博主「pongba」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/pongba/article/details/2025830
 
 
 
@@ -182,9 +197,15 @@ http://staff.ustc.edu.cn/~lgliu/Courses/DGP_2012_spring-summer/default.htm
 
 - 斯坦福 CS193u C++和虚幻引擎开发视频游戏
 
+![image-20210315195200217](resource.assets/image-20210315195200217.png)
+
 # AI
 
 - [什么是深度学习？45**分钟理解深度神经网络和深度学习**](http://staff.ustc.edu.cn/~lgliu/Resources/DL/What_is_DeepLearning.html)
+
+## 强化学习
+
+- [强化学习 基础](https://www.youtube.com/watch?v=vmkRMvhCW5c&list=WL&index=108&ab_channel=ShusenWang)
 
 # 数据集
 
@@ -208,3 +229,10 @@ http://staff.ustc.edu.cn/~lgliu/Courses/DGP_2012_spring-summer/default.htm
 - http://games-cn.org/jobs/
 - https://chinagraph2020.xmu.edu.cn/sponsors.html
 - http://cs.dlut.edu.cn/CADCG2021/CADCG2021zzqy.htm
+
+## 面试
+
+[理想薪资](https://mp.weixin.qq.com/s/fzMTMCs1j9h8U8e0UG2fig)
+
+
+
