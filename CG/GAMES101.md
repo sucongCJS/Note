@@ -68,7 +68,7 @@ CG和CV的区别
 >
 > 针对不同函数有不同的采样方法
 
-### Monte Carlo 
+### Monte Carlo
 
 $$
 \int f(x)dx = \frac{1}{N}\sum^N_{i=1}\frac{f(X_i)}{p(X_i)}
@@ -1049,7 +1049,7 @@ $$
 
 > 重心坐标 插值
 
-- Why do we want to interpolate?
+- Why do we want to interpolate? 
   - Specify values at vertices. 
   - Obtain smoothly varying values across triangles. 因为很多属性都是定义在三角形的顶点上, 要想在三角形的内部得到一个平滑的过渡, 从一个顶点过渡到另一个顶点就需要用到插值
 - What do we want to interpolate?
@@ -1809,10 +1809,8 @@ triangle meshes:
   - 光栅化不能很好地表示全局效果，比如soft shadow, indirect illumination(光线弹射的多次后再进入人眼)
 - 三个假设
   - Light travels in straight lines (though this is wrong)
-  - Light rays do not “collide” with each other if they cross
-    (though this is still wrong)
-  - Light rays travel from the light sources to the eye (but
-    the physics is invariant under path reversal - reciprocity).
+  - Light rays do not “collide” with each other if they cross (though this is still wrong)
+  - Light rays travel from the light sources to the eye (but the physics is invariant under path reversal - reciprocity)
 
 ## Reflection & Refraction
 
@@ -2113,7 +2111,7 @@ $$
 
   ![image-20201212164031754](GAMES101.assets/image-20201212164031754.png)
 
-4. Step through grid in ray traversal order. 从光线进入的grib开始, 跟据光线的朝向去看看周围的grib有没有交点来判断光线下一个进入哪个grib
+4. Step through grid in ray traversal order. 从光线进入的grib开始, 跟据光线的朝向去看看周围的grib有没有交点来判断光线下一个进入哪个grib （跟画直线的算法有点像）
 
    For each grid cell: Test intersection with all objects stored at that cell. 
 
@@ -2159,6 +2157,8 @@ Data Structure
 
 > Object Partitions & Bounding Volume Hierarchy (BVH 层次包围盒)
 
+[BVH树的构建 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/114307697)
+
 - Why
   - Spatial Partitions 要求交包围盒和三角形. 这个的话一个三角形只能出现在一个包围盒中
 
@@ -2181,6 +2181,31 @@ Data Structure
 - Termination criteria: for example, stop when node contains few elements
 
 ![image-20201212180225454](GAMES101.assets/image-20201212180225454.png)
+
+```cpp
+bool hit(const ray& r, float tmin, float tmax) const
+{
+    for(int a = 0; a < 2; a++)  // 两个坐标轴
+    {
+        // 根据公式: P(t) = origin + direction * t，算出t
+        float invD = 1.0f / r.direction()[a];  // note: operator[] is overloaded 用乘法更快
+        float t0 = (bounding_box.min()[a] - r.origin()[a]) * invD; // 求近处的交点
+        float t1 = (bounding_box.max()[a] - r.origin()[a]) * invD; // 求远处的交点
+        // 在t0~t1的时间内进入box的a轴范围，如果在所有轴上进入的时间有重合，说明则说明光线有进入box
+        //t0 must less than t1
+        if (invD < 0.0f) std::swap(t0, t1);
+
+        tmin = (tmin > t0) ? tmin : t0;
+        tmax = (tmax < t1) ? tmax : t1;
+
+        if (tmax <= tmin)  //"=" :if wiped the edge, it is defined as missed
+            return false;
+    }
+    return true;
+}
+```
+
+
 
 ### Code
 

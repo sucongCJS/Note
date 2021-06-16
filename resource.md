@@ -207,6 +207,21 @@ http://staff.ustc.edu.cn/~lgliu/Courses/DGP_2012_spring-summer/default.htm
 
 - [强化学习 基础](https://www.youtube.com/watch?v=vmkRMvhCW5c&list=WL&index=108&ab_channel=ShusenWang)
 
+# 数据集
+
+## 三维重建的图片
+
+- [mvs数据集，室内室外数据都有](https://www.tanksandtemples.org/download/)
+- [可控光照条件下拍的小物件](http://roboimagedata.compute.dtu.dk/?page_id=36)
+- https://www.cnblogs.com/jukan/p/9230398.html
+- Middlebury数据集 http://vision.middlebury.edu/stereo/data/ 
+- KITTI数据集简介与使用 https://blog.csdn.net/solomon1558/article/details/70173223
+
+# English
+
+- 经济学人The Economist: 质量高, 用语考究, 内容有深度, 探讨世界乃至未来趋势
+- 大西洋月刊The Atlantic: 很深度, 但不贴时事
+
 # 招聘
 
 ## 图形学

@@ -12,6 +12,8 @@
 >
 > [NeRF](https://www.matthewtancik.com/nerf)
 
+[图形学新高潮? NeRF 笔记 - 知乎 看看评论](https://zhuanlan.zhihu.com/p/187541908)
+
 - Key points
 
   - continuous neural network as a volumetric scene representation (5D = xyz + direction)
@@ -196,6 +198,20 @@ density(σ) 只和位置有关, color 和位置和相机的视角都有关
 - Target: given a set of photographs of an object or a scene, estimate the most likely 3D shape that explains those photographs, under the assumptions of known materials, viewpoints, and lighting conditions
 - There exist many cues that can be used to extract geometry from photographs: <u>texture, defocus, shading, contours, and stereo correspondence</u>.
 
+## D-NeRF
+
+> Distributed-NeRF
+
+景深是因为镜片有厚度, 在焦平面的话像素就清晰, 否则就模糊. 不能确定在哪, 只有一个相对的位置
+
+相机位置移动过, 焦平面也会动, 
+
+原来的NeRF在相机拉远拉近的时候不能渲染出一个很好的效果, 因为原来只是绕着物体拍一圈, 没有远近
+
+NeRF是模拟小孔成像模型, 但也能学到景深的效果
+
+ground truth 用blender渲染
+
 # MVS
 
 > Multi-View Stereo
@@ -213,7 +229,7 @@ multi-view stereo pipeline.
 3. 3D geometry reconstruction
 4. textured 3D geometry
 
-## Imagery Collection
+##  Imagery Collection
 
 ![image-20210104111437852](ideas.assets/image-20210104111437852.png)
 
@@ -298,11 +314,7 @@ multi-view stereo pipeline.
 
 - [ ] 
 
-# Texturing
-
-## pipeline
-
-1. determine the visibility of faces in the input images
+# TexRecon
 
 ## MRF
 
@@ -431,6 +443,10 @@ $$
 
 ## Graph Cuts
 
+[图割算法总结 alpha expansion, belief  Propagation](https://blog.csdn.net/MulinB/article/details/8989205) 
+
+[Energy minimization with Graph Cuts](https://profs.etsmtl.ca/hlombaert/energy/) 
+
 - why: 它可在保持相关的尖锐不连续性（sharp discontinuities）的同时，加强分段平滑性
 
 - ![img](ideas.assets/2012110618452932.jpg)
@@ -439,7 +455,7 @@ $$
 
 - 边的权值由平滑项和数据项组成，这2部分的比重用1个系数来平衡，
 
-  - 平滑项B(A)主要体现顶点像素和其相邻区域像素之间值的变化强度，如果变化剧烈说明这两者很有可能出于边缘部分，则被分割开的可能性比较大，:question:而按照最小割的分割原理，这时2者的平滑项权值应该较小
+  - 平滑项B(A)主要体现顶点像素和其相邻区域像素之间值的变化强度，如果变化剧烈说明这两者很有可能出于边缘部分，则被分割开的可能性比较大，而按照最小割的分割原理，这时2者的平滑项权值应该较小
   - 数据项R(A)则表示对应顶点属于前景或者背景的惩罚项
 
   ![img](ideas.assets/2012110618460647.png)
@@ -448,9 +464,9 @@ $$
 
 - [Graph Cuts in Vision and Graphics概述 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/210236545?utm_source=qq)
 
-- Graph Cuts中的Cuts是指这样一个边的集合，很显然这些边集合包括了上面2种边，该集合中所有边的断开会导致残留”S”和”T”图的分开，所以就称为“割”。如果一个割，它的边的所有权值之和最小，那么这个就称为最小割，也就是图割的结果。:question:而福特-富克森定理表明，网路的最大流max flow与最小割min cut相等。所以由Boykov和Kolmogorov发明的max-flow/min-cut算法就可以用来获得s-t图的最小割。这个最小割把图的顶点划分为两个不相交的子集S和T，其中s ∈S，t∈ T和S∪T=V 。这两个子集就对应于图像的前景像素集和背景像素集，那就相当于完成了图像分割。
+- Graph Cuts中的Cuts是指这样一个边的集合，很显然这些边集合包括了上面2种边，该集合中所有边的断开会导致残留”S”和”T”图的分开，所以就称为“割”。如果一个割，它的边的所有权值之和最小，那么这个就称为最小割，也就是图割的结果。而福特-富克森定理表明，网路的最大流max flow与最小割min cut相等。所以由Boykov和Kolmogorov发明的max-flow/min-cut算法就可以用来获得s-t图的最小割。这个最小割把图的顶点划分为两个不相交的子集S和T，其中s ∈S，t∈ T和S∪T=V 。这两个子集就对应于图像的前景像素集和背景像素集，那就相当于完成了图像分割。
 
-- 图像分割可以看成pixel labeling（像素标记）问题，目标（s-node）的label设为1，背景（t-node）的label设为0，(s, t最后要分离), 这个过程可以通过:question:最小化图割来最小化能量函数得到。那很明显，发生在目标和背景的边界处的cut就是我们想要的（相当于把图像中背景和目标连接的地方割开，那就相当于把其分割了）。同时，这时候能量也应该是最小的。假设整幅图像的标签label（每个像素的label）为L= {l1,l2, , , , lp}，其中li为0（背景）或者1（目标）。那假设图像的分割为L时，图像的能量可以表示为：
+- 图像分割可以看成pixel labeling（像素标记）问题，目标（s-node）的label设为1，背景（t-node）的label设为0，(s, t最后要分离), 这个过程可以通过最小化图割来最小化能量函数得到。那很明显，发生在目标和背景的边界处的cut就是我们想要的（相当于把图像中背景和目标连接的地方割开，那就相当于把其分割了）。同时，这时候能量也应该是最小的。假设整幅图像的标签label（每个像素的label）为L= {l1,l2, , , , lp}，其中li为0（背景）或者1（目标）。那假设图像的分割为L时，图像的能量可以表示为：
 
   ![image-20210112212344236](ideas.assets/image-20210112212344236.png)
 
@@ -518,6 +534,90 @@ $$
   - $E_{data}$: 相当于是 $w_{iF}, w_{iB}$
   - $E_{smoothness}$: 相当于是 $w_{ij}$ 
 
+## max-flow mini-Cut
+
+[Max-Flow Min-Cut Theorem (& Ford-Fulkerson Algorithm)](https://www.youtube.com/watch?v=oHy3ddI9X3o&ab_channel=BackToBackSWE)
+
+[Graph cut and alpha expansion](https://www.youtube.com/watch?v=EAT3jLvr0HI&t=1251s&ab_channel=CVRPLabatNUS)
+
+![image-20210309203134350](ideas.assets/image-20210309203134350.png)
+
+- source: indegree(s) = 0
+- sink: outdegree(t) = 0
+- edge 上的数字表示capacity, edge上的flow(流量)不能超过capacity
+
+
+
+- 一个s-t cut就是把图分为两部分, 比如$S, T$, s, t节点要分别在两部分, 这两部分要满足条件:
+  - $S\cup T = V  \>\; S\cap T = \empty$
+- the max flow that we can push out of the start will be limited by the minimum cut that we can find in the network.   
+- max-flow = mini-cut, 从s流到t的数量取决于s和t的连接中的瓶颈大小
+- Max-Flow Min-Cut Theorem (Ford-Fulkerson): in any network, the value of max-flow equals capacity of min-cut. 
+
+### cut
+
+![image-20210310125657816](ideas.assets/image-20210310125657816.png)
+
+- 只要箭头方向从s部分指向t部分的, 所以第二个example中的7到3那个不算到capacity里
+
+### flow
+
+- 0 <= flow <= the capacity of the edge
+- flow leaving v_i = flow entering v_i (except at s and t)
+
+### flows and cuts
+
+- Let f be a flow, and let (S, T) be any s-t cut. Then, the net flow sent across the cut is equal to the amount reaching t ![image-20210310132807781](ideas.assets/image-20210310132807781.png)
+
+  ![image-20210310141348010](ideas.assets/image-20210310141348010.png)
+
+  28 - 4 = 24 (因为有的从t流到s了)
+
+- Let f be a flow, and let (S, T) be any s-t cut. Then the value of the flow is at most the capacity of the cut.
+
+- Let f be a flow, and let (S, T) be an s-t cut whose capacity equals the value of f. Then f is a max flow and (S, T) is a min cut.
+
+  ![image-20210310142019661](ideas.assets/image-20210310142019661.png)
+
+### Residual Graph
+
+residual graph 标明所有能够undo的flow和能够继续push的flow
+
+如果residual graph 中没有s-t path了就不能再push flow了, 连调整都没有必要了
+
+<img src="ideas.assets/image-20210309220616156.png" alt="image-20210309220616156" style="zoom: 67%;" />
+
+![image-20210310085023875](ideas.assets/image-20210310085023875.png)
+
+### Augmenting paths Algorithm
+
+
+
+- if any augmenting path exits, then not yet a max flow
+
+  augmenting path = path in  residual graph
+
+  ![image-20210310142711731](ideas.assets/image-20210310142711731.png)
+
+![image-20210310143840878](ideas.assets/image-20210310143840878.png)
+
+- Choosing good augmenting paths;
+  - fewest number of arcs(shortest path), easy to implement with Breadth-First-Search
+  - Max bottleneck capacity(fattest path), use Dijkstra-style(Best-First-Search) algorithm. 
+
+### Ford-Fulkerson Algorithm
+
+```js
+let f(e) = 0 for all e in E  // 让所有edge的flow为0, 也就是都没有流量
+    while s-t path in G_res  // 如果 Residual Graph还有路
+		let P be a simple path in G_res
+		augment along path P
+        update f to be f'
+		update G_res
+    end while
+end
+```
+
 ## α-expansion
 
 - why: minimize energy 能量最小化
@@ -545,11 +645,50 @@ $$
   - 没核函数 就是相当于求解一个向量，使得圆心一直往数据集密度最大的方向移动。说的再简单一点，就是每次迭代的时候，都是找到圆里面点的平均位置作为新的圆心位置。
   - 有核函数: 带权重的偏移
 
+- 简单说，就是有一个点 x,它的周围有很多个点 x_i 我们计算点 x 移动到每个点 x_i 所需要的偏移量之和，求平均，就得到平均偏移量 m, （<u>该偏移量的方向是周围点分布密集的方向</u>）该偏移量是包含大小和方向的。然后点 x 就往平均偏移量方向移动，再以此为新的起点不断迭代直到满足一定条件结束。
+
+- mean-shift的算法流程是： 
+
+  1. 选取中心点 x，以半径 h 做一个高维球（如果我们是在图像或者视频处理中，则是2维的窗口，不限定是球，可以是矩形），标记所有落入窗口内的点为  x_i 
+  2. 计算 m，如果 m 的值小于阈值或者是迭代次数到达某个阈值，则停止算法，否则利用上面求圆心的公式更新圆点，继续步骤1
+
+- [mean shift算法图解_csdn](https://blog.csdn.net/csdnforyou/article/details/81161840)
+
+- [Mean shift，聚类算法 - Liqizhou - 博客园 (cnblogs.com)](https://www.cnblogs.com/liqizhou/archive/2012/05/12/2497220.html)
+
 ### 高斯
 
 [多元高斯分布（The Multivariate normal distribution） - bingjianing - 博客园 (cnblogs.com)](https://www.cnblogs.com/bingjianing/p/9117330.html) 
 
 <img src="ideas.assets/image-20210318194040222.png" alt="image-20210318194040222" style="zoom: 150%;" />
+
+### 协方差
+
+> 标准差和方差一般是用来描述一维数据, 协方差矩阵用来描述多维数据中不同维的关系, **不是不同样本之间的关系**
+
+[协方差的意义和计算公式](https://blog.csdn.net/beechina/article/details/51074750)
+
+- 独立, 不相关, 协方差为0的关系: 独立 $\Rightarrow$ 不相关 $\Leftrightarrow$ 协方差为0
+- 性质
+  - $cov(X, X) = var(X)$ (var表示方差)
+  - $cox(X, Y)=cov(Y,X)$
+  - 协方差矩阵是对称矩阵, 对角线是各个维度上的方差
+
+
+
+- 备注：为什么协方差矩阵的最大特征向量能使得误差较小?
+
+  回答：因为协方差矩阵表示向量两两之间的相似度，可以理解为向量之间的关系信息。协方差矩阵保存的信息越多，误差越小。怎么保存更多信息呢？需要说明的是特征值代表特征向量的权重，所以挑最大的几个特征向量就能保存更多的信息。
+
+  通过PCA我们知道，最大特征值对应的特征向量具有最大的方差，我感觉这里说的比较好的一点就是方差越大数据的spread就越大，这一点可以通过下图来看出：
+
+  <img src="ideas.assets/20180907212720684" alt="img" style="zoom:67%;" />
+
+  
+
+### 多元高斯函数
+
+[多元高斯分布](https://blog.csdn.net/Flyingzhan/article/details/82502713)
 
 ## Poisson image editing
 
@@ -637,13 +776,14 @@ $I = \sum_{i=0}^N(L_i)_{\uparrow\text{ to full size}}$
 
   2. compute Gaussian pyramids for mask $M$, called $G$
 
-  3. make a Laplacian pyramid for composite混合后的图像
+     1. make a Laplacian pyramid for composite混合后的图像
+  
      $$
      L^I_i = G_i*L_i^S + (1-G_i)*L_i^T\\
      (i=0, ...N)
      $$
-     (与上面的hard compositing思想一样, 但是符号不同)
-
+   (与上面的hard compositing思想一样, 但是符号不同)
+  
   4. add up to get the final composite 把最右边result那一列加起来就得到最终结果
   
      <img src="ideas.assets/image-20210303135705356.png" alt="image-20210303135705356" style="zoom:150%;" />
@@ -739,17 +879,52 @@ e.g.
 
 比如图中山的部分的梯度要比source中天空的那部分梯度要大, 所以保留的是山
 
-
-
-## 协方差
-
-[协方差的意义和计算公式](https://blog.csdn.net/beechina/article/details/51074750)
-
 ## 似然
 
 https://zhuanlan.zhihu.com/p/46737512
 
 https://www.jianshu.com/p/f1d3906e4a3e
+
+
+
+## 岭回归
+
+https://blog.csdn.net/lw_power/article/details/82953337
+
+https://baike.baidu.com/item/%E5%B2%AD%E5%9B%9E%E5%BD%92/554917?fr=aladdin
+
+[公式推导](https://www.jianshu.com/p/47f8466927d4)
+
+## 共轭梯度法
+
+[共轭梯度法通俗讲义](https://flat2010.github.io/2018/10/26/%E5%85%B1%E8%BD%AD%E6%A2%AF%E5%BA%A6%E6%B3%95%E9%80%9A%E4%BF%97%E8%AE%B2%E4%B9%89/)
+
+[共轭梯度法的简单分析](https://alkane0050.fun/2019/05/18/%E5%85%B1%E8%BD%AD%E6%A2%AF%E5%BA%A6%E6%B3%95%E5%88%9D%E6%AD%A5/)
+
+[共轭梯度法（一）：线性共轭梯度](https://zhuanlan.zhihu.com/p/98642663)
+
+
+
+我们都默认直接对系数矩阵求逆，得到![image-20210415122122593](ideas.assets/image-20210415122122593.png)，而没有考虑求逆的性能代价。即便是通过矩阵分解的方式求逆，计算量仍然很大。线性共轭梯度法的提出，让我们能够通过迭代的方式求 x，而不必对系数矩阵求逆。
+
+
+
+### 基本概念
+
+#### 正定矩阵
+
+所谓**正定矩阵**，是指对任意非零向量$\vec x$，恒满足如下不等式的矩阵：
+$$
+\vec{x}^T \textbf{A} \vec{x} > 0
+\tag{2 - 2}
+$$
+这个解释可能对你来说还是过于抽象，从这个式子很难直观的看出所谓的正定矩阵和非正定矩阵的区别。别灰心，后面我们看到正定矩阵是如何影响二次型的形状的时候，就能对这个概念有个直观的理解了。
+
+
+
+#### 超平面
+
+https://zhuanlan.zhihu.com/p/74033232
 
 ## 图像配准
 
@@ -764,6 +939,12 @@ https://www.jianshu.com/p/f1d3906e4a3e
 
 
 Multi-view Analysis: 多视图配准：同一物体在同一场景不同视角下的图像配准。从多个视角捕获相似对象或场景的图像，以便获得扫描对象或场景的更好表示。如使用图像拼接，从2D图像重建3D模型等。
+
+## Gradient Magnitude
+
+> 梯度幅值
+
+[math - What is the gradient orientation and gradient magnitude? - Stack Overflow](https://stackoverflow.com/questions/19815732/what-is-the-gradient-orientation-and-gradient-magnitude/19816362)
 
 ## LTBC
 
@@ -838,6 +1019,12 @@ graph cut不只是区分两个啊
 
 
 
+- Masked Blending Function 
+  - 创建一个在图像空间中运行的混合函数，能够通过加权每个贡献的质量来混合来自不同图像的数据。能处理任何条件下拍摄的照片
+  - 网格上的点颜色是图片像素加权混合的
+- 蒙版可以指示输入图像像素对于角度、与三维模型的接近程度、深度不连续性的程度这几个方面来说适合进行纹理化的程度。
+- 定义多个度量，然后将它们混合在一个尺度中，按照这个策略，我们可以评估和混合任意数量的度量，使系统灵活和可扩展
+
 ## Multi-band Blending
 
 > Seamless Image-Based Texture Atlases using Multi-band Blending
@@ -855,9 +1042,16 @@ graph cut不只是区分两个啊
 
 
 - 使用全局优化，将兼容的纹理分配给相邻的三角形，来消除接缝
+
 - 将面上的点反向投影到视角中来看那个点应该是什么颜色
+  
   - 把网格三角形投到图像上
+  
 - 几何重建based on visual hull computation，三角形mesh使用marching cubes生成
+
+- 通过移动（shift）纹理块来弭平接缝
+
+  - [ ] :question: 移动的依据是什么，怎么移动
 
 - 步骤
   - calibration: bundle adjustment
@@ -865,7 +1059,9 @@ graph cut不只是区分两个啊
   - texturing: project + MRF + 泊松
     - 每个face一个label，标志用哪个input image：需要保证不同三角形之间接缝最小；同时high resolution, low anisotropy, and high contrast
       - 输入图像 $I_1, ... I_N$
+      
       - ![image-20210317100537978](ideas.assets/image-20210317100537978.png)
+      
     - ![image-20210317101251085](ideas.assets/image-20210317101251085.png)
 
 ### 问题
@@ -878,114 +1074,71 @@ graph cut不只是区分两个啊
 
 - [ ] :question: 如何把face投影到view上？
 
-
+投影的逆矩阵
 
 - [ ] :question: 投影面积有什么影响？怎么和梯度结合起来考虑？
 
 乘起来。投影面积越大说明离得越近。
 
-# ghost
+## Seamless Mosaicing of Image-Based Texture Maps
 
-## max-flow mini-Cut
+### seam leveling
 
-[Max-Flow Min-Cut Theorem (& Ford-Fulkerson Algorithm)](https://www.youtube.com/watch?v=oHy3ddI9X3o&ab_channel=BackToBackSWE)
+<img src="ideas.assets/image-20210414104107698.png" alt="image-20210414104107698" style="zoom:50%;" />
 
-[Graph cut and alpha expansion](https://www.youtube.com/watch?v=EAT3jLvr0HI&t=1251s&ab_channel=CVRPLabatNUS)
-
-![image-20210309203134350](ideas.assets/image-20210309203134350.png)
-
-- source: indegree(s) = 0
-- sink: outdegree(t) = 0
-- edge 上的数字表示capacity, edge上的flow(流量)不能超过capacity
+- Seam levelling on a circumference (function values are shown as elevations above the circumference). By summing the original discontinuous function (left) with the specially computed levelling function (middle), the continuous seam-levelled function (right) that preserves the higher frequencies of the original function is obtained. The discontinuity points of the original function are indicated with radial sticks. 通过将原始不连续函数（左）与专门计算的调平函数（中）求和，得到保持原始函数较高频率的连续焊缝调平函数（右）。
 
 
 
-- 一个s-t cut就是把图分为两部分, 比如$S, T$, s, t节点要分别在两部分, 这两部分要满足条件:
-  - $S\cup T = V  \>\; S\cap T = \empty$
-- the max flow that we can push out of the start will be limited by the minimum cut that we can find in the network.   
-- max-flow = mini-cut, 从s流到t的数量取决于s和t的连接中的瓶颈大小
-- Max-Flow Min-Cut Theorem (Ford-Fulkerson): in any network, the value of max-flow equals capacity of min-cut. 
+<img src="ideas.assets/image-20210414133751724.png" alt="image-20210414133751724" style="zoom: 67%;" />
 
-### cut
+- f是M上的一个分段连续函数，在面片内连续, 在不同的面片的边界上不连续, f定义了网格表面上的纹理强度函数(texture intensity function), 如果是RGB纹理, 每个通道都要算一遍, f（f:S→R）（f调的是纹理块还是面片?:面片），调平函数（leveling function）g是一个分段连续函数，其间断集与f相同，因为要和f相加、重叠的。
 
-![image-20210310125657816](ideas.assets/image-20210310125657816.png)
+- Let f be a piecewise continuous function on M and let S be a seam submanifold of codimension one formed by the discontinuity points of f.   S是由f的不连续点构成的余维为1的子流形缝。M\S的意思是M除了边界处, 梯度都要尽可能地小
 
-- 只要箭头方向从s部分指向t部分的, 所以第二个example中的7到3那个不算到capacity里
+- （5）确保了调平函数的梯度幅度，而第二个条件（6）要求g在每个不连续点的跳跃必须等于f的负跳跃，以相互抵消落差。因此，f+g之和（图4-右）是M上的处处连续函数。注意，由于条件（5），调平函数在每个连续性区域内尽可能平滑。因此，该接缝调平程序保持了初始函数f的高频率性（上图）。
 
-### flow
+- 注意，这两个条件（5）（6）将g定义为一个加法常数，可以任意选择，例  如通过将g的平均值等于零（对于未连接的流形（manifold（eg. meshed），可以在每个连接的组件中独立选择该常数），让他们保持原来的落差。
 
-- 0 <= flow <= the capacity of the edge
-- flow leaving v_i = flow entering v_i (except at s and t)
+- 设C_1，C_2，…，C_T为M（mosaic, 纹理块？）的连通分量，即**使用同一纹理块映射**的三角形面片的连通集。然后，将纹理强度函数f视为在每个C_j（面片）上是连续的，并且在不同C_j之间的边界上具有不连续性。对于f，求水平函数g。
 
-### flows and cuts
+  <img src="ideas.assets/image-20210414145837818.png" alt="image-20210414145837818" style="zoom: 67%;" />
 
-- Let f be a flow, and let (S, T) be any s-t cut. Then, the net flow sent across the cut is equal to the amount reaching t ![image-20210310132807781](ideas.assets/image-20210310132807781.png)
+  - i表示顶点，j表示用了顶点i的面片。$f^j_i$表示顶点Vi中fragment C_j上的原始纹理函数的值（注意，**对于相同的Vi但不同的C_j，这些值将不同，因为f在这些点上是不连续的**）
+- L: 网格上相邻顶点对的集合
+  - pair set $M$（和上面的M不一样） containing all (i, j)-pairs such as at least one triangle adjacent to the vertex Vi belongs to the connected component C_j. 顶点i至少有一个三角形j
+  - 每一对$(i,j)\in M$ 都计算一个 $g^i_j$ ，顶点之间的g值通过插值计算
+  - 第一项能够保证条件（5）即梯度要比较小；第二项能够保证条件（6）可以把λ设一个比较大的值（比如100），那么后面的比重就会比较大，g和f的绝对值就要越接近。
+  - 有点像岭回归
+  - [ ] :question: M表示的是同一个patch, 上式有没有考虑不同patch之间的情况
 
-  ![image-20210310141348010](ideas.assets/image-20210310141348010.png)
+论文中是考虑如果在同一个面片中要考虑调整不要过大, 但是不同面片中则没有限制(即使他们是同一个patch), 不是以patch为单位考虑的, 而是面片
 
-  28 - 4 = 24 (因为有的从t流到s了)
-
-- Let f be a flow, and let (S, T) be any s-t cut. Then the value of the flow is at most the capacity of the cut.
-
-- Let f be a flow, and let (S, T) be an s-t cut whose capacity equals the value of f. Then f is a max flow and (S, T) is a min cut.
-
-  ![image-20210310142019661](ideas.assets/image-20210310142019661.png)
-
-### Residual Graph
-
-residual graph 标明所有能够undo的flow和能够继续push的flow
-
-如果residual graph 中没有s-t path了就不能再push flow了, 连调整都没有必要了
-
-<img src="ideas.assets/image-20210309220616156.png" alt="image-20210309220616156" style="zoom: 67%;" />
-
-![image-20210310085023875](ideas.assets/image-20210310085023875.png)
-
-### Augmenting paths Algorithm
-
-
-
-- if any augmenting path exits, then not yet a max flow
-
-  augmenting path = path in  residual graph
-
-  ![image-20210310142711731](ideas.assets/image-20210310142711731.png)
-
-![image-20210310143840878](ideas.assets/image-20210310143840878.png)
-
-- Choosing good augmenting paths;
-  - fewest number of arcs(shortest path), easy to implement with Breadth-First-Search
-  - Max bottleneck capacity(fattest path), use Dijkstra-style(Best-First-Search) algorithm. 
-
-### Ford-Fulkerson Algorithm
-
-```js
-let f(e) = 0 for all e in E  // 让所有edge的flow为0, 也就是都没有流量
-    while s-t path in G_res  // 如果 Residual Graph还有路
-		let P be a simple path in G_res
-		augment along path P
-        update f to be f'
-		update G_res
-    end while
-end
-```
-
-## Gradient Magnitude
-
-[math - What is the gradient orientation and gradient magnitude? - Stack Overflow](https://stackoverflow.com/questions/19815732/what-is-the-gradient-orientation-and-gradient-magnitude/19816362)
-
-## Mean-Shift
-
-- 简单说，就是有一个点 x,它的周围有很多个点 x_i 我们计算点 x 移动到每个点 x_i 所需要的偏移量之和，求平均，就得到平均偏移量 m, （<u>该偏移量的方向是周围点分布密集的方向</u>）该偏移量是包含大小和方向的。然后点 x 就往平均偏移量方向移动，再以此为新的起点不断迭代直到满足一定条件结束。
-
-- mean-shift的算法流程是： 
-
-  1. 选取中心点 x，以半径 h 做一个高维球（如果我们是在图像或者视频处理中，则是2维的窗口，不限定是球，可以是矩形），标记所有落入窗口内的点为  x_i 
-  2. 计算 m，如果 m 的值小于阈值或者是迭代次数到达某个阈值，则停止算法，否则利用上面求圆心的公式更新圆点，继续步骤1
-
+- [ ] :question: 同一个顶点算了两个g最后这个顶点的颜色怎么决定
   
+  不存在的, 只算了一个, 通过求解方程直接得出每个顶点一个g
 
-- [meanshift算法图解_csdn](https://blog.csdn.net/csdnforyou/article/details/81161840)
+## Automatic mv-texture mapping of 3D surface
+
+- **The problem of occlusion** is solved by first identifying all surface points visible in the direction of projection; texture is then interpolated through blending using all images which actually view each particular surface point.
+- Texture outliers from individual images are automatically filtered out with a statistical test. 没有使用深度图
+- Grammatikopoulos等人（2004年，这篇是2007的）计算每个正射影像像素的所有有效颜色值的平均µ和标准偏差σ，并丢弃那些超出µ±σ范围的值。在本实施例中，σ也可指中值，对异常值更敏感。
+
+# IBR
+
+> image-based rendering
+
+- IBR 通常有两种方法: 
+  - VDTM (view-dependent texture mapping)
+    - 不用很多图, 但是几何要求高. VDTM assumes a relatively accurate geometric model, but requires only a small number of textures from input cameras that can be in general position.
+  - light field/lumigraph
+    - 需要大量图片, 但几何要求不高. Light field rendering requires **a large collection of images** from cameras whose centers lie on a regularly sampled two-dimensional patch, but it makes few assumptions about the **geometry** of the scene. 
+
+
+
+
+
+
 
 - [Meanshift，聚类算法 - Liqizhou - 博客园 (cnblogs.com)](https://www.cnblogs.com/liqizhou/archive/2012/05/12/2497220.html)
 
