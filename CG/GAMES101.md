@@ -3108,6 +3108,10 @@ $$
 
   <img src="GAMES101.assets/image-20210615193421754.png" alt="image-20210615193421754" style="zoom: 67%;" />
 
+- 多项式插值问题是病态的
+  - ![image-20210616111823654](GAMES101.assets/image-20210616111823654.png)
+  - 条件数condition number
+
 #### 拟合
 
 ##### 避免过拟合

@@ -644,16 +644,12 @@ end
 - [Mean Shift 聚类算法](https://blog.csdn.net/hjimce/article/details/45718593) 
   - 没核函数 就是相当于求解一个向量，使得圆心一直往数据集密度最大的方向移动。说的再简单一点，就是每次迭代的时候，都是找到圆里面点的平均位置作为新的圆心位置。
   - 有核函数: 带权重的偏移
-
 - 简单说，就是有一个点 x,它的周围有很多个点 x_i 我们计算点 x 移动到每个点 x_i 所需要的偏移量之和，求平均，就得到平均偏移量 m, （<u>该偏移量的方向是周围点分布密集的方向</u>）该偏移量是包含大小和方向的。然后点 x 就往平均偏移量方向移动，再以此为新的起点不断迭代直到满足一定条件结束。
-
 - mean-shift的算法流程是： 
 
   1. 选取中心点 x，以半径 h 做一个高维球（如果我们是在图像或者视频处理中，则是2维的窗口，不限定是球，可以是矩形），标记所有落入窗口内的点为  x_i 
   2. 计算 m，如果 m 的值小于阈值或者是迭代次数到达某个阈值，则停止算法，否则利用上面求圆心的公式更新圆点，继续步骤1
-
 - [mean shift算法图解_csdn](https://blog.csdn.net/csdnforyou/article/details/81161840)
-
 - [Mean shift，聚类算法 - Liqizhou - 博客园 (cnblogs.com)](https://www.cnblogs.com/liqizhou/archive/2012/05/12/2497220.html)
 
 ### 高斯
@@ -1122,7 +1118,72 @@ graph cut不只是区分两个啊
 
 - **The problem of occlusion** is solved by first identifying all surface points visible in the direction of projection; texture is then interpolated through blending using all images which actually view each particular surface point.
 - Texture outliers from individual images are automatically filtered out with a statistical test. 没有使用深度图
-- Grammatikopoulos等人（2004年，这篇是2007的）计算每个正射影像像素的所有有效颜色值的平均µ和标准偏差σ，并丢弃那些超出µ±σ范围的值。在本实施例中，σ也可指中值，对异常值更敏感。
+- Grammatikopoulos等人（2004年，这篇是2007的）计算每个正射影像像素的所有有效颜色值的平均µ和标准偏差σ，并丢弃那些超出µ±σ范围的值。在本实施例中，σ也可指中值，对异常值更敏感
+
+## 面向三维简化重建的超真实感纹理映射研究
+
+- 要解决的问题: 简化模型忽略了纹理信息, 我们希望能将图片中的颜色映射到简化模型上
+- 纹理映射需要频繁地将三维空间的点或面变换到图像空间，因此需要三维重建的结果非常精确，所以不能直接对简化模型做纹理映射
+- 存在的问题:
+  - 简化模型有结构缺失, 将缺失的结构的纹理映射到简化模型上会出问题
+  - 简化重建的结果是水密的, 会多出额外的结构, 但是输入的图片没有这些部分的纹理信息
+  - 简化模型的顶点位置相比原始模型发生了变化, 变换到图像空间对应两个不同的位置
+
+### 简化重建
+
+- 基于Kinetic shape reconstruction的简化重建结果, 需要根据这个方法找到哪些结构是缺失的, 哪些是额外增加的, 哪些点是相对应的, 从而建立原始模型与简化模型结果之间的映射
+  - Jean等人通过形状识别，空间划分和表面提取，对带法线的冗余点云数据进行简化重建，该过程不考虑纹理
+
+### 纹理映射
+
+- 因为结构差异，在进行纹理映射时需要抛弃一些纹理信息，因此纹理会留下一些不规则的孔洞。Liu等人(Image Inpainting for Irregular Holes Using Partial Convolutions)提出了基于部分卷积的图像修复，在对不规则孔洞的修复上取得了很好的效果，之后可能会用该方法修复纹理
+
+### 超分辨率
+
+- 最后为了提高纹理的清晰度，需要使用超分辨率技术。Li等人(3D Appearance Super-Resolution with Deep Learning)基于2D图像超分辨率方法，通过结合3D物体的法向信息，提出了一个更适合3D物体的纹理超分辨率方法
+
+### Pipeline
+
+#### 输入
+
+- 原始模型
+- 简化模型
+- 照片和相机参数
+
+#### 模型映射
+
+> 建立原始模型与简化模型之间的映射
+
+- 建立角点映射
+
+  ![image-20210618134728050](ideas.assets/image-20210618134728050.png)
+
+- 标记结构差异
+
+  ![image-20210618134922671](ideas.assets/image-20210618134922671.png)
+
+  - 对两个模型之间结构有差异的部分，需要对模型的面片进行标记。如果发生结构缺失要在原始模型上标注，如果增加了额外的结构需要对简化模型进行标记。
+
+#### 纹理映射
+
+- 曲面细分
+
+  ![image-20210618135016819](ideas.assets/image-20210618135016819.png)
+
+  
+
+- 约束纹理映射
+
+#### 纹理修复
+
+- 修补孔洞
+- 全局纹理优化
+
+#### 超分辨率
+
+- 提高3D表面纹理清晰度
+
+
 
 # IBR
 
@@ -1133,28 +1194,6 @@ graph cut不只是区分两个啊
     - 不用很多图, 但是几何要求高. VDTM assumes a relatively accurate geometric model, but requires only a small number of textures from input cameras that can be in general position.
   - light field/lumigraph
     - 需要大量图片, 但几何要求不高. Light field rendering requires **a large collection of images** from cameras whose centers lie on a regularly sampled two-dimensional patch, but it makes few assumptions about the **geometry** of the scene. 
-
-
-
-
-
-
-
-- [Meanshift，聚类算法 - Liqizhou - 博客园 (cnblogs.com)](https://www.cnblogs.com/liqizhou/archive/2012/05/12/2497220.html)
-
-
-
-# IBR
-
-> image-based rendering
-
-- IBR 通常有两种方法: 
-  - VDTM (view-dependent texture mapping)
-    - 不用很多图, 但是几何要求高. VDTM assumes a relatively accurate geometric model, but requires only a small number of textures from input cameras that can be in general position.
-  - light field/lumigraph
-    - 需要大量图片, 但几何要求不高. Light field rendering requires **a large collection of images** from cameras whose centers lie on a regularly sampled two-dimensional patch, but it makes few assumptions about the **geometry** of the scene. 
-
-
 
 
 
