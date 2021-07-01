@@ -3049,7 +3049,7 @@ $$
 - 大部分的实际应用问题
   - 可建模为: 找一个映射/变换/函数
   - 输入不一样, 变量不一样, 维数不一样
-    - 拟合问题:
+    - 拟合问题: 
       - 输入: 一些观察的数据点
       - 输出: 反映这些数据规律的函数 y=f(x)
 
@@ -3059,82 +3059,122 @@ $$
 2. 找哪个?
 3. 怎么找?
 
-### 到哪找
 
-- 确定函数的表达形式(函数集, 空间). 选择一个函数空间
-  - 线性函数空间 $A=span\{B_0(x), ..., B_n(x)\}$ (B表示基函数, 空间中的任何一个元素都可以用基表示)
-    - 多项式函数 $span\{1, x, x^2, ..., x^n\}$
-    - RBF函数
-    - 三角函数: 有周期性
 
-### 找哪个
+## Wireframe Modeling
 
-- 度量那个函数是好的/"最好"的. 就是找损失函数
-- 优化模型 (最小化问题)
-  - 能量项  = 误差项 + 正则项
-- 统计模型, 规划模型... 来描述函数
+> 工程制图
 
-### 怎么找
+## Surface Modeling
 
-- 求解或优化: 不同的优化方法与技巧, 既要快, 又要好. 
-- 求解误差函数的驻点 (导数为0之处)
-- 转化为系数的方程组
-  - 如果是欠定的(有无穷多解), 则修正矩阵
-    - 改进/增加各种正则项: Lasso, 岭回归, 稀疏正则项
-    - 返回修改模型 
+> NURBS
 
-- 插值问题: 
-  - 目标: 函数要经过每个数据点
-  - 联立, 求解线性方程组
-    - n次lagrange插值多项式: 插值n+1个点, 次数不超过n的多项式是存在且是唯一的
-  - 但是自由度不够高
-- 拟合问题:
-  - 目标: 函数尽量靠近数据点
-    - $min\sum_{i=0}^n(y_i-f(x_i))^2$
-  - 最小二乘法: 对各系数求导, 得法方程(Normal Equation)(线性方程组)
-    - $AX=b$ 
+![image-20210622134827672](GAMES101.assets/image-20210622134827672.png)
 
-#### 插值
+- Analytical Surface
+  - B样条
 
-- 范德蒙行列式
-- 多项式插值: 拉格朗日插值
-- 牛顿插值多项式
+- Free‐form, Curved, Sculptured Surface
 
-##### 存在的问题
+## Solid Modeling
 
-- 系统矩阵稠密, 求解慢
+### Parametric Modeling
 
-- 依赖于基函数选取, 矩阵可能病态, 导致难于求解(求逆) 
+- 
 
-  <img src="GAMES101.assets/image-20210615193421754.png" alt="image-20210615193421754" style="zoom: 67%;" />
+### Feature Based Modeling
 
-- 多项式插值问题是病态的
-  - ![image-20210616111823654](GAMES101.assets/image-20210616111823654.png)
-  - 条件数condition number
+### CSG
 
-#### 拟合
+> Constructive Solid Geometry
 
-##### 避免过拟合
+### B‐Rep
 
-保证模型“简单”的基础上最小化训练误差，这样得到的参数才具有好的泛化性能
+> Boundary Representation 边界表达
+>
+> 存点, 线, 面的关系, 甚至是约束(平行, 垂直, 长度, 角度等)
 
-![image-20210615131134472](GAMES101.assets/image-20210615131134472.png)
+# Real-time Rendering Pipeline
 
-###### 岭回归
+> Graphics (Real-time Rendering) Pipeline
+>
+> 实时渲染管线
+>
+> render: assign a color to each pixel of the frame
+>
+> - 这里考虑的是 <u>object-order rendering</u> (also called rendering by rasterization) (不是像光线追踪, 逐像素考虑那种) 
+> - graphics pipelines 有两种, hardware pipelines & software pipelines, 这里考虑的主要是两者共有的, 通用的
 
-![image-20210615131755844](GAMES101.assets/image-20210615131755844.png)
+![image-20201111190934468](GAMES101.assets/image-20201111190934468.png)
 
-稀疏正则化
+- 第二张图是把点投影到屏幕
+- Fragment是OpenGL的概念, 不考虑抗锯齿, MSAA的话, 一个Fragment可以类比一个像素?(每个基本采样点叫fragment?如果没用MSAA一个像素就是一个fragment, 如果用了MSAA, 那好多的fragment才能形成一个像素)
+- 定义所有的顶点, 然后定义哪三个顶点形成一个三角形, 也可以合为一步
 
-> 稀疏学习
+![img](GAMES101.assets/021729497233272.png)
 
-- 冗余基函数(过完备)
-- 通过优化来选择合适的基函数
-  - 系数向量的L0模(非0元素个数)尽量小. 向量的非零元素少
-    - L0范数：向量中非零元素的个数
-    - L1范数：向量中各个元素绝对值的和
-    - L2范数：向量中元素平方的和，再开方；即向量的模长
-  - 挑选("学习")出合适的基函数
+![image-20210107145548169](GAMES101.assets/image-20210107145548169.png)
+
+## Application
+
+> 应用程序阶段
+
+- 用阶段通常是在CPU端进行处理，包括碰撞检测、动画物理模拟以及一些加速管线的算法，比如层次视椎剔除（hierarchical view frustum culling）等等
+- 这个阶段会将数据送到渲染管线中。这一阶段可以利用CPU的多核心执行超标量（superscalar）计算，也可以利用GPU执行计算着色器，此时将GPU视为通用的高度并行的处理器
+
+## Vertex Processing
+
+> a sequence of vertices are processed via a series of Shaders(着色器). 
+
+- input: Vertex Date (可以包括顶点坐标、顶点颜色、顶点法线、纹理坐标等数据), 利用这些输入数据可以在fragment shader计算片段的光照信息，最终输出到颜色缓冲器。
+
+- vertex data 在流水线中以图元的方式进行处理，常见的图元有：点、线和三角面
+
+- In this stage, incoming vertices are transformed by the modeling, viewing, and projection transformations, mapping them from their original coordinates into screen space. 
+
+  At the same time, other information, such as colors, surface normals, or texture coordinates, is transformed as needed; we’ll discuss these additional attributes in the examples below.
+  
+- 
+
+
+
+## Mesh Processing
+
+> mesh 可以是 <u>triangle</u>, polygon, 所以也可以叫Triangle Processing?
+>
+> Geometry Processing
+
+## Rasterization
+
+> the primitives using those vertices are sent to the *rasterization stage*. 
+>
+> rasterizer breaks each primitive into a number of fragments, one for each pixel covered by the primitive. 
+
+Sampling triangle coverage 采样, 判断是否在三角形内
+
+![image-20201111192814443](GAMES101.assets/image-20201111192814443.png)
+
+## Fragment Processing
+
+> The fragments are processed in the fragment processing stage. 
+>
+> 控制fragment如何着色
+
+判断fragment是否可见(也可以归到光栅化部分)
+
+![image-20201111192901847](GAMES101.assets/image-20201111192901847.png)
+
+如果是Gouraud shading, 那还和Vertex Processing有关
+
+![image-20201111193015901](GAMES101.assets/image-20201111193015901.png)
+
+## Blendinig
+
+> the various fragments corresponding to each pixel are combined in the *fragment blending stage*.
+
+[实时渲染管线](https://zhuanlan.zhihu.com/p/147236210)
+
+# Rendering
 
 ## Neural Rendering
 
@@ -3156,7 +3196,7 @@ $$
   - Pros: 真3D
   - Cons: 占空间 O(n$^3$), no reconstruction priors
 
--  Image-based
+- Image-based
 
   ![image-20201224104621616](GAMES101.assets/image-20201224104621616.png)
 
@@ -3195,7 +3235,7 @@ $$
   - 绘制中有很多效果，BSDF函数，现在还没有很好的探索过可微分的框架，性能，这个都是很新的领域。
   - [什么是可微分渲染](https://www.zhihu.com/question/364770565)
 
--   
+- 
 
 ## Volume Rendering
 
@@ -3308,6 +3348,7 @@ $$
 ###### 判断光线投射出体纹理
 
 计算距离 m 的方法如下：
+
 1. 剔除深度值较大的片段（正常的渲染状态），渲染场景深度图 frontDepth，此时 frontDepth 上的每个像素的颜色值都代表“某个方向上离视点最近的点的距离”；
 2. 剔除深度值较小的片段，渲染场景深度图 backDepth，backDepth 上的每个像素的颜色值都代表“某个方向上离视点最远的点的距离”；
 3. 将两张深度图上的数据进行相减，得到的值就是光线投射距离 m。
@@ -3325,83 +3366,3 @@ $$
 #### Splatting
 
 > 抛雪球算法
-
-# Real-time Rendering Pipeline
-
-> Graphics (Real-time Rendering) Pipeline
->
-> 实时渲染管线
->
-> render: assign a color to each pixel of the frame
->
-> - 这里考虑的是 <u>object-order rendering</u> (also called rendering by rasterization) (不是像光线追踪, 逐像素考虑那种) 
-> - graphics pipelines 有两种, hardware pipelines & software pipelines, 这里考虑的主要是两者共有的, 通用的
-
-![image-20201111190934468](GAMES101.assets/image-20201111190934468.png)
-
-- 第二张图是把点投影到屏幕
-- Fragment是OpenGL的概念, 不考虑抗锯齿, MSAA的话, 一个Fragment可以类比一个像素?(每个基本采样点叫fragment?如果没用MSAA一个像素就是一个fragment, 如果用了MSAA, 那好多的fragment才能形成一个像素)
-- 定义所有的顶点, 然后定义哪三个顶点形成一个三角形, 也可以合为一步
-
-![img](GAMES101.assets/021729497233272.png)
-
-![image-20210107145548169](GAMES101.assets/image-20210107145548169.png)
-
-## Application
-
-> 应用程序阶段
-
-- 用阶段通常是在CPU端进行处理，包括碰撞检测、动画物理模拟以及一些加速管线的算法，比如层次视椎剔除（hierarchical view frustum culling）等等
-- 这个阶段会将数据送到渲染管线中。这一阶段可以利用CPU的多核心执行超标量（superscalar）计算，也可以利用GPU执行计算着色器，此时将GPU视为通用的高度并行的处理器
-
-## Vertex Processing
-
-> a sequence of vertices are processed via a series of Shaders(着色器). 
-
-- input: Vertex Date (可以包括顶点坐标、顶点颜色、顶点法线、纹理坐标等数据), 利用这些输入数据可以在fragment shader计算片段的光照信息，最终输出到颜色缓冲器。
-
-- vertex data 在流水线中以图元的方式进行处理，常见的图元有：点、线和三角面
-
-- In this stage, incoming vertices are transformed by the modeling, viewing, and projection transformations, mapping them from their original coordinates into screen space. 
-
-  At the same time, other information, such as colors, surface normals, or texture coordinates, is transformed as needed; we’ll discuss these additional attributes in the examples below.
-  
-- 
-
-
-
-## Mesh Processing
-
-> mesh 可以是 <u>triangle</u>, polygon, 所以也可以叫Triangle Processing?
->
-> Geometry Processing
-
-## Rasterization
-
-> the primitives using those vertices are sent to the *rasterization stage*. 
->
-> rasterizer breaks each primitive into a number of fragments, one for each pixel covered by the primitive. 
-
-Sampling triangle coverage 采样, 判断是否在三角形内
-
-![image-20201111192814443](GAMES101.assets/image-20201111192814443.png)
-
-## Fragment Processing
-
-> The fragments are processed in the fragment processing stage. 
->
-> 控制fragment如何着色
-
-判断fragment是否可见(也可以归到光栅化部分)
-
-![image-20201111192901847](GAMES101.assets/image-20201111192901847.png)
-
-如果是Gouraud shading, 那还和Vertex Processing有关
-
-![image-20201111193015901](GAMES101.assets/image-20201111193015901.png)
-
-## Blendinig
-
-> the various fragments corresponding to each pixel are combined in the *fragment blending stage*.
-
-[实时渲染管线](https://zhuanlan.zhihu.com/p/147236210)

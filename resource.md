@@ -13,7 +13,8 @@
 - [论文太多看不过来？快让人工智能帮你阅读分析 (qq.com)](https://mp.weixin.qq.com/s/zEco97zBRYb215bU0CypOQ)
 - [如何高效读论文？ - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/35170379) !!!
 - [How to Read a Paper Efficiently (By Prof. Pete Carr) - YouTube](https://www.youtube.com/watch?v=IeaD0ZaUJ3Y&ab_channel=SurvivingandThrivinginHigherEducation)
-  - 首先是<u>题目</u>, <u>关键词</u>, <u>摘要</u>, 然后是<u>结论</u> (确定自己是否感兴趣, 可以随时停止阅读一篇文章, 不要试图去打捞沉没成本，在已经不看好、或者不感兴趣的论文上投入更多时间)
+  - 看有没有视频介绍
+  - 看<u>题目</u>, <u>关键词</u>, <u>摘要</u>, 然后是<u>结论</u> (确定自己是否感兴趣, 可以随时停止阅读一篇文章, 不要试图去打捞沉没成本，在已经不看好、或者不感兴趣的论文上投入更多时间) 
   - 千万不要一字一句，从头到尾线性阅读
   - 先看<u>图表</u>（如果有）, 最后读<u>引言(</u>introduction 因为引言的主要作用是强调论文研究主题的价值和必要性，会尝试与更为宏大的图景、更重要的问题相联系。有的甚至会有“吹嘘”的成分。), 最最后看核心部分(研究结果和讨论, 不是实验)
   - 实验需要慢慢看
