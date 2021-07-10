@@ -3073,8 +3073,17 @@ $$
 
 - Analytical Surface
   - B样条
-
 - Free‐form, Curved, Sculptured Surface
+
+### 三次样条函数
+
+[三次样条函数](http://staff.ustc.edu.cn/~lgliu/Courses/GAMES102_2020/documents/GAMES102-suppl-2-CubicSpline.pdf)
+
+![image-20210708115918087](GAMES101.assets/image-20210708115918087.png)
+
+![image-20210708120436162](GAMES101.assets/image-20210708120436162.png)
+
+![image-20210708122020774](GAMES101.assets/image-20210708122020774.png)
 
 ## Solid Modeling
 
