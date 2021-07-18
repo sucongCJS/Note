@@ -1573,23 +1573,23 @@ An Example: Blending (linear interp.) a moving boundary
 
 ### Bezier curves
 
-![image-20201204153410470](GAMES101.assets/image-20201204153410470.png)
+<img src="GAMES101.assets/image-20201204153410470.png" alt="image-20201204153410470" style="zoom:80%;" />
 
 #### De Casteljau’s algorithm
 
-![image-20201204154142277](GAMES101.assets/image-20201204154142277.png)
+<img src="GAMES101.assets/image-20201204154142277.png" alt="image-20201204154142277" style="zoom:80%;" />
 
-![image-20201204154156951](GAMES101.assets/image-20201204154156951.png)
+<img src="GAMES101.assets/image-20201204154156951.png" alt="image-20201204154156951" style="zoom:80%;" />
 
-![image-20201204154218415](GAMES101.assets/image-20201204154218415.png)
+<img src="GAMES101.assets/image-20201204154218415.png" alt="image-20201204154218415" style="zoom:80%;" />
 
-![image-20201204154238815](GAMES101.assets/image-20201204154238815.png)
+<img src="GAMES101.assets/image-20201204154238815.png" alt="image-20201204154238815" style="zoom:80%;" />
 
-![image-20201204154437532](GAMES101.assets/image-20201204154437532.png)
+<img src="GAMES101.assets/image-20201204154437532.png" alt="image-20201204154437532" style="zoom:80%;" />
 
 #### Algebraic Formular
 
-![image-20201204160343289](GAMES101.assets/image-20201204160343289.png)
+<img src="GAMES101.assets/image-20201204160343289.png" alt="image-20201204160343289" style="zoom:80%;" />
 
 $b0$, $b1$ 线性插值得$b_0^1$ 
 
@@ -1621,8 +1621,6 @@ $$
 - $b_i$: 控制点control point, 总共有n+1个控制点(0~n)
 - $b^n(t)$: Bézier curve of order n (n阶贝塞尔曲线) 在任意的时间 $t$ 都是 n+1 个控制点的线性组合, 线性组合的系数是一个与时间有关的多项式, 这个多项式就是伯恩斯坦多项式
 
-
-
 Example:
 
 assume $n$ = 3 (and we are in $R^3$)
@@ -1645,7 +1643,16 @@ $b^n(t) = b_0 (1-t)^3 + b_1 3t(1 - t)^2 + b_2 3t^2(1 - t) + b_3 t^3$
 - 过起点, 终点
 - 不能表示圆弧
 - <u>Affine transformation</u> property: 把线上的每个点做仿射变换的结果等于将控制点做仿射变换再画线的结果, 所以可以Transform curve by transforming control points (但投影不行)
+
 - Convex hull property 凸包性质: Curve is within convex hull of control points, 比如4个控制点, 那么画出来的曲线在这个四边形内
+
+- 缺点:
+
+  - 其基函数定义在整个空间([0,1])中, 无论哪一个基函数都是全局的, 对其中一个点$b_i$做一点点扰动, 整个曲线都会受影响
+
+    <img src="GAMES101.assets/image-20201205163253922.png" alt="image-20201205163253922" style="zoom:50%;" />
+
+- 分段表达就有全局性. 
 
 #### Piecewise Bézier Curves
 
@@ -1683,8 +1690,42 @@ $b^n(t) = b_0 (1-t)^3 + b_1 3t(1 - t)^2 + b_2 3t^2(1 - t) + b_3 t^3$
 > 样条
 >
 > basis splines
+>
+> 分段多项式曲线, 通过构造局部基函数, 统一表达了这条曲线, 而不是分段表达
 
-[link](https://www.bilibili.com/video/av66548502?from=search&seid=65256805876131485)
+[link](https://www.bilibili.com/video/av66548502?from=search&seid=65256805876131485) [games102-05](http://staff.ustc.edu.cn/~lgliu/Courses/GAMES102_2020/documents/GAMES102-suppl-2-CubicSpline.pdf)
+
+- why
+  - Bezier曲线有全局性, 分段的Bezier有局部性, 但是是分段表达, B样条有统一的表达方式, 只用一个函数
+
+- 特点
+  - 正性
+
+  - 权性. 取一个点, 经过这个点的所有基函数加起来是1, 正性+权性, 所以有凸包性
+
+    ![image-20210709150413169](GAMES101.assets/image-20210709150413169.png)
+
+  - 局部性, 不会牵一发而动全身,  由多个 $k$ 阶的基函数组成, 比如第 $i$ 个基函数, 只在$t_i$ 到 $t_{i+k}$非零, 其余是零
+
+  - 光滑性, 在连接处有$C^{k-2}$ 连续 
+
+一个例子: 
+
+![image-20210709151429226](GAMES101.assets/image-20210709151429226.png)
+
+d0~d5定义一条曲线, d1~d6定义另一条曲线
+
+节点可以重合, 比如d0和d1重合, 重合的话光滑性会降低, 降到一定程度就退化为bezier曲线
+
+### 三次样条函数
+
+[三次样条函数](http://staff.ustc.edu.cn/~lgliu/Courses/GAMES102_2020/documents/GAMES102-suppl-2-CubicSpline.pdf)
+
+![image-20210708115918087](GAMES101.assets/image-20210708115918087.png)
+
+![image-20210708120436162](GAMES101.assets/image-20210708120436162.png)
+
+![image-20210708122020774](GAMES101.assets/image-20210708122020774.png)
 
 ### NURBS
 
@@ -1695,6 +1736,8 @@ $b^n(t) = b_0 (1-t)^3 + b_1 3t(1 - t)^2 + b_2 3t^2(1 - t) + b_3 t^3$
 
 
 ## Surfaces
+
+> 曲面就是曲线的张量积(GAMES102-3, 两个基函数相乘, 表达一个二维的基函数, 就可以张成一个曲面)形式
 
 ### Bezier surfaces
 
@@ -3084,23 +3127,13 @@ $$
 
 ## Surface Modeling
 
-> NURBS
+> NURBS 非均匀有理B样条
 
 ![image-20210622134827672](GAMES101.assets/image-20210622134827672.png)
 
 - Analytical Surface
   - B样条
 - Free‐form, Curved, Sculptured Surface
-
-### 三次样条函数
-
-[三次样条函数](http://staff.ustc.edu.cn/~lgliu/Courses/GAMES102_2020/documents/GAMES102-suppl-2-CubicSpline.pdf)
-
-![image-20210708115918087](GAMES101.assets/image-20210708115918087.png)
-
-![image-20210708120436162](GAMES101.assets/image-20210708120436162.png)
-
-![image-20210708122020774](GAMES101.assets/image-20210708122020774.png)
 
 ## Solid Modeling
 
