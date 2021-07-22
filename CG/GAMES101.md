@@ -1641,9 +1641,7 @@ $b^n(t) = b_0 (1-t)^3 + b_1 3t(1 - t)^2 + b_2 3t^2(1 - t) + b_3 t^3$
 #### Properties
 
 - 过起点, 终点
-
 - 不能表示圆弧
-
 - <u>Affine transformation</u> property: 把线上的每个点做仿射变换的结果等于将控制点做仿射变换再画线的结果, 所以可以Transform curve by transforming control points (但投影不行)
 
 - Convex hull property 凸包性质: Curve is within convex hull of control points, 比如4个控制点, 那么画出来的曲线在这个四边形内
@@ -1677,6 +1675,15 @@ $b^n(t) = b_0 (1-t)^3 + b_1 3t(1 - t)^2 + b_2 3t^2(1 - t) + b_3 t^3$
     长度一样, 斜率一样(一阶导数连续)
 
 - $C^2$ continuity 二阶导数连续
+
+### 有理Bezier曲线
+
+[games102-6]()
+
+- 包含Bezier曲线, 有理曲线的权都是1就等于Bezier曲线
+- 可以表示圆弧
+
+![image-20210710173505140](GAMES101.assets/image-20210710173505140.png)
 
 ### B-splines
 
@@ -1719,6 +1726,14 @@ d0~d5定义一条曲线, d1~d6定义另一条曲线
 ![image-20210708120436162](GAMES101.assets/image-20210708120436162.png)
 
 ![image-20210708122020774](GAMES101.assets/image-20210708122020774.png)
+
+### NURBS
+
+> non-uniform rational B-Spline
+>
+> 非均匀有理B样条
+
+
 
 ## Surfaces
 
