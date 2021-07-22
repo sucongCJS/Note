@@ -241,3 +241,8 @@ http://staff.ustc.edu.cn/~lgliu/Courses/DGP_2012_spring-summer/default.htm
 
 - [Jiumo Search 鸠摩搜索 - 文档搜索引擎 (jiumodiary.com)](https://www.jiumodiary.com/)
 - [欢迎加入读书群鸭~赠送超多好书哟 (qq.com)](https://mp.weixin.qq.com/s/FpcwO_U2IZ0qWg8POHDRuA)
+- [Library Genesis (libgen.is)](https://www.libgen.is/)
+
+## 微积分
+
+[（熟肉合集）多元微积分，微分部，3Blue1Brown Grant Sanderson讲授——可汗学院_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV11a4y1L7BV/?spm_id_from=trigger_reload)
