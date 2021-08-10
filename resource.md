@@ -243,6 +243,97 @@ http://staff.ustc.edu.cn/~lgliu/Courses/DGP_2012_spring-summer/default.htm
 - [欢迎加入读书群鸭~赠送超多好书哟 (qq.com)](https://mp.weixin.qq.com/s/FpcwO_U2IZ0qWg8POHDRuA)
 - [Library Genesis (libgen.is)](https://www.libgen.is/)
 
+# CSDN
+
+卡号卡号：https://csdn.kerwin.cn:8091/?code=fcbeb9bb979f4da1bcdc4db84e0313e9
+卡号：https://csdn.kerwin.cn:8091/?code=591ef86687bf42de8a5879a257ea7374
+卡号：https://csdn.kerwin.cn:8091/?code=a712bd4057e3437ab8ee9591acf18521
+卡号：https://csdn.kerwin.cn:8091/?code=e9fc0206de8441be89a52f8b82241a41
+卡号：https://csdn.kerwin.cn:8091/?code=6ac732179e5349c585cc83ab9179d712
+输入文件的浏览器网址到资源链接直接提取下载
+注意：不要用IE浏览器，不要用IE浏览器，不要用IE浏览器
+注意提醒：
+以后你如果还要下载  直接拍下面这个就可以了，之前的别再拍了https://item.taobao.com/item.htm?ft=t&id=650080765249
+以后拍这个
+下载完，麻烦您一定在淘宝上点击下，确-认-收-货
+
 ## 微积分
 
 [（熟肉合集）多元微积分，微分部，3Blue1Brown Grant Sanderson讲授——可汗学院_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV11a4y1L7BV/?spm_id_from=trigger_reload)
+
+# 电影
+
+【阿里云】珍藏（三）（23部欧美系列＋豆瓣250），分享给大家
+
+
+【生活大爆炸全12季系列】1080P
+https://www.aliyundrive.com/s/rBBiEo93unH
+
+【老友记系列】
+https://www.aliyundrive.com/s/osU5HSAyDcw
+
+【哈利波特合辑】
+https://www.aliyundrive.com/s/fptuz658Q9V
+
+【小鬼当家系列】
+https://www.aliyundrive.com/s/iZ4y6iHHmXC
+
+【指环王系列】
+https://www.aliyundrive.com/s/y5RGdTA69gS
+
+【教父系列】
+https://www.aliyundrive.com/s/DSBie7gjnyX
+
+【木乃伊系列】
+https://www.aliyundrive.com/s/oszYcNVu4Jz
+
+【死神来了系列】
+https://www.aliyundrive.com/s/cgFSLsUtSnE
+
+【浴血黑帮系列】.1-5季.1080P
+https://www.aliyundrive.com/s/CKgnXDUSazH
+
+【漫威系列】
+https://www.aliyundrive.com/s/upnQi9WToyA
+
+【超人系列】
+https://www.aliyundrive.com/s/6diUG2CKJJu
+
+【终结者系列】
+https://www.aliyundrive.com/s/H85qMAH2uxy
+
+【星球大战系列】
+https://www.aliyundrive.com/s/XcbuB1jnHDp
+
+【星际迷航系列】
+https://www.aliyundrive.com/s/a1vLrvuxS6X
+
+【蝙蝠侠系列】
+https://www.aliyundrive.com/s/Y9qWb1dpULv
+
+【生化危机系列】
+https://www.aliyundrive.com/s/RbCubYmNT2V
+
+【电锯惊魂系列】
+https://www.aliyundrive.com/s/MHGCW4apYZo
+
+【加勒比海盗系列】
+https://www.aliyundrive.com/s/XkdxH8hqiwX
+
+【侏罗纪系列】
+https://www.aliyundrive.com/s/T8oKWsdSUpy
+
+【变形金刚系列】
+https://www.aliyundrive.com/s/2MuwCoEhqBV
+
+【虎胆龙威系列】
+https://www.aliyundrive.com/s/ADfyQryw1cb
+
+【速度与激情系列】 1-9
+https://www.aliyundrive.com/s/XvfKxN7zbTB
+
+【霍比特人系列】＋12部优秀电影
+https://www.aliyundrive.com/s/YJYPCUzTWib
+
+豆瓣 Top250
+https://www.aliyundrive.com/s/EqFhP89pRCX
